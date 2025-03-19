@@ -20,7 +20,7 @@
 <ul>
     <li><strong>Back-end</strong></li>
     <ul>
-        <li>Python e Flask</li>
+        <li>Python e Django</li>
     </ul>
 </ul>
 
