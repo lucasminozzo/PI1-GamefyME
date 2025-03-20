@@ -1,42 +1,33 @@
-<h2>Projeto de Plataforma de Controle de Hábitos com Gamificação</h2>
+# Projeto de Plataforma de Controle de Hábitos com Gamificação
 
-<h3>Escopo Macro</h3>
+## Escopo Macro
 
-<p>Temos na sociedade atual um grande problema com a atenção e motivação, em que os maiores afetados são pessoas com déficit ou transtornos relativos (TDAH, Autismo e etc). A gamificação e a neuroeducação tem se tornado maneiras muito eficazes de manter as pessoas em um alto ritmo de produção.</p>
-<p>Outro método (sendo ele um dos mais eficazes utilizados) para o aumento de produtividade e atenção, é o Pomodoro. O método Pomodoro é uma técnica de gestão de tempo que consiste em dividir o trabalho em intervalos de 25 minutos que são chamados de “pomodoros”. A cada pomodoro, deve-se realizar um intervalo de 5 minutos. Após uma hora, é realizada uma pausa maior.</p>
-<p>O programa utiliza o método de gamificação como a principal forma de feedback para os usuários, e o método pomodoro como forma secundária. </p>
-<p>O sistema funciona da seguinte forma: o usuário faz o seu cadastro na aplicação como uma forma de salvar o seu progresso, ele registra suas atividades e baseia um peso a elas, também pode demarcar um tempo para a realização. Ao realizar as atividades dentro do tempo estipulado, é recebido uma recompensa baseada no peso que foi atribuída a ela, os pesos já serão pré-determinados no sistema pela pessoa.
-</p>
-<p>As recompensas serão baseadas em conquistas, prêmios virtuais e experiência para o perfil do usuário que são adquiridas ao manter uma boa consistência de atividades completas.</p>
+Atualmente, a sociedade enfrenta desafios relacionados à atenção e motivação, afetando especialmente pessoas com déficit ou transtornos como TDAH e autismo. Métodos como a gamificação e a neuroeducação têm se mostrado estratégias eficazes para manter um ritmo elevado de produção.
 
-<h3>Links</h3>
-<a scr="https://drive.google.com/drive/folders/1j5t3ILdWwQTxNi6v-8JLlZ_zP_FIB7Er?usp=sharing" >Drive com todos os arquivos</a>
+Além disso, o **Método Pomodoro** é amplamente utilizado para melhorar a produtividade. Essa técnica de gestão de tempo divide o trabalho em intervalos de 25 minutos, denominados *pomodoros*, com intervalos de 5 minutos entre eles e uma pausa mais longa após uma hora de atividade.
 
-<h3>Tecnologias Utilizadas</h3>
-<ul>
-    <li><strong>Front-end</strong></li>
-    <ul>
-        <li>HTML e CSS</li>
-        <li>Bootstrap</li>
-    </ul>
-</ul>
-<ul>
-    <li><strong>Back-end</strong></li>
-    <ul>
-        <li>Python e Django</li>
-    </ul>
-</ul>
+Nesta plataforma, a gamificação é o principal mecanismo de feedback, enquanto o método Pomodoro serve como suporte para a organização do tempo. O usuário se cadastra na aplicação, registra suas atividades e define prioridades (com pesos pré-determinados ou configuráveis pela equipe). Ao concluir as atividades dentro do tempo estipulado, o usuário recebe recompensas que podem incluir conquistas, prêmios virtuais e pontos de experiência, incentivando a manutenção de um bom ritmo e consistência.
 
-<h3>Colaboradores</h3>
-<p>Arthur Roque dos Santos</p>
-<ul>
-    <li>roquearthur86@gmail.com</li>
-</ul>
-<p>Lucas Minozzo Avila</p>
-<ul>
-    <li>lucasmavila@gmail.com</li>
-</ul>
-<p>Luis Felipe de Souza Santili</p>
-<ul>
-    <li>felipesantili@gmail.com</li>
-</ul>
+## Links
+
+- [Drive com todos os arquivos](https://drive.google.com/drive/folders/1j5t3ILdWwQTxNi6v-8JLlZ_zP_FIB7Er?usp=sharing)
+
+## Tecnologias Utilizadas
+
+- **Front-end**
+  - HTML e CSS
+  - Bootstrap
+
+- **Back-end**
+  - Python e Django
+
+## Colaboradores
+
+- **Arthur Roque dos Santos**  
+  [roquearthur86@gmail.com](mailto:roquearthur86@gmail.com)
+
+- **Lucas Minozzo Avila**  
+  [lucasmavila@gmail.com](mailto:lucasmavila@gmail.com)
+
+- **Luis Felipe de Souza Santili**  
+  [felipesantili@gmail.com](mailto:felipesantili@gmail.com)
