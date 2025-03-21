@@ -20,6 +20,9 @@ Nesta plataforma, a gamificação é o principal mecanismo de feedback, enquanto
 
 - **Back-end**
   - Python e Django
+ 
+  - - **Banco de dados**
+  - PostgreSQL
 
 ## Colaboradores
 
