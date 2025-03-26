@@ -11,6 +11,7 @@ Nesta plataforma, a gamificação é o principal mecanismo de feedback, enquanto
 ## Links
 
 - [Drive com todos os arquivos](https://drive.google.com/drive/folders/1j5t3ILdWwQTxNi6v-8JLlZ_zP_FIB7Er?usp=sharing)
+- [Figma com a prototipação das telas](https://www.figma.com/design/T8K0xYQI6NYA3LjxnH7Qw7/GamefyMe?node-id=0-1&p=f&t=Kb9aqRTR62jHjPXJ-0)
 
 ## Tecnologias Utilizadas
 
