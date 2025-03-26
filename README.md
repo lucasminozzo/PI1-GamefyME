@@ -8,6 +8,11 @@ Além disso, o **Método Pomodoro** é amplamente utilizado para melhorar a prod
 
 Nesta plataforma, a gamificação é o principal mecanismo de feedback, enquanto o método Pomodoro serve como suporte para a organização do tempo. O usuário se cadastra na aplicação, registra suas atividades e define prioridades (com pesos pré-determinados ou configuráveis pela equipe). Ao concluir as atividades dentro do tempo estipulado, o usuário recebe recompensas que podem incluir conquistas, prêmios virtuais e pontos de experiência, incentivando a manutenção de um bom ritmo e consistência.
 
+## Diagrama do Banco de Dados ER
+
+<img src="https://drive.google.com/file/d/1xuu5BhQGqz0uzh398Q-JQm3zvXf_ZWXD/view?usp=sharing" alt="Descrição da imagem">
+
+
 ## Links
 
 - [Drive com todos os arquivos](https://drive.google.com/drive/folders/1j5t3ILdWwQTxNi6v-8JLlZ_zP_FIB7Er?usp=sharing)
