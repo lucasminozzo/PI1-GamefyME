@@ -2,8 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>GamefyME - Cadastro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>GamefyME</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 
@@ -12,35 +11,26 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Jersey 10', cursive;
             background: linear-gradient(to bottom, #2d0052, #390066);
             color: #fff;
             height: 100vh;
         }
-
+        
         header {
             background-color: #4c0099;
             display: flex;
-            justify-content: space-between;
+            justify-content: right;
             padding: 20px 40px;
             align-items: center;
             font-size: 22px;
         }
-
-        .nav-left .btn {
-            background-color: #2d0052;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            margin-right: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
+        .nav-right{
+            align-self:right;
         }
-
+        
         .nav-right a {
             color: white;
             margin-left: 30px;
@@ -48,60 +38,43 @@
             font-weight: bold;
             font-size: 18px;
         }
-
+        
         main {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 80px;
         }
-
-        .content-left {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .content-left h1 {
-            font-family: 'Jersey 10', cursive;
-            font-size: 100px;
-            margin-bottom: 40px;
-        }
-
-        .content-left p {
-            font-size: 30px;
-            color: #ccc;
-            font-weight: bold;
-            line-height: 1.5;
-        }
-
+        
+        
         .content-right {
             background-color: white;
             border-radius: 10px;
-            padding: 40px;
-            width: 500px;
+            padding: 20px;
+            width: 3000px;
             color: black;
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            font-size: 18px;
+            font-size: 20px;
         }
-
+        
         .content-right label {
             font-weight: bold;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
-
-        .content-right input, .content-right select {
+        
+        .content-right input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border-radius: 6px;
             border: 1px solid #ccc;
-            margin-bottom: 20px;
-            font-size: 16px;
+            margin-bottom: 30px;
+            font-size: 18px;
         }
-
+        
         .content-right button {
+            margin-top:10px;
             width: 100%;
             background-color: #222;
             color: white;
@@ -113,15 +86,12 @@
             font-size: 20px;
             cursor: pointer;
         }
-
+        
     </style>
 </head>
 <body>
     <header>
-        <div class="nav-left">
-            <button class="btn">Login</button>
-            <button class="btn">Registrar</button>
-        </div>
+    
         <div class="nav-right">
             <a href="#">Sobre o sistema</a>
             <a href="#">Gamificação</a>
@@ -129,26 +99,23 @@
     </header>
 
     <main>
-        <div class="content-left">
-            
-        </div>
-
         <div class="content-right">
-            <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
-                <label for="nmusuario">Nome</label>
-                <input type="text" id="nmusuario" name="nmusuario" required>
-
-                <label for="emailusuario">E-mail</label>
-                <input type="email" id="emailusuario" name="emailusuario" required>
-
+            <form>
+                <label for="nome">Nome de usuário</label>
+                <input type="text" id="nome" placeholder="fulano silva" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="exemplo@gmail.com" required>
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-
-                <label for="dtnascimento">Data de Nascimento</label>
-                <input type="date" id="dtnascimento" name="dtnascimento" required>
-                
-                <button type="submit">Cadastrar</button>
+                <input type="password" id="senha" placeholder="********" required>
+                <label for"confsenha">Confirmar senha</label>
+                <input type="password" id="confsenha" placeholder="********" required>
+                <label for"dtnascimento">Data de nascimento</label>
+                <input type"date" id="dtnascimento"placeholder="dd/mm/aaaa" required]>
+                <button type="submit">Registrar</button>
             </form>
+            <a href="/">
+            <button class="btn">Voltar</button>
+            </a>
         </div>
     </main>
 </body>
