@@ -2,130 +2,188 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>GamefyME - Cadastro</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Login</title>
+    <!-- Google Fonts: Jersey 10 -->
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+        :root {
+            --roxo-header: #4E008A;
+            --roxo-botao: #3d0066;
+            --roxo-gradiente-top: #2d0052;
+            --roxo-gradiente-bottom: #390066;
+            --cinza-sub: #7a7a7a;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Jersey 10', cursive;
         }
 
         body {
-            font-family: 'Jersey 10', cursive;
-            background: linear-gradient(to bottom, #2d0052, #390066);
+            background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
+            min-height: 100vh;
             color: #fff;
-            height: 100vh;
         }
 
         header {
-            background-color: #4c0099;
+            width: 100%;
+            background: var(--roxo-header);
             display: flex;
             justify-content: space-between;
-            padding: 20px 40px;
             align-items: center;
-            font-size: 22px;
+            padding: 24px 48px 16px 48px;
         }
 
-        .nav-left .btn {
-            background-color: #2d0052;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            margin-right: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 12px;
         }
 
-        .nav-right a {
-            color: white;
-            margin-left: 30px;
+        .nav-left a, .nav-right a {
             text-decoration: none;
+            color: #fff;
+            background: var(--roxo-botao);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 22px;
             font-weight: bold;
-            font-size: 18px;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 0 #2d0052;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: 'Jersey 10', cursive;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            background: #2d0052;
+            box-shadow: 0 4px 8px #2d0052aa;
         }
 
         main {
+            min-height: calc(100vh - 70px);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 80px;
-        }
-
-        .content-left {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .content-left h1 {
-            font-family: 'Jersey 10', cursive;
-            font-size: 100px;
-            margin-bottom: 40px;
-        }
-
-        .content-left p {
-            font-size: 30px;
-            color: #ccc;
-            font-weight: bold;
-            line-height: 1.5;
+            padding: 0 8vw;
         }
 
         .content-right {
-            background-color: white;
-            border-radius: 10px;
-            padding: 40px;
-            width: 500px;
-            color: black;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            font-size: 18px;
+            background: #fff;
+            border-radius: 14px;
+            padding: 40px 32px 32px 32px;
+            color: #222;
+            box-shadow: 0 0 24px rgba(0,0,0,0.10);
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 1s ease-out 0.3s backwards;
         }
 
         .content-right label {
             font-weight: bold;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 30px;
+            color: #222;
         }
 
-        .content-right input, .content-right select {
+        .content-right input {
             width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            margin-bottom: 20px;
-            font-size: 16px;
+            padding: 14px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            background: #fafafa;
+            color: #222;
+            margin-bottom: 22px;
+            font-size: 20px;
+            font-family: 'Jersey 10', cursive;
+            letter-spacing: 1px;
+            transition: border 0.3s;
         }
 
-        .content-right button {
+        .content-right input:focus {
+            outline: none;
+            border: 2px solid var(--roxo-header);
+            background: #fff;
+        }
+
+        .content-right input::placeholder {
+            color: #bdbdbd;
+        }
+
+        .content-right button[type="submit"] {
             width: 100%;
-            background-color: #222;
-            color: white;
+            background: #222;
+            color: #fff;
             font-weight: bold;
             border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-family: 'Jersey 10', cursive;
-            font-size: 20px;
+            padding: 18px 0;
+            border-radius: 8px;
+            font-size: 26px;
             cursor: pointer;
-        }
-        .forgot-password{
-            color: black;
-            font-size: 30px;
+            font-family: 'Jersey 10', cursive;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 0 #7a7a7a;
+            transition: background 0.2s, transform 0.2s;
+            margin-bottom: 10px;
         }
 
+        .content-right button[type="submit"]:hover {
+            background: #444;
+            transform: scale(1.03);
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: var(--roxo-header);
+            text-decoration: none;
+            font-size: 25px;
+            font-family: 'Jersey 10', cursive;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: #222;
+            text-decoration: underline;
+            font-size: 27px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                padding: 16px 8px;
+                gap: 8px;
+            }
+            main {
+                padding: 16px 2vw;
+            }
+            .content-right {
+                padding: 24px 8px;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="nav-left">
-            <a href="/auth/cadastro">
-                <button class="btn">Registrar</button>
-            </a>
+            <a href="{% url 'cadastro' %}">Registrar</a>
         </div>
         <div class="nav-right">
             <a href="#">Sobre o sistema</a>
@@ -135,16 +193,18 @@
 
     <main>
         <div class="content-right">
-            <h2>Email</h2>
-            <input type="email" placeholder="Email" >
-            
-            <h2>Senha</h2>
-            <input type="password" placeholder="Password">
-            
-            <button class="login-btn">Login</button>
-        
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+                <button type="submit">Login</button>
+            </form>
             <a href="#" class="forgot-password">Esqueceu a senha?</a>
-          </div>
+        </div>
     </main>
 </body>
 </html>

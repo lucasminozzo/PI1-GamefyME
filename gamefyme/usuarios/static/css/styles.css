@@ -1,5 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .content-right {
+        width: 100%;
+        padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -23,24 +40,31 @@ header {
     font-size: 22px;
 }
 
-.nav-left .btn {
-    background-color: #2d0052;
+.nav-left, .nav-right {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-left a, .nav-right a {
+    text-decoration: none;
     color: white;
-    border: none;
-    padding: 10px 16px;
-    margin-right: 12px;
-    border-radius: 8px;
     font-weight: bold;
     font-size: 18px;
+}
+
+.nav-left .btn, .content-right button {
+    background-color: #222;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
 }
 
-.nav-right a {
-    color: white;
-    margin-left: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
+.nav-left .btn:hover, .content-right button:hover {
+    background-color: #333;
 }
 
 main {
@@ -50,61 +74,27 @@ main {
     padding: 80px;
 }
 
-.content-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-}
-
-.content-left h1 {
-    font-family: 'Jersey 10', cursive;
-    font-size: 100px;
-    margin-bottom: 40px;
-}
-
-.content-left p {
-    font-size: 30px;
-    color: #ccc;
-    font-weight: bold;
-    line-height: 1.5;
-}
-
 .content-right {
     background-color: white;
     border-radius: 10px;
-    padding: 60px;
+    padding: 40px;
     width: 500px;
     color: black;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    font-size: 20px;
-}
-
-.content-right label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 15px;
-    font-size: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    font-size: 18px;
 }
 
 .content-right input {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    margin-bottom: 30px;
-    font-size: 18px;
+    margin-bottom: 20px;
+    font-size: 16px;
 }
 
-.content-right button {
-    width: 100%;
-    background-color: #222;
-    color: white;
-    font-weight: bold;
-    border: none;
-    padding: 14px;
-    border-radius: 6px;
-    font-family: 'Jersey 10', cursive;
-    font-size: 20px;
-    cursor: pointer;
+.forgot-password {
+    color: black;
+    font-size: 16px;
+    text-decoration: none;
 }
