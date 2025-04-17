@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Menu Principal</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script>
+        function toggleUserMenu() {
+            var menu = document.getElementById('user-dropdown');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+        // Fecha o menu se clicar fora
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-menu-btn') && !event.target.closest('.user-menu-container')) {
+                var dropdowns = document.getElementsByClassName("user-dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].style.display = "none";
+                }
+            }
+        }
+        </script>
+</head>
+<body>
+    <header>
+        <div class="user-menu-container">
+            <button class="user-menu-btn" onclick="toggleUserMenu()" title="Menu do usuário">
+                <span class="avatar-header">
+                    <!-- SVG do avatar -->
+                    <svg viewBox="0 0 100 100" width="32" height="32">
+                        <circle cx="50" cy="40" r="25" fill="#fff"/>
+                        <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
+                        <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
+                        <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
+                    </svg>
+                </span>
+                <span style="font-size: 16px; margin-left: 4px;">{{ usuario.nmusuario }}</span>
+                <span style="font-size: 18px; margin-left: 2px;">&#9662;</span>
+            </button>
+            <div id="user-dropdown" class="user-dropdown">
+                <a href="{% url 'auth:logout' %}">Sair</a>
+                <!-- No futuro, adicione mais opções aqui -->
+            </div>
+        </div>
+    </header>
+    <div class="main-container">
+        <div class="top-section">
+            <div class="profile-card">
+                <div class="avatar-box">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="25" fill="#fff"/>
+                        <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
+                        <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
+                        <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
+                    </svg>
+                    <span class="edit-avatar" title="Editar perfil">&#9998;</span>
+                </div>
+                <div class="profile-info">
+                    <span class="nome">{{ usuario.nmusuario }}</span>
+                    <span class="data">{{ usuario.dtnascimento|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

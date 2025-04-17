@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Sobre o sistema</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/sobre.css' %}">
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{% url 'core:index' %}">Início</a>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
+        </div>
+    </header>
+    <main>
+        <div class="content-center">
+            <h1>GamefyME</h1>
+            <p>Sua plataforma de atividades mais cativante e amigável</p>
+        </div>
+        <div class="row">
+            <div class="content-left">
+                <h1>Sobre o sistema</h1>
+                <p>
+                    Bem-vindo à GamefyME! Nossa plataforma utiliza gamificação e a técnica Pomodoro para transformar sua rotina em uma experiência divertida e produtiva. Aqui, você pode registrar atividades, acompanhar seu progresso, conquistar prêmios virtuais e evoluir seus hábitos de forma motivadora.<br><br>
+                    Explore as funcionalidades, desafie-se e alcance seus objetivos com mais engajamento!
+                </p>
+            </div>
+            <div class="content-right">
+                <img src="{% static 'img/Modelo.png' %}" alt="Ilustração sobre o sistema" >
+            </div>
+        </div>
+    </main>
+</body>
+</html>

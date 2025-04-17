@@ -4,199 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GamefyME</title>
-    <!-- Google Fonts: Jersey 10 -->
-    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
-
-        :root {
-            --roxo-header: #4E008A;
-            --roxo-botao: #3d0066;
-            --roxo-gradiente-top: #2d0052;
-            --roxo-gradiente-bottom: #390066;
-            --cinza-sub: #7a7a7a;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Jersey 10', cursive;
-        }
-
-        body {
-            background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
-            min-height: 100vh;
-            color: #fff;
-        }
-
-        header {
-            width: 100%;
-            background: var(--roxo-header);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 48px 16px 48px;
-        }
-
-        .nav-left, .nav-right {
-            display: flex;
-            gap: 12px;
-        }
-
-        .nav-left a, .nav-right a {
-            text-decoration: none;
-            color: #fff;
-            background: var(--roxo-botao);
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 22px;
-            font-weight: bold;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 0 #2d0052;
-            border: none;
-            outline: none;
-        }
-
-        .nav-left a:hover, .nav-right a:hover {
-            background: #2d0052;
-            box-shadow: 0 4px 8px #2d0052aa;
-        }
-
-        main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: calc(100vh - 70px);
-            padding: 0 8vw;
-        }
-
-        .content-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .content-left h1 {
-            font-size: 210px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 2px;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 0 #2d0052;
-        }
-
-        .content-left p {
-            font-size: 38px;
-            color: var(--cinza-sub);
-            font-weight: bold;
-            text-shadow: none;margin-bottom: 200px;
-        }
-
-        .content-right {
-            flex: 1;
-            max-width: 480px;
-            background: #fff;
-            border-radius: 14px;
-            padding: 40px 32px 32px 32px;
-            color: #222;
-            box-shadow: 0 0 24px rgba(0,0,0,0.10);
-            animation: fadeIn 1s ease-out 0.3s backwards;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .content-right label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            font-size: 22px;
-            color: #222;
-        }
-
-        .content-right input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            background: #fafafa;
-            color: #222;
-            margin-bottom: 28px;
-            font-size: 20px;
-            font-family: 'Jersey 10', cursive;
-            letter-spacing: 1px;
-            transition: border 0.3s;
-        }
-
-        .content-right input:focus {
-            outline: none;
-            border: 2px solid var(--roxo-header);
-            background: #fff;
-        }
-
-        .content-right input::placeholder {
-            color: #bdbdbd;
-        }
-
-        .content-right button {
-            width: 100%;
-            background: #222;
-            color: #fff;
-            font-weight: bold;
-            border: none;
-            padding: 18px 0;
-            border-radius: 8px;
-            font-size: 26px;
-            cursor: pointer;
-            font-family: 'Jersey 10', cursive;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 0 #7a7a7a;
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        .content-right button:hover {
-            background: #444;
-            transform: scale(1.03);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        @media (max-width: 1100px) {
-            main {
-                flex-direction: column;
-                padding: 32px 10px;
-                gap: 32px;
-            }
-            .content-left, .content-right {
-                max-width: 100%;
-                width: 100%;
-                align-items: center;
-            }
-            .content-left h1 {
-                font-size: 56px;
-            }
-            .content-left p {
-                font-size: 22px;
-            }
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
     <header>
         <div class="nav-left">
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'cadastro' %}">Registrar</a>
+            <a href="{% url 'auth:login' %}">Login</a>
+            <a href="{% url 'auth:cadastro' %}">Registrar</a>
         </div>
         <div class="nav-right">
-            <a href="#">Sobre o sistema</a>
-            <a href="#">Gamificação</a>
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
         </div>
     </header>
 
@@ -206,10 +25,10 @@
             <p>Sua plataforma de atividades<br>mais cativante e amigável</p>
         </div>
         <div class="content-right">
-            <form action="" method="POST">
+            <form action="{% url 'auth:cadastro' %}" method="GET">
                 {% csrf_token %}
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+                <label for="emailusuario">Teste você também, digite seu Email</label>
+                <input type="email" id="emailusuario" name="emailusuario" placeholder="Digite seu email" required>
                 <button type="submit">Inscrever-se</button>
             </form>
         </div>

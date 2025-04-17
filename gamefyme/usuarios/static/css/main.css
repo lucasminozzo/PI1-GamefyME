@@ -1,0 +1,335 @@
+    :root {
+        --roxo-header: #4E008A;
+        --roxo-botao: #3d0066;
+        --roxo-gradiente-top: #2d0052;
+        --roxo-gradiente-bottom: #390066;
+        --roxo-card: #6c1bbd;
+        --roxo-card2: #7a2be2;
+        --roxo-card3: #4e008a;
+        --verde-xp: #00ff99;
+        --amarelo-moeda: #ffe066;
+        --cinza-sub: #7a7a7a;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Jersey 10', cursive;
+    }
+    body {
+        background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
+        min-height: 100vh;
+        color: #fff;
+    }
+    header {
+        width: 100%;
+        background: var(--roxo-header);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 24px 48px 16px 48px;
+    }
+    .nav-right {
+        display: flex;
+        gap: 12px;
+    }
+    .nav-right a {
+        text-decoration: none;
+        color: #fff;
+        background: var(--roxo-botao);
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 22px;
+        font-weight: bold;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 0 #2d0052;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-family: 'Jersey 10', cursive;
+    }
+    .nav-right a:hover {
+        background: #2d0052;
+        box-shadow: 0 4px 8px #2d0052aa;
+    }
+    .main-container {
+        width: 90vw;
+        max-width: 1400px;
+        margin: 40px auto 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+    .top-section {
+        display: flex;
+        gap: 32px;
+        align-items: flex-start;
+    }
+    .profile-card {
+        background: var(--roxo-card3);
+        border-radius: 20px;
+        padding: 32px 32px 24px 32px;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        box-shadow: 0 4px 24px #0002;
+        min-width: 350px;
+        position: relative;
+    }
+    .avatar-box {
+        width: 160px;
+        height: 160px;
+        background: #bca8e6;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .avatar-box svg {
+        width: 120px;
+        height: 120px;
+        display: block;
+    }
+    .edit-avatar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #00ff99;
+        color: #4e008a;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        border: 3px solid #fff;
+        cursor: pointer;
+        box-shadow: 0 2px 8px #0003;
+    }
+    .avatar-header {
+        display: flex;
+        align-items: center;
+        margin-right: 4px;
+    }
+    .avatar-header svg {
+        display: block;
+        width: 32px;
+        height: 32px;
+    }
+    .profile-info {
+        margin-left: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+    .profile-info .nome {
+        font-size: 32px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .profile-info .data {
+        font-size: 22px;
+        color: #e0e0e0;
+    }
+    .dias-card {
+        background: var(--roxo-card2);
+        border-radius: 16px;
+        padding: 24px 32px;
+        margin-top: 8px;
+        box-shadow: 0 2px 12px #0002;
+        min-width: 420px;
+    }
+    .dias-title {
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+    .dias-semana {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .dias-semana span {
+        font-size: 18px;
+        color: #fff;
+        width: 36px;
+        text-align: center;
+    }
+    .dias-icones {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .dias-icones span {
+        font-size: 28px;
+        width: 36px;
+        text-align: center;
+    }
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #2d0052;
+        border-radius: 8px;
+        margin-top: 12px;
+        margin-bottom: 8px;
+        position: relative;
+    }
+    .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, #00ff99, #4e008a);
+        border-radius: 8px;
+        width: 60%; /* Exemplo de progresso */
+    }
+    .progress-label {
+        font-size: 18px;
+        color: #fff;
+        margin-top: 2px;
+    }
+    .task-buttons {
+        display: flex;
+        gap: 18px;
+        margin-left: auto;
+    }
+    .task-btn {
+        background: var(--roxo-card3);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 16px 32px;
+        font-size: 22px;
+        font-weight: bold;
+        box-shadow: 0 2px 8px #0003;
+        cursor: pointer;
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.2s;
+    }
+    .task-btn.add { color: #00ff99; }
+    .task-btn.edit { color: #ffe066; }
+    .task-btn:hover { background: #2d0052; }
+    .bottom-section {
+        display: flex;
+        gap: 32px;
+        margin-top: 16px;
+    }
+    .habitos-card, .diarias-card {
+        background: var(--roxo-card2);
+        border-radius: 16px;
+        padding: 24px 32px;
+        flex: 1;
+        box-shadow: 0 2px 12px #0002;
+        min-width: 320px;
+    }
+    .habitos-title, .diarias-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 18px;
+    }
+    .habito-item, .diaria-item {
+        display: flex;
+        align-items: center;
+        background: var(--roxo-card3);
+        border-radius: 10px;
+        margin-bottom: 16px;
+        padding: 12px 18px;
+        font-size: 22px;
+        box-shadow: 0 2px 8px #0003;
+    }
+    .habito-item:last-child, .diaria-item:last-child { margin-bottom: 0; }
+    .habito-icon, .diaria-icon {
+        font-size: 32px;
+        margin-right: 18px;
+        color: #00ff99;
+    }
+    .habito-nome, .diaria-nome {
+        flex: 1;
+        color: #fff;
+        font-size: 22px;
+    }
+    .xp-moeda {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 12px;
+    }
+    .xp-moeda .moeda {
+        font-size: 22px;
+        color: #ffe066;
+        margin-right: 2px;
+    }
+    .xp-moeda .xp {
+        color: #00ff99;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .habito-action, .diaria-action {
+        margin-left: 18px;
+        font-size: 32px;
+        color: #ff4d4d;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .habito-action:hover, .diaria-action:hover { color: #ff0000; }
+
+    .user-menu-container {
+        position: relative;
+        display: inline-block;
+    }
+    .user-menu-btn {
+        background: var(--roxo-botao);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-size: 22px;
+        font-family: 'Jersey 10', cursive;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .user-menu-btn:hover {
+        background: #2d0052;
+    }
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        background: #fff;
+        min-width: 140px;
+        box-shadow: 0 8px 24px #0003;
+        border-radius: 10px;
+        z-index: 100;
+        margin-top: 8px;
+        font-family: 'Jersey 10', cursive;
+    }
+    .user-dropdown a {
+        color: #4E008A;
+        padding: 14px 18px;
+        text-decoration: none;
+        display: block;
+        font-size: 20px;
+        border-bottom: 1px solid #eee;
+        transition: background 0.2s;
+    }
+    .user-dropdown a:last-child {
+        border-bottom: none;
+    }
+    .user-dropdown a:hover {
+        background: #f3e6ff;
+    }
+
+    @media (max-width: 1100px) {
+        .main-container { width: 98vw; }
+        .top-section, .bottom-section { flex-direction: column; gap: 24px; }
+        .profile-card, .dias-card, .habitos-card, .diarias-card { min-width: unset; }
+    }
