@@ -3,6 +3,7 @@ from django.urls import reverse
 from .models import Usuario, TipoUsuario
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
+from django.contrib import messages
 
 def cadastro(request):
     if request.method == 'POST':
@@ -49,6 +50,7 @@ def cadastro(request):
                 tipousuario=TipoUsuario.COMUM
             )
             usuario.save()
+            messages.success(request, 'Usuário cadastrado com sucesso! Faça login para continuar.')
             return redirect(reverse('login'))
         except IntegrityError:
             return render(request, 'cadastro.html', {
