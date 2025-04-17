@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GamefyME - Cadastro</title>
-    <!-- Google Fonts: Jersey 10 -->
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
@@ -169,6 +168,19 @@
             font-family: 'Jersey 10', cursive;
         }
 
+        .input-erro {
+            border: 2px solid #d32f2f !important;
+            background: #fff0f0;
+        }
+        
+        .msg-erro {
+            color: #d32f2f;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-family: 'Jersey 10', cursive;
+            display: block;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px);}
             to { opacity: 1; transform: translateY(0);}
@@ -213,7 +225,18 @@
                 <input type="text" id="nmusuario" name="nmusuario" placeholder="Nome..." required>
             
                 <label for="emailusuario">Email</label>
-                <input type="email" id="emailusuario" name="emailusuario" placeholder="Digite o email..." required>
+                <input 
+                    type="email" 
+                    id="emailusuario" 
+                    name="emailusuario" 
+                    placeholder="Digite o email..." 
+                    required
+                    value="{{ emailusuario|default:'' }}"
+                    {% if erro_email %}class="input-erro"{% endif %}
+                >
+                {% if erro_email %}
+                    <span class="msg-erro">Já existe um usuário com esse e-mail cadastrado.</span>
+                {% endif %}
             
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" name="senha" placeholder="********" required>

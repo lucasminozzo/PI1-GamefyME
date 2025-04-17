@@ -1,19 +1,47 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Usuario, TipoUsuario
+from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError
 
 def cadastro(request):
     if request.method == 'POST':
-        nome = request.POST['nmusuario']
-        email = request.POST['emailusuario']
-        senha = request.POST['senha']
-        confsenha = request.POST['confsenha']
-        dt_nascimento = request.POST['dtnascimento']
+        nome = request.POST.get('nmusuario')
+        email = request.POST.get('emailusuario')
+        senha = request.POST.get('senha')
+        confsenha = request.POST.get('confsenha')
+        dt_nascimento = request.POST.get('dtnascimento')
 
-        if senha == confsenha:
+        if not all([nome, email, senha, confsenha, dt_nascimento]):
+            return render(request, 'cadastro.html', {
+                'erro': 'Preencha todos os campos.',
+                'nmusuario': nome,
+                'emailusuario': email,
+                'dtnascimento': dt_nascimento
+            })
+
+        if senha != confsenha:
+            return render(request, 'cadastro.html', {
+                'erro': 'Senhas não coincidem.',
+                'nmusuario': nome,
+                'emailusuario': email,
+                'dtnascimento': dt_nascimento
+            })
+
+        if Usuario.objects.filter(emailusuario=email).exists():
+            return render(request, 'cadastro.html', {
+                'erro': 'Já existe um usuário com esse e-mail cadastrado.',
+                'erro_email': True,
+                'nmusuario': nome,
+                'emailusuario': email,
+                'dtnascimento': dt_nascimento
+            })
+
+        try:
             usuario = Usuario(
                 nmusuario=nome,
                 emailusuario=email,
-                senha=senha,
+                senha=make_password(senha),
                 dtnascimento=dt_nascimento,
                 flsituacao=True,
                 nivelusuario=1,
@@ -21,9 +49,15 @@ def cadastro(request):
                 tipousuario=TipoUsuario.COMUM
             )
             usuario.save()
-            return redirect('/auth/login')
-        else:
-            return render(request, 'cadastro.html', {'error': 'Senhas não coincidem'})
+            return redirect(reverse('login'))
+        except IntegrityError:
+            return render(request, 'cadastro.html', {
+                'erro': 'Já existe um usuário com esse e-mail cadastrado.',
+                'erro_email': True,
+                'nmusuario': nome,
+                'emailusuario': email,
+                'dtnascimento': dt_nascimento
+            })
 
     return render(request, 'cadastro.html')
 
