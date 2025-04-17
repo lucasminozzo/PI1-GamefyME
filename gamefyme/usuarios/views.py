@@ -1,16 +1,31 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .models import Usuario, TipoUsuario
 
 def cadastro(request):
-    if request.method == 'GET':
-        return render(request, 'cadastro.html')
-    else:
-        nmusuario = request.POST.get('nmusuario')
-        emailusuario = request.POST.get('emailusuario')
-        senha = request.POST.get('senha')
-        dtnascimento = request.POST.get('dtnascimento')
+    if request.method == 'POST':
+        nome = request.POST['nmusuario']
+        email = request.POST['emailusuario']
+        senha = request.POST['senha']
+        confsenha = request.POST['confsenha']
+        dt_nascimento = request.POST['dtnascimento']
 
-        return HttpResponse(nmusuario)
+        if senha == confsenha:
+            usuario = Usuario(
+                nmusuario=nome,
+                emailusuario=email,
+                senha=senha,
+                dtnascimento=dt_nascimento,
+                flsituacao=True,
+                nivelusuario=1,
+                expusuario=0,
+                tipousuario=TipoUsuario.COMUM
+            )
+            usuario.save()
+            return redirect('/auth/login')
+        else:
+            return render(request, 'cadastro.html', {'error': 'Senhas não coincidem'})
+
+    return render(request, 'cadastro.html')
 
 def login(request):
     return render(request, 'login.html')

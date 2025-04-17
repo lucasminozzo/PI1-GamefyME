@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GamefyME</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 
@@ -10,6 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Jersey 10', cursive;
         }
         
         body {
@@ -91,32 +93,47 @@
 </head>
 <body>
     <header>
-    
+        <div class="nav-left">
+            <button class="btn">Login</button>
+            <button class="btn">Registrar</button>
+        </div>
         <div class="nav-right">
             <a href="#">Sobre o sistema</a>
             <a href="#">Gamificação</a>
         </div>
     </header>
 
+
     <main>
         <div class="content-right">
-            <form>
-                <label for="nome">Nome de usuário</label>
-                <input type="text" id="nome" placeholder="fulano silva" required>
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="exemplo@gmail.com" required>
+            {% if erro %}
+                <p style="color: red;">{{ erro }}</p>
+            {% endif %}
+
+            <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
+                <label for="nmusuario">Nome de usuário</label>
+                <input type="text" id="nmusuario" name="nmusuario" placeholder="Nome..." required>
+            
+                <label for="emailusuario">Email</label>
+                <input type="email" id="emailusuario" name="emailusuario" placeholder="Digite o email..." required>
+            
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" placeholder="********" required>
-                <label for"confsenha">Confirmar senha</label>
-                <input type="password" id="confsenha" placeholder="********" required>
-                <label for"dtnascimento">Data de nascimento</label>
-                <input type"date" id="dtnascimento"placeholder="dd/mm/aaaa" required]>
+                <input type="password" id="senha" name="senha" placeholder="********" required>
+            
+                <label for="confsenha">Confirmar senha</label>
+                <input type="password" id="confsenha" name="confsenha" placeholder="********" required>
+            
+                <label for="dtnascimento">Data de nascimento</label>
+                <input type="date" id="dtnascimento" name="dtnascimento" required>
+            
                 <button type="submit">Registrar</button>
             </form>
+            
             <a href="/">
             <button class="btn">Voltar</button>
             </a>
         </div>
     </main>
+
 </body>
 </html>
