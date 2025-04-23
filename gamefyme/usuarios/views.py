@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from services import login_service
 
 def cadastro(request):
     if request.method == 'POST':
@@ -91,9 +92,10 @@ def login(request):
             usuario = Usuario.objects.get(emailusuario=email)
             if check_password(senha, usuario.senha):
                 request.session['usuario_id'] = usuario.idusuario
+                request.session['usuario_nome'] = usuario.nmusuario
                 return redirect('usuarios:main')
             else:
-                return render(request, 'login.html', {'erro': 'Senha incorreta.', 'email': email})
+                return render(request, 'login.html', {'erro': 'Email ou senha incorretos.', 'email': email})
         except Usuario.DoesNotExist:
             return render(request, 'login.html', {'erro': 'Usuário não encontrado.', 'email': email})
     return render(request, 'login.html')
@@ -103,8 +105,8 @@ def logout(request):
     return redirect('auth:login')
 
 def main(request):
-    usuario_id = request.session.get('usuario_id')
-    if not usuario_id:
-        return redirect('login')
-    usuario = Usuario.objects.get(pk=usuario_id)
-    return render(request, 'main.html', {'usuario': usuario})
+    if(not login_service.is_usuario_logado(request)):
+        return redirect('auth:login')
+    
+    nome = login_service.get_nome_usuario_logado(request)
+    return render(request, 'main.html', {'usuario_nome': nome})

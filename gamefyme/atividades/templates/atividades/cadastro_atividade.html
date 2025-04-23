@@ -23,27 +23,9 @@
     </script>
 </head>
 <body>
-    <header>
-        <div class="user-menu-container">
-            <button class="user-menu-btn" onclick="toggleUserMenu()" title="Menu do usuário">
-                <span class="avatar-header">
-                    <!-- SVG do avatar -->
-                    <svg viewBox="0 0 100 100" width="32" height="32">
-                        <circle cx="50" cy="40" r="25" fill="#fff"/>
-                        <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
-                        <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
-                        <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
-                    </svg>
-                </span>
-                <span style="font-size: 16px; margin-left: 4px;">{{ usuario.nmusuario }}</span>
-                <span style="font-size: 18px; margin-left: 2px;">&#9662;</span>
-            </button>
-            <div id="user-dropdown" class="user-dropdown">
-                <a href="{% url 'auth:logout' %}">Sair</a>
-                <!-- TODO: Funções do perfil etc -->
-            </div>
-        </div>
-    </header>
+
+    {% include 'usuarios/templates/header.html'%}
+
     <form class="form-container" method="post" action="">
         {% csrf_token %}
         <div class="form-grid">

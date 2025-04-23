@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from .forms import AtividadeForm
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
+from services import login_service
 
-@login_required
 def criar_atividade(request):
+    if(not login_service.is_usuario_logado(request)):
+        return redirect('auth:login')
+    
     if request.method == 'POST':
         form = AtividadeForm(request.POST)
         if form.is_valid():
