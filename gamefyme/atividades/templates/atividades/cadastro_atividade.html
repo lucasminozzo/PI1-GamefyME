@@ -20,16 +20,37 @@
                 }
             }
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fecha automaticamente as mensagens após 5 segundos
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
     </script>
 </head>
 <body>
 
     {% include 'header.html'%}
-
-    <form class="form-container" method="post" action="">
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form action="{% url 'atividades:atividade' %}" class="form-container" method="post">
         {% csrf_token %}
         <div class="form-grid">
             <div>
+                <input type="hidden" id="idusuario" name="idusuario" maxlength="100" value="{{ usuario.idusuario }}">
                 <div class="form-group">
                     <label for="nmatividade">Atividade</label>
                     <input type="text" id="nmatividade" name="nmatividade" maxlength="100" required>
@@ -45,7 +66,7 @@
                     <label for="recorrencia">Recorrência</label>
                     <select id="recorrencia" name="recorrencia" required>
                         <option value="">Selecione uma opção</option>
-                        <option value="unica">Única</option>
+                        <option value="unica">Diária</option>
                         <option value="habitual">Habitual</option>
                     </select>
                 </div>

@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 
 class Atividade(models.Model):
+    idatividade = models.AutoField(primary_key=True)
+
     class Peso(models.TextChoices):
         MUITO_FACIL = 'muito_facil', 'Muito fácil'
         FACIL = 'facil', 'Fácil'
@@ -19,7 +21,11 @@ class Atividade(models.Model):
         UNICA = 'unica', 'Única'
         HABITUAL = 'habitual', 'Habitual'
 
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    idusuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        db_column='idusuario'
+    )
     nmatividade = models.CharField(max_length=100)
     peso = models.CharField(max_length=20, choices=Peso.choices)
     situacao = models.CharField(max_length=20, choices=Situacao.choices, default=Situacao.INICIADA)
@@ -31,4 +37,4 @@ class Atividade(models.Model):
     expatividade = models.SmallIntegerField(default=0)
 
     class Meta:
-        unique_together = ('usuario', 'nmatividade')
+        db_table = 'atividades'

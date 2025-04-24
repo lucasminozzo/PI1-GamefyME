@@ -10,7 +10,5 @@ def is_usuario_logado(request):
 
 def get_usuario_logado(request):
     usuario_id = request.session.get('usuario_id')
-    return Usuario.objects.get(pk=usuario_id)
-
-def get_nome_usuario_logado(request):
-    return request.session.get('usuario_nome')
+    usuario = Usuario.objects.get(pk=usuario_id)
+    return usuario

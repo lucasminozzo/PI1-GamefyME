@@ -108,5 +108,5 @@ def main(request):
     if(not login_service.is_usuario_logado(request)):
         return redirect('auth:login')
     
-    nome = login_service.get_nome_usuario_logado(request)
-    return render(request, 'main.html', {'usuario_nome': nome})
+    usuario = login_service.get_usuario_logado(request)
+    return render(request, 'main.html', {'usuario': usuario})
