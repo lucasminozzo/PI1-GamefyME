@@ -18,4 +18,5 @@ def criar_atividade(request):
             return redirect('atividades:lista')
     else:
         form = AtividadeForm()
+    nome = login_service.get_nome_usuario_logado(request)
     return render(request, 'atividades/cadastro_atividade.html', {'form': form})
