@@ -56,7 +56,7 @@ def cadastro(request):
 
                 try:
                     messages.success(request, 'Usuário cadastrado com sucesso! Faça login para continuar.')
-                    return redirect('auth:login')
+                    return redirect('usuarios:login')
                 except Exception as e:
                     transaction.set_rollback(True)
                     return render(request, 'cadastro.html', {
@@ -102,11 +102,11 @@ def login(request):
 
 def logout(request):
     request.session.flush()
-    return redirect('auth:login')
+    return redirect('usuarios:login')
 
 def main(request):
     if(not login_service.is_usuario_logado(request)):
-        return redirect('auth:login')
+        return redirect('usuarios:login')
     
     usuario = login_service.get_usuario_logado(request)
     return render(request, 'main.html', {'usuario': usuario})

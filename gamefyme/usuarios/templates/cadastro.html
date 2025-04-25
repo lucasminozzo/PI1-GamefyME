@@ -13,7 +13,7 @@
     <header>
         <div class="nav-left">
             <a href="{% url 'core:index' %}">Início</a>
-            <a href="{% url 'auth:login' %}">Login</a>
+            <a href="{% url 'usuarios:login' %}">Login</a>
         </div>
         <div class="nav-right">
             <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
@@ -27,7 +27,7 @@
                 <p style="color: red;">{{ erro }}</p>
             {% endif %}
 
-            <form action="{% url 'auth:cadastro' %}" method="POST"> {% csrf_token %}
+            <form action="{% url 'usuarios:cadastro' %}" method="POST"> {% csrf_token %}
                 <label for="nmusuario">Nome de usuário</label>
                 <input type="text" id="nmusuario" name="nmusuario" placeholder="Nome..." required>
             

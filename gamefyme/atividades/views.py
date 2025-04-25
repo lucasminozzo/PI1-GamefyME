@@ -6,7 +6,7 @@ from django.contrib import messages  # Adicione esta importação
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
-        return redirect('auth:login')
+        return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
 
