@@ -245,6 +245,71 @@ a {
     animation: spin 1s linear infinite;
 }
 
+.msg-flutuante {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+    margin: 24px auto;
+    padding: 18px 32px 18px 22px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-family: 'Jersey 10', cursive;
+    box-shadow: 0 4px 24px #0002;
+    opacity: 0;
+    animation: msg-entrada 0.5s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.msg-flutuante.sucesso {
+    background: #e0ffe6;
+    color: #1a7f3c;
+    border: 1.5px solid #b3ffcc;
+}
+
+.msg-flutuante.erro {
+    background: #ffe0e0;
+    color: #7f1a1a;
+    border: 1.5px solid #ffb3b3;
+}
+
+.msg-flutuante .fechar {
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.msg-flutuante .fechar:hover {
+    opacity: 1;
+}
+
+@keyframes msg-entrada {
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+@keyframes msg-saida {
+    from { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+    to { 
+        opacity: 0; 
+        transform: translateY(-20px);
+    }
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg);}
     100% { transform: rotate(360deg);}
