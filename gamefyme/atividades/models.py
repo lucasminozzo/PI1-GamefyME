@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from usuarios.models import Usuario
 
 class Atividade(models.Model):
     idatividade = models.AutoField(primary_key=True)
@@ -22,7 +23,7 @@ class Atividade(models.Model):
         HABITUAL = 'habitual', 'Habitual'
 
     idusuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        Usuario,
         on_delete=models.CASCADE,
         db_column='idusuario'
     )
