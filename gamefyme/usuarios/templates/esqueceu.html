@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamefyME - Login</title>
+    <title>GamefyME - Esqueceu a senha?</title>
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/esqueceu.css' %}">
 </head>
 <body>
     <header>
         <div class="nav-left">
             <a href="{% url 'core:index' %}">Início</a>
-            <a href="{% url 'usuarios:cadastro' %}">Registrar</a>
+            <a href="{% url 'auth:cadastro' %}">Registrar</a>
         </div>
         <div class="nav-right">
             <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
@@ -28,26 +28,15 @@
                 <span class="fechar" onclick="fecharMsg(this)">×</span>
             </div>
             {% endif %}
-            {% if messages %}
-            {% for message in messages %}
-                <div class="msg-flutuante sucesso">
-                    {{ message }}
-                    <span class="fechar" onclick="fecharMsg(this)">×</span>
-                </div>
-            {% endfor %}
-            {% endif %}
             <div class="content-right">
-                <form action="{% url 'usuarios:login' %}" method="POST">
+                <form action="{% url 'auth:esqueceu' %}" method="POST">
                     {% csrf_token %}
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Digite seu email" required>
 
-                    <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
 
-                    <button type="submit">Login</button>
+                    <button type="submit">Recuperar senha</button>
                 </form>
-                <a href="{% url 'auth:esqueceu' %}" class="forgot-password">Esqueceu a senha?</a>
             </div>
         </div>
     </main>

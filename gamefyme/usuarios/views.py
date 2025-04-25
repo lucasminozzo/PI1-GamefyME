@@ -6,6 +6,8 @@ from django.db import IntegrityError, transaction
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from services import login_service
+from django.core.mail import send_mail
+from gamefyme.settings import EMAIL_HOST_USER
 
 def cadastro(request):
     if request.method == 'POST':
@@ -99,6 +101,23 @@ def login(request):
         except Usuario.DoesNotExist:
             return render(request, 'login.html', {'erro': 'Usuário não encontrado.', 'email': email})
     return render(request, 'login.html')
+
+def esqueceu(request):
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            usuario = Usuario.objects.get(emailusuario=email)
+            if email(usuario.emailusuario):
+                subject = "Nova Senha"
+                message = "Nova Senha teste"
+                send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True)
+                return redirect('auth:esqueceu')
+            else:
+                return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email})
+        except Usuario.DoesNotExist:
+            return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email})
+    return render(request, 'esqueceu.html')
 
 def logout(request):
     request.session.flush()
