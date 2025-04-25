@@ -188,6 +188,12 @@ a {
     background: #00ff99;
     border-radius: 8px 0 0 8px;
     transition: width 0.4s;
+    font-weight: bold;
+    padding-left: 20px;
+    text-shadow: 0 0 2px #000;
+    text-align: left;
+    line-height: 1pc;
+    letter-spacing: 1px;
 }
 
 .action-buttons {
@@ -283,6 +289,10 @@ a {
     color: var(--verde-xp);
     font-size: 18px;
 }
+.level{
+    font-size: 20px;
+    margin-left: 10px;
+}
 
 @media (max-width: 1100px) {
     .main-container { 
@@ -315,4 +325,5 @@ a {
         align-items: center;
         justify-content: center;
     }
+    
 }

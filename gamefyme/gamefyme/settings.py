@@ -124,7 +124,7 @@ import os
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "core/templates/core",
 ]
 
 # Default primary key field type
