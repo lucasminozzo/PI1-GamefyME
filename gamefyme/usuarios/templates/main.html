@@ -43,7 +43,7 @@
                 <h2 class="nmusuario">{{ usuario.nmusuario }}</h2>
                 <p class="user-date">{{ usuario.dtnascimento|date:"d/m/Y" }}</p>
                 <div class="streak-container">
-                    <div class="streak-title">Dias contínuos de atividades</div>
+                    <div class="streak-title">Dias consecutivos de atividades completas:</div>
                     <div class="weekdays">
                         <div class="weekday" id="dom">Dom</div>
                         <div class="weekday" id="seg">Seg</div>
@@ -54,9 +54,9 @@
                         <div class="weekday" id="sab">Sab</div>
                     </div>
                     <div class="level">
-                        <span class="level-number">{{ usuario.nivelusuario }}</span>
+                        <span class="level-number">Nivel: {{ usuario.nivelusuario }}</span>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%"></div>
+                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%"><span>{{usuario.expusuario}}</span><span>/1000</span></div>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
         
         <div class="tasks-container">
             <div class="task-section habits-section">
-                <h3 class="section-title">Hábitos</h3>
+                <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
                     {% for atividade in atividades %}
                     
@@ -89,7 +89,7 @@
             </div>
             
             <div class="task-section dailies-section">
-                <h3 class="section-title">Diárias</h3>
+                <h3 class="section-title">Únicas</h3>
                 <div class="tasks-list dailies-list">
                 
                 {% for atividade in atividades %}
