@@ -2,38 +2,14 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Atividade</title>
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/cadastro_atividade.css' %}">
-    <script>
-        function toggleUserMenu() {
-            var menu = document.getElementById('user-dropdown');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        }
-        // Fecha o menu se clicar fora
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-menu-btn') && !event.target.closest('.user-menu-container')) {
-                var dropdowns = document.getElementsByClassName("user-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    dropdowns[i].style.display = "none";
-                }
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fecha automaticamente as mensagens após 5 segundos
-            setTimeout(function() {
-                var alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    var bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
-        });
-    </script>
+    <script src="{% static 'scripts/main.js' %}"></script>
 </head>
 <body>
-
     {% include 'header.html'%}
     
     {% if messages %}
@@ -46,6 +22,14 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
+
     <form action="{% url 'atividades:atividade' %}" class="form-container" method="post">
         {% csrf_token %}
         <div class="form-grid">
@@ -66,13 +50,16 @@
                     <label for="recorrencia">Recorrência</label>
                     <select id="recorrencia" name="recorrencia" required>
                         <option value="">Selecione uma opção</option>
-                        <option value="unica">Diária</option>
-                        <option value="habitual">Habitual</option>
+                        <option value="unica">Única</option>
+                        <option value="habitual">Recorrente</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="tpestimado">Tempo estimado</label>
-                    <input type="text" id="tpestimado" name="tpestimado" placeholder="Ex: 40 minutos" required>
+                    <div class="input-minutos-wrapper">
+                        <input type="number" id="tpestimado" name="tpestimado" min="1" required placeholder="Ex: 40" class="input-full">
+                        <span class="minutos-label">minutos</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="peso">Peso da atividade</label>

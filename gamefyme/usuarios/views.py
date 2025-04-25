@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-from services import login_service
+from services import login_service, atividades_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 
@@ -128,4 +128,5 @@ def main(request):
         return redirect('usuarios:login')
     
     usuario = login_service.get_usuario_logado(request)
-    return render(request, 'main.html', {'usuario': usuario})
+    atividades = atividades_service.get_atividade(request)
+    return render(request, 'main.html', {'usuario': usuario, 'atividades': atividades})

@@ -7,25 +7,27 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <script>
-        function toggleUserMenu() {
-            var menu = document.getElementById('user-dropdown');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        }
-        // Fecha o menu se clicar fora
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-menu-btn') && !event.target.closest('.user-menu-container')) {
-                var dropdowns = document.getElementsByClassName("user-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    dropdowns[i].style.display = "none";
-                }
-            }
-        }
-    </script>
+    <script src="{% static 'scripts/main.js' %}"></script>
 </head>
 <body>
     
     {% include 'header.html'%}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="msg-flutuante sucesso">
+                {{ message }}
+                <span class="fechar" onclick="fecharMsg(this)">×</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
 
     <div class="app-container">
         <div class="profile-section">
@@ -76,31 +78,30 @@
                 <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
                     {% for atividade in atividades %}
-                    
-                    <div class="task-item daily-item">
-                        <button class="task-btn add-btn">+</button>
-                        <div class="task-description">{{ atividade.nmatividade }}</div>
-                        <div class="xp-reward">{{ atividade.expatividade }}</div>
-                        <button class="task-btn remove-btn">-</button>
-                    </div>
-                    
-                {% endfor %}
+                        {% if atividade.recorrencia == 'habitual' %}
+                            <div class="task-item daily-item">
+                                <button class="task-btn add-btn">+</button>
+                                <div class="task-description">{{ atividade.nmatividade }}</div>
+                                <div class="xp-reward">{{ atividade.expatividade }} </div>
+                                <button class="task-btn remove-btn">-</button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             
             <div class="task-section dailies-section">
                 <h3 class="section-title">Únicas</h3>
                 <div class="tasks-list dailies-list">
-                
-                {% for atividade in atividades %}
-                    
-                    <div class="task-item daily-item">
-                        <button class="task-btn add-btn">+</button>
-                        <div class="task-description">{{ atividade.nmatividade }}</div>
-                        <div class="xp-reward">{{ atividade.expatividade }}</div>
-                    </div>
-                    
-                {% endfor %}
+                    {% for atividade in atividades %}
+                        {% if atividade.recorrencia == 'unica' %}
+                            <div class="task-item daily-item">
+                                <button class="task-btn add-btn">+</button>
+                                <div class="task-description">{{ atividade.nmatividade }}</div>
+                                <div class="xp-reward">{{ atividade.expatividade }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>

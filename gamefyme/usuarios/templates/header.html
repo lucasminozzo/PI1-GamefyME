@@ -10,11 +10,11 @@
                     <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
                 </svg>
             </span>
-            <span style="font-size: 16px; margin-left: 4px;">{{ usuario.nmusuario }}</span>
-            <span style="font-size: 18px; margin-left: 2px;">&#9662;</span>
+            <span style="font-size: 20px; margin-left: 4px;">{{ usuario.nmusuario }}</span>
+            <span style="font-size: 20px; margin-left: 2px;">&#9662;</span>
         </button>
         <div id="user-dropdown" class="user-dropdown">
-            <a href="{% url 'usuarios:logout' %}">Sair</a>
+            <a href="{% url 'usuarios:logout' %}" style="font-size: 20px;">Sair</a>
         </div>
     </div>
 </header>

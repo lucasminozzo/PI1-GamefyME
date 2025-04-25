@@ -7,6 +7,7 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="{% static 'scripts/login.js' %}"></script>
 </head>
 <body>
     <header>
@@ -20,6 +21,13 @@
         </div>
     </header>
 
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
+
     <main>
         <div class="login-container">
             {% if erro %}
@@ -29,12 +37,12 @@
             </div>
             {% endif %}
             {% if messages %}
-            {% for message in messages %}
-                <div class="msg-flutuante sucesso">
-                    {{ message }}
-                    <span class="fechar" onclick="fecharMsg(this)">×</span>
-                </div>
-            {% endfor %}
+                {% for message in messages %}
+                    <div class="msg-flutuante sucesso">
+                        {{ message }}
+                        <span class="fechar" onclick="fecharMsg(this)">×</span>
+                    </div>
+                {% endfor %}
             {% endif %}
             <div class="content-right">
                 <form action="{% url 'usuarios:login' %}" method="POST">
@@ -47,27 +55,9 @@
 
                     <button type="submit">Login</button>
                 </form>
-                <a href="{% url 'auth:esqueceu' %}" class="forgot-password">Esqueceu a senha?</a>
+                <a href="{% url 'usuarios:esqueceu' %}" class="forgot-password">Esqueceu a senha?</a>
             </div>
         </div>
     </main>
-    <script>
-        function fecharMsg(elemento) {
-            var msg = elemento.closest('.msg-flutuante');
-            if (msg) {
-                msg.style.animation = 'msg-saida 0.4s forwards';
-                setTimeout(function() { msg.style.display = 'none'; }, 400);
-            }
-        }
-        window.onload = function() {
-            var msgs = document.querySelectorAll('.msg-flutuante');
-            msgs.forEach(function(msg) {
-                setTimeout(function() {
-                    msg.style.animation = 'msg-saida 0.4s forwards';
-                    setTimeout(function() { msg.style.display = 'none'; }, 400);
-                }, 5000);
-            });
-        }
-    </script>
 </body>
 </html>
