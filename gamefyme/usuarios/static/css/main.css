@@ -1,0 +1,503 @@
+:root {
+    --roxo-header: #4E008A;
+    --roxo-botao: #3d0066;
+    --roxo-gradiente-top: #2d0052;
+    --roxo-gradiente-bottom: #390066;
+    --roxo-card: #6c1bbd;
+    --roxo-card2: #7a2be2;
+    --roxo-card3: #4e008a;
+    --roxo-card4: #400071;
+    --verde-xp: #00cc7a; /* Ajustado para melhor contraste */
+    --amarelo-moeda: #ffe066;
+    --cinza-sub: #7a7a7a;
+}
+
+/* Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+body {
+    background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* Estilos do Header */
+header {
+    width: 100%;
+    background: var(--roxo-header);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 24px 48px 16px 48px;
+}
+
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu-btn {
+    background: var(--roxo-botao);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 22px;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.user-menu-btn:hover {
+    background: #2d0052;
+}
+
+.user-menu-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: #fff;
+    min-width: 140px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 100;
+    margin-top: 8px;
+}
+
+.user-dropdown a {
+    color: #4E008A;
+    padding: 14px 18px;
+    text-decoration: none;
+    display: block;
+    font-size: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown a:hover {
+    background: #f3e6ff;
+}
+
+/* Estilos do Avatar */
+.avatar-header {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+.avatar-header svg {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+/* Container Principal */
+.app-container {
+    width: 90vw;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Seção de Perfil */
+.profile-section {
+    display: flex;
+    align-items: flex-start;
+    background: var(--roxo-card4);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    gap: 32px;
+}
+
+.avatar-container {
+    margin-right: 24px;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #bca8e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+}
+
+/* Informações do Perfil */
+.profile-info {
+    flex: 1;
+}
+
+.profile-info .username {
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.profile-info .user-date {
+    font-size: 22px;
+    color: #e0e0e0;
+}
+
+/* Container de Streak */
+.streak-container {
+    margin-top: 15px;
+}
+
+.streak-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.weekdays {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.weekday {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+/* Barra de Progresso */
+.progress-bar {
+    width: 100%;
+    height: 16px;
+    background: #2d0052;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--verde-xp);
+    border-radius: 8px 0 0 8px;
+    -webkit-transition: width 0.4s;
+    -moz-transition: width 0.4s;
+    -o-transition: width 0.4s;
+    transition: width 0.4s;
+    font-weight: bold;
+    padding-left: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    line-height: 16px;
+    letter-spacing: 1px;
+    will-change: width;
+}
+
+/* Botões de Ação */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-left: 32px;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.action-btn {
+    background: var(--roxo-card3);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 32px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.action-btn:hover {
+    background: var(--roxo-botao);
+    transform: translateY(-2px);
+}
+
+.action-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.action-btn.add-task-btn { color: var(--verde-xp); }
+.action-btn.edit-task-btn { color: var(--amarelo-moeda); }
+
+/* Container de Tarefas */
+.tasks-container {
+    display: flex;
+    gap: 20px;
+}
+
+.task-section {
+    flex: 1;
+    background-color: var(--roxo-card3);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Items de Tarefa */
+.task-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: var(--roxo-card4);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.task-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s ease-in-out;
+}
+
+.add-btn {
+    background-color: var(--verde-xp);
+    color: var(--roxo-card3);
+}
+
+.remove-btn {
+    background-color: var(--roxo-gradiente-top);
+}
+
+.task-description {
+    flex: 1;
+    margin: 0 15px;
+    font-size: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xp-reward {
+    font-weight: bold;
+    color: var(--verde-xp);
+    font-size: 18px;
+}
+
+.level {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.msg-flutuante {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+    margin: 24px auto;
+    padding: 18px 32px 18px 22px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-family: 'Jersey 10', cursive;
+    box-shadow: 0 4px 24px #0002;
+    opacity: 0;
+    animation: msg-entrada 0.5s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.msg-flutuante.sucesso {
+    background: #e0ffe6;
+    color: #1a7f3c;
+    border: 1.5px solid #b3ffcc;
+}
+
+.msg-flutuante .fechar {
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: bold;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.msg-flutuante .fechar:hover {
+    opacity: 1;
+}
+#loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 0, 60, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 7px solid #fff;
+    border-top: 7px solid #4e008a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+
+#loading-overlay span {
+    color: #fff;
+    font-size: 2rem;
+    font-family: 'Jersey 10', cursive;
+    text-shadow: 1px 1px 4px #000;
+}
+/* Animações */
+@keyframes msg-entrada {
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+@keyframes msg-saida {
+    from { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+    to { 
+        opacity: 0; 
+        transform: translateY(-20px);
+    }
+}
+/* Media Queries */
+@media (max-width: 1100px) {
+    .main-container { 
+        width: 98vw; 
+    }
+    
+    .profile-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .profile-info {
+        padding: 20px 0 0 0;
+        text-align: center;
+        margin-left: 0;
+    }
+    
+    .tasks-container {
+        flex-direction: column;
+    }
+    
+    header {
+        padding: 16px 24px;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        margin-left: 0;
+        margin-top: 24px;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .weekdays {
+        gap: 5px;
+    }
+    
+    .weekday {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .profile-section {
+        padding: 20px;
+    }
+    
+    .msg-flutuante {
+        max-width: 90%;
+        font-size: 16px;
+    }
+}

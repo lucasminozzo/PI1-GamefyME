@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{% url 'usuarios:login' %}">Login</a>
+            <a href="{% url 'usuarios:cadastro' %}">Registrar</a>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-left">
+            <h1>GamefyME</h1>
+            <p>Sua plataforma de atividades<br>mais cativante e amigável</p>
+        </div>
+        <div class="content-right">
+            <form action="{% url 'usuarios:cadastro' %}" method="GET">
+                {% csrf_token %}
+                <label for="emailusuario">Teste você também, digite seu Email</label>
+                <input type="email" id="emailusuario" name="emailusuario" placeholder="Digite seu email" required>
+                <button type="submit">Inscrever-se</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

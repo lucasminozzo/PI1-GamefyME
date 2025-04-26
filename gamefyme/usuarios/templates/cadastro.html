@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Cadastro</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+    
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{% url 'core:index' %}">Início</a>
+            <a href="{% url 'usuarios:login' %}">Login</a>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="content-right">
+            {% if erro %}
+                <p style="color: red;">{{ erro }}</p>
+            {% endif %}
+
+            <form action="{% url 'usuarios:cadastro' %}" method="POST"> {% csrf_token %}
+                <label for="nmusuario">Nome de usuário</label>
+                <input type="text" id="nmusuario" name="nmusuario" placeholder="Nome..." required>
+            
+                <label for="emailusuario">Email</label>
+                <input 
+                    type="email" 
+                    id="emailusuario" 
+                    name="emailusuario" 
+                    placeholder="Digite o email..." 
+                    required
+                    value="{{ emailusuario }}"
+                    {% if erro_email %}class="input-erro"{% endif %}
+                >
+                {% if erro_email %}
+                    <span class="msg-erro">Já existe um usuário com esse e-mail cadastrado.</span>
+                {% endif %}
+            
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="********" required>
+            
+                <label for="confsenha">Confirmar senha</label>
+                <input type="password" id="confsenha" name="confsenha" placeholder="********" required>
+            
+                <label for="dtnascimento">Data de nascimento</label>
+                <input type="date" id="dtnascimento" name="dtnascimento" required>
+            
+                <button type="submit">Registrar</button>
+            </form>
+            
+            <a href="/" style="text-decoration: none;">
+                <button class="btn-voltar">Voltar</button>
+            </a>
+        </div>
+    </main>
+</body>
+</html>

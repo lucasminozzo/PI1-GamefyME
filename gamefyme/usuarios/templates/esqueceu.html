@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Esqueceu a senha?</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/esqueceu.css' %}">
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{% url 'core:index' %}">Início</a>
+            <a href="{% url 'usuarios:cadastro' %}">Registrar</a>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            {% if erro %}
+            <div class="msg-flutuante erro">
+                {{ erro }}
+                <span class="fechar" onclick="fecharMsg(this)">×</span>
+            </div>
+            {% endif %}
+            <div class="content-right">
+                <form action="{% url 'usuarios:esqueceu' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+
+
+                    <button type="submit">Recuperar senha</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script>
+        function fecharMsg(elemento) {
+            var msg = elemento.closest('.msg-flutuante');
+            if (msg) {
+                msg.style.animation = 'msg-saida 0.4s forwards';
+                setTimeout(function() { msg.style.display = 'none'; }, 400);
+            }
+        }
+        window.onload = function() {
+            var msgs = document.querySelectorAll('.msg-flutuante');
+            msgs.forEach(function(msg) {
+                setTimeout(function() {
+                    msg.style.animation = 'msg-saida 0.4s forwards';
+                    setTimeout(function() { msg.style.display = 'none'; }, 400);
+                }, 5000);
+            });
+        }
+    </script>
+</body>
+</html>

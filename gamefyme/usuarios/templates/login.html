@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Login</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="{% static 'scripts/login.js' %}"></script>
+</head>
+<body>
+    <header>
+        <div class="nav-left">
+            <a href="{% url 'core:index' %}">Início</a>
+            <a href="{% url 'usuarios:cadastro' %}">Registrar</a>
+        </div>
+        <div class="nav-right">
+            <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
+            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
+        </div>
+    </header>
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
+
+    <main>
+        <div class="login-container">
+            {% if erro %}
+            <div class="msg-flutuante erro">
+                {{ erro }}
+                <span class="fechar" onclick="fecharMsg(this)">×</span>
+            </div>
+            {% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="msg-flutuante sucesso">
+                        {{ message }}
+                        <span class="fechar" onclick="fecharMsg(this)">×</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="content-right">
+                <form action="{% url 'usuarios:login' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+                    <button type="submit">Login</button>
+                </form>
+                <a href="{% url 'usuarios:esqueceu' %}" class="forgot-password">Esqueceu a senha?</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

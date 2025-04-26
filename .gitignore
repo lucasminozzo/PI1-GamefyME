@@ -1,0 +1,5 @@
+.venv
+.env
+env
+venv
+gamefyme/gamefyme/settings.py
