@@ -21,8 +21,17 @@ function hideLoading() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.btn-add').addEventListener('click', function() {
-        showLoading();
+    const form = document.querySelector('.form-container');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (this.checkValidity()) {
+            showLoading();
+            this.submit();
+        } else {
+            this.reportValidity();
+        }
     });
 
     document.querySelectorAll('a.btn-cancel, a.action-btn').forEach(function(link) {

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Realizar atividade</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/realizar_atividade.css' %}">
+    <script src="{% static 'scripts/realizar_atividade.js' %}"></script>
+</head>
+<body>
+    {% include 'header.html'%}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="msg-flutuante sucesso">
+                {{ message }}
+                <span class="fechar" onclick="fecharMsg(this)">×</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="profile-section">
+            <div class="avatar-container">
+                <div class="avatar">
+                    <svg viewBox="0 0 100 100" width="100" height="100">
+                        <circle cx="50" cy="40" r="25" fill="#fff"/>
+                        <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
+                        <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
+                        <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="profile-info">
+                <h2 class="nmusuario">{{ usuario.nmusuario }}</h2>
+                <p class="user-date">{{ usuario.dtnascimento|date:"d/m/Y" }}</p>
+                <div class="streak-container">
+                    <div class="streak-title">Dias consecutivos de atividades completas:</div>
+                    <div class="weekdays">
+                        <div class="weekday" id="dom">Dom</div>
+                        <div class="weekday" id="seg">Seg</div>
+                        <div class="weekday" id="ter">Ter</div>
+                        <div class="weekday" id="qua">Qua</div>
+                        <div class="weekday" id="qui">Qui</div>
+                        <div class="weekday" id="sex">Sex</div>
+                        <div class="weekday" id="sab">Sab</div>
+                    </div>
+                    <div class="level">
+                        <span class="level-number">Nível: {{ usuario.nivelusuario }}</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%">
+                                <span>{{ usuario.expusuario }}</span><span>/1000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <form action="{% url 'atividades:realizar_atividade' atividade.idatividade %}" method="post" class="form-container">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <input type="hidden" name="idusuario" value="{{ usuario.idusuario }}">
+                <div class="form-group">
+                    <label for="nmatividade">Atividade</label>
+                    <input type="text" id="nmatividade" value="{{ atividade.nmatividade }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="dsatividade">Descrição</label>
+                    <textarea id="dsatividade" disabled>{{ atividade.dsatividade }}</textarea>
+                    <div style="text-align: right; color: #fff; font-size: 1rem;">Max 200</div>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="recorrencia">Recorrência</label>
+                    <input type="text" id="recorrencia" value="{{ atividade.get_recorrencia_display }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="tpestimado">Tempo estimado</label>
+                    <div class="input-minutos-wrapper">
+                        <input type="number" id="tpestimado" value="{{ atividade.tpestimado }}" disabled class="input-full">
+                        <span class="minutos-label">minutos</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso da atividade</label>
+                    <input type="text" id="peso" value="{{ atividade.get_peso_display }}" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-add">Concluir</button>
+            <a href="{% url 'usuarios:main' %}" class="btn btn-cancel">Voltar</a>
+        </div>
+    </form>
+</body>
+</html>

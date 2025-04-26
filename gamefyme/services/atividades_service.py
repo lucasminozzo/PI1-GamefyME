@@ -1,12 +1,29 @@
 from django.shortcuts import render
 from usuarios.models import Usuario
 from atividades.models import Atividade
+from datetime import date, timedelta
 
 def get_atividade(request):
     usuario_id = request.session.get('usuario_id')
     usuario = Usuario.objects.get(pk=usuario_id)
     atividades = Atividade.objects.filter(idusuario=usuario.idusuario).all()
     return atividades
+
+def atualizar_streak(usuario):
+    hoje = date.today()
+    ontem = hoje - timedelta(days=1)
+    
+    if usuario.ultima_atividade == hoje:
+        return
+
+    if usuario.ultima_atividade == ontem:
+        usuario.streak_semanal += 1
+    else:
+        usuario.streak_semanal = 1
+
+    usuario.ultima_atividade = hoje
+    usuario.save()
+
 
 def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
     """

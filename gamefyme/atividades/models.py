@@ -20,7 +20,7 @@ class Atividade(models.Model):
 
     class Recorrencia(models.TextChoices):
         UNICA = 'unica', 'Única'
-        HABITUAL = 'recorrente', 'Recorrente'
+        RECORRENTE = 'recorrente', 'Recorrente'
 
     idusuario = models.ForeignKey(
         Usuario,
@@ -36,6 +36,8 @@ class Atividade(models.Model):
     tpestimado = models.IntegerField()
     dsatividade = models.TextField(blank=True)
     expatividade = models.SmallIntegerField(default=0)
+    streak_semanal = models.IntegerField(default=0)
+    ultima_atividade = models.DateField(null=True, blank=True)  
 
     class Meta:
         db_table = 'atividades'

@@ -78,12 +78,12 @@
                 <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
                     {% for atividade in atividades %}
-                        {% if atividade.recorrencia == 'habitual' %}
+                        {% if atividade.recorrencia == 'recorrente' and atividade.situacao != 'realizada' %}
                             <div class="task-item daily-item">
-                                <button class="task-btn add-btn">+</button>
+                                <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
+                                    class="task-btn add-btn">+</a>
                                 <div class="task-description">{{ atividade.nmatividade }}</div>
                                 <div class="xp-reward">{{ atividade.expatividade }} </div>
-                                <button class="task-btn remove-btn">-</button>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -94,9 +94,10 @@
                 <h3 class="section-title">Únicas</h3>
                 <div class="tasks-list dailies-list">
                     {% for atividade in atividades %}
-                        {% if atividade.recorrencia == 'unica' %}
+                        {% if atividade.recorrencia == 'unica' and atividade.situacao != 'realizada' %}
                             <div class="task-item daily-item">
-                                <button class="task-btn add-btn">+</button>
+                                <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
+                                    class="task-btn add-btn">+</a>
                                 <div class="task-description">{{ atividade.nmatividade }}</div>
                                 <div class="xp-reward">{{ atividade.expatividade }}</div>
                             </div>

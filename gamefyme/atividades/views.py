@@ -1,9 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import AtividadeForm
+from .models import Atividade
 from django.utils import timezone
 from services import login_service, atividades_service
 from django.contrib import messages
 from django.db import IntegrityError
+ 
+# if atividade.situacao == 'realizada':
+#     streak_service.atualizar_streak(usuario)
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
@@ -36,5 +40,26 @@ def criar_atividade(request):
 
     return render(request, 'atividades/cadastro_atividade.html', {
         'form': form,
+        'usuario': usuario
+    })
+    
+def realizar_atividade(request, idatividade):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
+
+    if request.method == 'POST':
+        atividade.situacao = Atividade.Situacao.REALIZADA
+        atividade.dtatividaderealizada = timezone.now().date()
+        atividade.save()
+        atividades_service.streak_service.atualizar_streak(usuario)
+
+        messages.success(request, f'Atividade "{atividade.nmatividade}" concluída com sucesso!')
+        return redirect('usuarios:main')
+
+    return render(request, 'atividades/realizar_atividade.html', {
+        'atividade': atividade,
         'usuario': usuario
     })

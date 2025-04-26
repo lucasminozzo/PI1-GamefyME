@@ -94,19 +94,14 @@ body {
     margin-bottom: 4px;
     box-sizing: border-box;
 }
-
-/* Remove as setas para Chrome, Safari, Edge, Opera */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-
-/* Remove as setas para Firefox */
 input[type="number"] {
     appearance: textfield;
 }
-
 .minutos-label {
     position: absolute;
     right: 18px;
