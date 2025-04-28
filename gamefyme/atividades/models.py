@@ -41,3 +41,25 @@ class Atividade(models.Model):
 
     class Meta:
         db_table = 'atividades'
+        
+class SessaoPomodoro(models.Model):
+    idsessao = models.AutoField(primary_key=True)
+    idusuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='idusuario'
+    )
+    idatividade = models.ForeignKey(
+        Atividade,
+        on_delete=models.CASCADE,
+        db_column='idatividade'
+    )
+    inicio = models.DateTimeField()
+    fim = models.DateTimeField(null=True, blank=True)
+    nrciclo = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'sessoes_pomodoro'
+
+    def __str__(self):
+        return f'Sessão {self.nrciclo} - Usuário {self.idusuario_id} - Atividade {self.idatividade_id}'

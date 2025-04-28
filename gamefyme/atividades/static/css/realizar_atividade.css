@@ -201,31 +201,45 @@ a {
     font-size: 16px;
 }
 
-/* Barra de Progresso */
 .progress-bar {
     width: 100%;
-    height: 16px;
+    height: 30px;
     background: #2d0052;
     border-radius: 8px;
     overflow: hidden;
-    margin-top: 8px;
+    position: relative;
 }
 
 .progress-fill {
     height: 100%;
     background: var(--verde-xp);
-    border-radius: 8px 0 0 8px;
-    -webkit-transition: width 0.4s;
-    -moz-transition: width 0.4s;
-    -o-transition: width 0.4s;
-    transition: width 0.4s;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
-    padding-left: 20px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    text-align: left;
-    line-height: 16px;
-    letter-spacing: 1px;
     will-change: width;
+    transition: width 0.4s;
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.progress-text span {
+    margin: 0 4px;
 }
 
 /* Botões de Ação */
@@ -359,12 +373,12 @@ a {
     resize: vertical;
 }
 
-.input-minutos-wrapper {
+.input-minutes-wrapper {
     position: relative;
     width: 100%;
 }
 
-.input-minutos-wrapper input[type="number"] {
+.input-minutes-wrapper input[type="number"] {
     width: 100%;
     padding-right: 80px;
     height: 48px;
@@ -385,7 +399,7 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
     appearance: textfield;
 }
-.minutos-label {
+.minutes-label {
     position: absolute;
     right: 18px;
     top: 50%;
@@ -422,6 +436,142 @@ input[type="number"] {
 .btn-cancel { background: #4e008a; color: #ff4d4d; }
 
 .btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: #2d0052; }
+
+.main-content {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    margin-top: 32px;
+    background-color: #5A009E;
+    border-radius: 20px;
+  }
+
+  .atividade-bloco { flex: 2; }
+  .pomodoro-bloco { flex: 1; }
+  
+  .form-container,
+  .pomodoro-card {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .pomodoro-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+}
+
+
+.pomodoro-title {
+    color: #fff;
+    font-size: 2rem;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+    letter-spacing: 1px;
+    padding-top: 30px;
+}
+
+.timer {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 24px auto;
+}
+
+.progress-ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.progress {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: #00ff99;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+}
+
+.timer-controls {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-bottom: 30px;
+}
+
+.timer-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    font-size: 40px;
+}
+
+.timer-btn:hover {
+    background: var(--roxo-card4);
+    font-size: 40px;
+}
+
+#play-pause-icon {
+    display: inline-block;
+    font-size: 40px;
+    
+}
+
+.timer-mode {
+    margin-top: 15px;
+}
+
+#timer-status {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 10px;
+    background: var(--roxo-card3);
+    color: #fff;
+    font-size: 1.2rem;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+    letter-spacing: 1px;
+}
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .pomodoro-bloco {
+        justify-content: center;
+        margin-top: 24px;
+    }
+}
 
 @keyframes spin {
     0% { transform: rotate(0deg);}
@@ -551,11 +701,10 @@ input[type="number"] {
         font-size: 1.2rem;
         padding: 10px;
     }
-    .input-minutos-wrapper input[type="number"] {
+    .input-minutes-wrapper input[type="number"] {
         height: 40px;
-        font-size: 1.2rem;
     }
-    .minutos-label {
+    .minutes-label {
         font-size: 1rem;
         right: 10px;
     }
