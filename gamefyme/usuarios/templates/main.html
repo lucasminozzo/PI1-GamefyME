@@ -22,16 +22,12 @@
         {% endfor %}
     {% endif %}
 
-    {% comment %} <div id="loading-overlay" style="display:none;">
+    <div id="loading-overlay" style="display:none;">
         <div class="loading-content">
             <div class="spinner"></div>
             <span>Carregando...</span>
         </div>
-    </div> {% endcomment %}
-
-    <div id="loading-overlay" style="display:none;">
-        <div class="loader"></div>
-    </div>
+    </div> 
 
     <div class="app-container">
         <div class="profile-section">
@@ -75,9 +71,6 @@
                 <a href="{% url 'atividades:atividade' %}" class="action-btn add-task-btn">
                     <span>➕</span> Add Tarefa
                 </a>
-                <button class="action-btn edit-task-btn">
-                    <span>✏️</span> Edit Tarefa
-                </button>
             </div>
         </div>
         
@@ -85,8 +78,8 @@
             <div class="task-section habits-section">
                 <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
-                    {% with recorrentes_existem=False %}
-                        {% for atividade in atividades %}
+                    {% if atividades_recorrentes %}
+                        {% for atividade in atividades_recorrentes %}
                             {% if atividade.recorrencia == 'recorrente' and atividade.situacao != 'realizada' %}
                                 {% with recorrentes_existem=True %}
                                     <div class="task-item daily-item">
@@ -98,21 +91,20 @@
                                 {% endwith %}
                             {% endif %}
                         {% endfor %}
-                        {% if not recorrentes_existem %}
-                            <div class="empty-tasks-message">
-                                <p>Sem atividades únicas para realizar</p>
-                                <p>Registre uma atividade</p>
-                            </div>
-                        {% endif %}
-                    {% endwith %}
+                    {% else %}
+                        <div class="empty-tasks-message">
+                            <p>Sem atividades únicas para realizar</p>
+                            <p>Registre uma atividade</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             
             <div class="task-section dailies-section">
                 <h3 class="section-title">Únicas</h3>
                 <div class="tasks-list dailies-list">
-                    {% with unicas_existem=False %}
-                        {% for atividade in atividades %}
+                    {% if atividades_unicas %}
+                        {% for atividade in atividades_unicas %}
                             {% if atividade.recorrencia == 'unica' and atividade.situacao != 'realizada' %}
                                 {% with unicas_existem=True %}
                                     <div class="task-item daily-item">
@@ -124,13 +116,12 @@
                                 {% endwith %}
                             {% endif %}
                         {% endfor %}
-                        {% if not unicas_existem %}
-                            <div class="empty-tasks-message">
-                                <p>Sem atividades únicas para realizar</p>
-                                <p>Registre uma atividade</p>
-                            </div>
-                        {% endif %}
-                    {% endwith %}
+                    {% else %}
+                        <div class="empty-tasks-message">
+                            <p>Sem atividades únicas para realizar</p>
+                            <p>Registre uma atividade</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

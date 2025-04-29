@@ -124,9 +124,14 @@ def logout(request):
     return redirect('usuarios:login')
 
 def main(request):
-    if(not login_service.is_usuario_logado(request)):
+    if not login_service.is_usuario_logado(request):
         return redirect('usuarios:login')
-    
+
     usuario = login_service.get_usuario_logado(request)
-    atividades = atividades_service.get_atividade(request)
-    return render(request, 'main.html', {'usuario': usuario, 'atividades': atividades})
+    atividades = atividades_service.get_atividades_separadas(request)
+
+    return render(request, 'main.html', {
+        'usuario': usuario,
+        'atividades_unicas': atividades['unicas'],
+        'atividades_recorrentes': atividades['recorrentes']
+    })

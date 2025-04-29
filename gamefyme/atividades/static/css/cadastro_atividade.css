@@ -295,6 +295,37 @@ a {
     opacity: 1;
 }
 
+input-minutos-wrapper input[type="number"].invalido {
+    border: 2px solid #ff4d4d;
+    background-color: #ffe6e6;
+}
+
+.tempo-feedback {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-top: 4px;
+    transition: color 0.3s;
+}
+
+.tempo-feedback.erro {
+    color: #ff4d4d;
+}
+
+.input-minutos-wrapper input[type="number"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(78, 0, 138, 0.2);
+}
+
+.input-minutos-wrapper input[type="number"]:valid {
+    border-color: #00ff99;
+}
+
+@media (max-width: 700px) {
+    .tempo-feedback {
+        font-size: 14px;
+    }
+}
+
 @keyframes msg-entrada {
     from { 
         opacity: 0; 

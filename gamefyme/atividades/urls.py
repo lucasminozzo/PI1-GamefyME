@@ -7,4 +7,5 @@ urlpatterns = [
     # Atividades
     path('nova/', views.criar_atividade, name='atividade'),
     path('realizar_atividade/<int:idatividade>/', views.realizar_atividade, name='realizar_atividade'), 
+    path('realizar_atividade/<int:idatividade>/', views.remover_atividade, name='remover_atividade'), 
 ]

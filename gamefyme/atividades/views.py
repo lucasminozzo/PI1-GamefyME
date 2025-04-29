@@ -52,6 +52,10 @@ def realizar_atividade(request, idatividade):
 
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
+    
+    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.REALIZADA]:
+        messages.error(request, "Esta atividade não pode ser removida.")
+        return redirect('usuarios:main')
 
     if request.method == 'POST':
         try:
@@ -114,3 +118,28 @@ def realizar_atividade(request, idatividade):
         'usuario': usuario
     })
     
+def remover_atividade(request, idatividade):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
+
+    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.REALIZADA]:
+        messages.error(request, "Esta atividade não pode ser removida.")
+        return redirect('usuarios:main')
+
+    if request.method == 'POST':
+        try:
+            atividade.situacao = Atividade.Situacao.CANCELADA
+            atividade.save()
+
+            messages.success(request, "Atividade removida com sucesso!")
+
+        except Exception as e:
+            messages.error(request, f"Erro ao remover a atividade: {str(e)}")
+
+    return render(request, 'atividades/remover_atividade.html', {
+        'atividade': atividade,
+        'usuario': usuario
+    })
