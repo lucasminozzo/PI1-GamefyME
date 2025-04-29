@@ -24,20 +24,7 @@ def atualizar_streak(usuario):
     usuario.ultima_atividade = hoje
     usuario.save()
 
-
 def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
-    """
-    Calcula a experiência de uma atividade baseada no peso (dificuldade) e tempo estimado.
-
-    Base aumentada para permitir progressão mais rápida até 1000 XP.
-
-    Args:
-        peso (str): Dificuldade da atividade ('muito_facil', 'facil', 'medio', 'dificil', 'muito_dificil')
-        tempo_estimado (int): Tempo estimado em minutos
-
-    Returns:
-        int: Quantidade de experiência calculada
-    """
     
     exp_base = 50
 

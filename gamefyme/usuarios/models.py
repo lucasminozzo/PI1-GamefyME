@@ -18,6 +18,6 @@ class Usuario(models.Model):
         choices=TipoUsuario.choices,
         default=TipoUsuario.COMUM
     )
-
+    ultima_atividade = models.DateField(null=True, blank=True)
     class Meta:
         db_table = 'usuarios'

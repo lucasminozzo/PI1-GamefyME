@@ -22,11 +22,15 @@
         {% endfor %}
     {% endif %}
 
-    <div id="loading-overlay" style="display:none;">
+    {% comment %} <div id="loading-overlay" style="display:none;">
         <div class="loading-content">
             <div class="spinner"></div>
             <span>Carregando...</span>
         </div>
+    </div> {% endcomment %}
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loader"></div>
     </div>
 
     <div class="app-container">
@@ -56,9 +60,13 @@
                         <div class="weekday" id="sab">Sab</div>
                     </div>
                     <div class="level">
-                        <span class="level-number">Nivel: {{ usuario.nivelusuario }}</span>
+                        <span class="level-number">Nível: {{ usuario.nivelusuario }}</span>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%"><span>{{usuario.expusuario}}</span><span>/1000</span></div>
+                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%">
+                                <div class="progress-text">
+                                    <span>{{ usuario.expusuario }}</span><span>/1000</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -77,32 +85,52 @@
             <div class="task-section habits-section">
                 <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
-                    {% for atividade in atividades %}
-                        {% if atividade.recorrencia == 'recorrente' and atividade.situacao != 'realizada' %}
-                            <div class="task-item daily-item">
-                                <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
-                                    class="task-btn add-btn">+</a>
-                                <div class="task-description">{{ atividade.nmatividade }}</div>
-                                <div class="xp-reward">{{ atividade.expatividade }} </div>
+                    {% with recorrentes_existem=False %}
+                        {% for atividade in atividades %}
+                            {% if atividade.recorrencia == 'recorrente' and atividade.situacao != 'realizada' %}
+                                {% with recorrentes_existem=True %}
+                                    <div class="task-item daily-item">
+                                        <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
+                                            class="task-btn add-btn">+</a>
+                                        <div class="task-description">{{ atividade.nmatividade }}</div>
+                                        <div class="xp-reward">{{ atividade.expatividade }} </div>
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not recorrentes_existem %}
+                            <div class="empty-tasks-message">
+                                <p>Sem atividades únicas para realizar</p>
+                                <p>Registre uma atividade</p>
                             </div>
                         {% endif %}
-                    {% endfor %}
+                    {% endwith %}
                 </div>
             </div>
             
             <div class="task-section dailies-section">
                 <h3 class="section-title">Únicas</h3>
                 <div class="tasks-list dailies-list">
-                    {% for atividade in atividades %}
-                        {% if atividade.recorrencia == 'unica' and atividade.situacao != 'realizada' %}
-                            <div class="task-item daily-item">
-                                <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
-                                    class="task-btn add-btn">+</a>
-                                <div class="task-description">{{ atividade.nmatividade }}</div>
-                                <div class="xp-reward">{{ atividade.expatividade }}</div>
+                    {% with unicas_existem=False %}
+                        {% for atividade in atividades %}
+                            {% if atividade.recorrencia == 'unica' and atividade.situacao != 'realizada' %}
+                                {% with unicas_existem=True %}
+                                    <div class="task-item daily-item">
+                                        <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
+                                            class="task-btn add-btn">+</a>
+                                        <div class="task-description">{{ atividade.nmatividade }}</div>
+                                        <div class="xp-reward">{{ atividade.expatividade }}</div>
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not unicas_existem %}
+                            <div class="empty-tasks-message">
+                                <p>Sem atividades únicas para realizar</p>
+                                <p>Registre uma atividade</p>
                             </div>
                         {% endif %}
-                    {% endfor %}
+                    {% endwith %}
                 </div>
             </div>
         </div>

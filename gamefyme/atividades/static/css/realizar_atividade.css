@@ -250,6 +250,15 @@ a {
     margin-left: 32px;
     align-items: flex-end;
     justify-content: flex-start;
+    align-items: stretch;
+}
+
+.ciclos-counter {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #fff;
+    padding-bottom: 30px;
 }
 
 .action-btn {

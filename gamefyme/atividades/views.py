@@ -58,18 +58,36 @@ def realizar_atividade(request, idatividade):
             atividade.situacao = Atividade.Situacao.REALIZADA
             atividade.dtatividaderealizada = timezone.now().date()
 
-            exp_por_peso = {
-                Atividade.Peso.LEVE: 50,
-                Atividade.Peso.MEDIO: 100,
-                Atividade.Peso.PESADO: 150
-            }
-            exp_ganha = exp_por_peso.get(atividade.peso, 50)
+            exp_ganha = atividades_service.calcular_experiencia(
+                atividade.peso,
+                atividade.tpestimado
+            )
+            nova_exp = usuario.expusuario + exp_ganha
 
-            usuario.expusuario += exp_ganha
-
-            while usuario.expusuario >= 1000:
+            while nova_exp >= 1000:
                 usuario.nivelusuario += 1
-                usuario.expusuario -= 1000
+                nova_exp -= 1000
+
+            usuario.expusuario = nova_exp
+
+            inicio = request.POST.get('inicio')
+            fim = request.POST.get('fim')
+            nrciclo = request.POST.get('nrciclo')
+
+            if inicio and fim:
+                try:
+                    SessaoPomodoro.objects.create(
+                        idusuario=usuario,
+                        idatividade=atividade,
+                        inicio=inicio,
+                        fim=fim,
+                        nrciclo=int(nrciclo or 0)
+                    )
+                except Exception as e:
+                    messages.warning(
+                        request,
+                        f"Atividade concluída, mas houve um erro ao salvar a sessão Pomodoro: {str(e)}"
+                    )
 
             atividade.save()
             usuario.save()
@@ -78,7 +96,9 @@ def realizar_atividade(request, idatividade):
 
             messages.success(
                 request,
-                f'Atividade "{atividade.nmatividade}" concluída com sucesso! Você ganhou {exp_ganha} pontos de experiência!'
+                f'Atividade "{atividade.nmatividade}" concluída com sucesso! ' +
+                f'Você ganhou {exp_ganha} pontos de experiência!' +
+                (f' Ciclos Pomodoro completados: {nrciclo}' if nrciclo else '')
             )
             return redirect('usuarios:main')
 
@@ -93,64 +113,4 @@ def realizar_atividade(request, idatividade):
         'atividade': atividade,
         'usuario': usuario
     })
-
-@require_http_methods(["POST"])
-def registrar_sessao(request):
-    try:
-        data = json.loads(request.body)
-
-        if not login_service.is_usuario_logado(request):
-            return JsonResponse({'success': False, 'error': 'Usuário não logado'}, status=401)
-
-        usuario = login_service.get_usuario_logado(request)
-        atividade = get_object_or_404(Atividade, pk=data['idatividade'], idusuario=usuario)
-
-        with transaction.atomic():
-            sessao = SessaoPomodoro.objects.create(
-                idusuario=usuario,
-                idatividade=atividade,
-                inicio=data.get('inicio'),
-                fim=data.get('fim'),
-                nrciclo=data.get('nrciclo', 0)
-            )
-
-            if data.get('nrciclo', 0) > 0:
-                exp_por_ciclo = 10
-                exp_pomodoro = data['nrciclo'] * exp_por_ciclo
-
-                usuario.expusuario += exp_pomodoro
-                while usuario.expusuario >= 1000:
-                    usuario.nivelusuario += 1
-                    usuario.expusuario -= 1000
-
-                usuario.save()
-
-                return JsonResponse({
-                    'success': True,
-                    'message': f'Sessão registrada com sucesso! Bônus de {exp_pomodoro} pontos de experiência por usar o Pomodoro!'
-                })
-
-            return JsonResponse({'success': True, 'message': 'Sessão registrada com sucesso!'})
-
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
-    if not login_service.is_usuario_logado(request):
-        return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
-
-    try:
-        data = json.loads(request.body)
-        usuario = login_service.get_usuario_logado(request)
-        atividade = get_object_or_404(Atividade, pk=data['idatividade'], idusuario=usuario)
-
-        SessaoPomodoro.objects.create(
-            idusuario=usuario,
-            idatividade=atividade,
-            inicio=data['inicio'],
-            fim=data['fim'],
-            nrciclo=data.get('nrciclo', 0)
-        )
-
-        return JsonResponse({'success': True})
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=400)
     

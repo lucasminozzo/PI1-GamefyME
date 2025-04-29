@@ -66,6 +66,15 @@
                     </div>
                 </div>
             </div>
+            <div class="action-buttons">
+                <a href="{% url 'atividades:atividade' %}" class="action-btn add-task-btn">
+                    <span>➕</span> Add Tarefa
+                </a>
+                <a href="{% url 'usuarios:main' %}" class="action-btn add-task-btn">
+                    <span></span> Voltar
+                </a>
+               
+            </div>
         </div>
 
         <div class="main-content">
@@ -110,7 +119,6 @@
                         <button id="btn-finalizar" class="action-btn">
                             Concluir
                         </button>
-                        <a href="{% url 'usuarios:main' %}" class="btn btn-cancel">Voltar</a>
                     </div>
                 </form>
             </div>
@@ -137,6 +145,10 @@
                     </div>
                     <div class="timer-mode">
                         <span id="timer-status">Foco</span>
+                    </div>
+                    <div class="ciclos-counter">
+                        <span>Ciclos completados: </span>
+                        <span id="ciclos-count">0</span>
                     </div>
                 </div>
             </div>
