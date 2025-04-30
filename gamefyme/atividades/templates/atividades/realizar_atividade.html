@@ -68,10 +68,10 @@
             </div>
             <div class="action-buttons">
                 <a href="{% url 'atividades:atividade' %}" class="action-btn add-task-btn">
-                    <span>➕</span> Add Tarefa
+                    Add Tarefa
                 </a>
-                <a href="{% url 'usuarios:main' %}" class="action-btn add-task-btn">
-                    <span></span> Voltar
+                <a href="{% url 'usuarios:main' %}" class="action-btn voltar-task-btn">
+                    Voltar
                 </a>
             </div>
         </div>
@@ -115,11 +115,14 @@
                         <input type="hidden" name="nrciclo" id="nrciclo">
                     </div>
                     <div class="form-actions">
-                        <button id="btn-finalizar" class="action-btn">
+                        <button id="btn-finalizar" class="action-btn add-task-btn">
                             Concluir
                         </button>
-                        <a href="{% url 'atividade:remover_atividade' %}" class="action-btn add-task-btn">
-                            <span></span> Voltar
+                        <button id="btn-editar" class="action-btn voltar-task-btn">
+                            Editar
+                        </button>
+                        <a href="{% url 'atividades:remover_atividade' atividade.idatividade %}" class="action-btn remove-task-btn">
+                            <span></span> Cancelar
                         </a>
                     </div>
                 </form>

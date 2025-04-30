@@ -77,3 +77,20 @@ window.onload = function() {
         }, 5000);
     });
 }
+
+function abrirModal(idAtividade) {
+    // Buscar dados da atividade via AJAX
+    fetch(`/atividades/get_atividade/${idAtividade}/`)
+        .then(response => response.json())
+        .then(atividade => {
+            // Preencher os campos do modal
+            document.getElementById('modal-nmatividade').value = atividade.nmatividade;
+            document.getElementById('modal-dsatividade').value = atividade.dsatividade;
+            document.getElementById('modal-recorrencia').value = atividade.recorrencia;
+            document.getElementById('modal-tpestimado').value = atividade.tpestimado;
+            document.getElementById('modal-peso').value = atividade.peso;
+            
+            // Mostrar o modal
+            document.getElementById('realizar-atividade-modal').style.display = 'block';
+        });
+}

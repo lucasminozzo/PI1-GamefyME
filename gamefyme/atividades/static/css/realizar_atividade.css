@@ -571,6 +571,11 @@ input[type="number"] {
     font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
     letter-spacing: 1px;
 }
+
+.remove-task-btn { color: rgb(221, 0, 0)}
+.add-task-btn { color: var(--verde-xp)}
+.voltar-task-btn { color: var(--amarelo-moeda)}
+
 @media (max-width: 900px) {
     .main-content {
         flex-direction: column;
