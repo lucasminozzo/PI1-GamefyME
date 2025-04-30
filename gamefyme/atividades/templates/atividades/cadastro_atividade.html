@@ -55,9 +55,21 @@
                 <div class="form-group">
                     <label for="tpestimado">Tempo estimado</label>
                     <div class="input-minutos-wrapper">
-                        <input type="number" id="tpestimado" name="tpestimado" min="1" required placeholder="Ex: 20" class="input-full">
+                        <input 
+                            type="number" 
+                            id="tpestimado" 
+                            name="tpestimado" 
+                            min="1" 
+                            max="240" 
+                            required 
+                            placeholder="Ex: 20" 
+                            class="input-full"
+                            oninput="validarTempo(this)"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        >
                         <span class="minutos-label">minutos</span>
                     </div>
+                    <small class="tempo-feedback" id="tempo-feedback">Máximo 240 minutos (4 horas)</small>
                 </div>
                 <div class="form-group">
                     <label for="peso">Peso da atividade</label>

@@ -7,7 +7,7 @@
     --roxo-card2: #7a2be2;
     --roxo-card3: #4e008a;
     --roxo-card4: #400071;
-    --verde-xp: #00cc7a; /* Ajustado para melhor contraste */
+    --verde-xp: #00cc7a;
     --amarelo-moeda: #ffe066;
     --cinza-sub: #7a7a7a;
 }
@@ -281,6 +281,7 @@ a {
 }
 
 .action-btn.add-task-btn { color: var(--verde-xp); }
+.action-btn.remove-task-btn { color: var(--amarelo-moeda); }
 .action-btn.edit-task-btn { color: var(--amarelo-moeda); }
 
 /* Container de Tarefas */
@@ -331,6 +332,11 @@ a {
     color: var(--roxo-card3);
 }
 
+.remove-btn {
+    background-color: var(--roxo-card2);
+    color: var(--roxo-card3);
+}
+
 .task-description {
     flex: 1;
     margin: 0 15px;
@@ -343,7 +349,7 @@ a {
 .xp-reward {
     font-weight: bold;
     color: var(--verde-xp);
-    font-size: 18px;
+    font-size: 25px;
     margin-right: 5px;
 }
 
