@@ -53,13 +53,13 @@ def realizar_atividade(request, idatividade):
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
     
-    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.REALIZADA]:
-        messages.error(request, "Esta atividade não pode ser removida.")
+    if atividade.situacao in [Atividade.Situacao.CANCELADA]:
+        messages.error(request, "Esta atividade não pode ser cancelada.")
         return redirect('usuarios:main')
 
     if request.method == 'POST':
         try:
-            atividade.situacao = Atividade.Situacao.REALIZADA
+            atividade.situacao = Atividade.Situacao.ATIVA
             atividade.dtatividaderealizada = timezone.now().date()
 
             exp_ganha = atividades_service.calcular_experiencia(
@@ -118,6 +118,38 @@ def realizar_atividade(request, idatividade):
         'usuario': usuario
     })
     
+def editar_atividade(request, idatividade):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
+
+    if request.method == 'POST':
+        form = AtividadeForm(request.POST, instance=atividade)
+        if form.is_valid():
+            try:
+                atividade = form.save(commit=False)
+                atividade.idusuario = usuario
+                atividade.expatividade = atividades_service.calcular_experiencia(
+                    atividade.peso,
+                    atividade.tpestimado
+                )
+                atividade.save()
+                messages.success(request, f'Atividade "{atividade.nmatividade}" atualizada com sucesso!')
+                return redirect('usuarios:main')
+            except IntegrityError:
+                messages.error(request, f'Já existe uma atividade chamada "{form.cleaned_data["nmatividade"]}". Por favor, escolha um nome diferente.')
+    else:
+        form = AtividadeForm(instance=atividade)
+
+    return render(request, 'atividades/editar_atividade.html', {
+        'form': form,
+        'usuario': usuario,
+        'editar': True,
+        'atividade': atividade,
+    })
+
 def remover_atividade(request, idatividade):
     if not login_service.is_usuario_logado(request):
         return redirect('usuarios:login')
@@ -125,7 +157,7 @@ def remover_atividade(request, idatividade):
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
 
-    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.REALIZADA]:
+    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.ATIVA]:
         messages.error(request, "Esta atividade não pode ser removida.")
         return redirect('usuarios:main')
 
@@ -133,9 +165,8 @@ def remover_atividade(request, idatividade):
         try:
             atividade.situacao = Atividade.Situacao.CANCELADA
             atividade.save()
-
             messages.success(request, "Atividade removida com sucesso!")
-
+            return redirect('usuarios:main')
         except Exception as e:
             messages.error(request, f"Erro ao remover a atividade: {str(e)}")
 

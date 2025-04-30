@@ -4,8 +4,8 @@ from . import views
 app_name = 'atividades'
 
 urlpatterns = [
-    # Atividades
     path('nova/', views.criar_atividade, name='atividade'),
-    path('realizar_atividade/<int:idatividade>/', views.realizar_atividade, name='realizar_atividade'), 
-    path('realizar_atividade/<int:idatividade>/', views.remover_atividade, name='remover_atividade'), 
+    path('realizar_atividade/<int:idatividade>/', views.realizar_atividade, name='realizar_atividade'),
+    path('remover_atividade/<int:idatividade>/', views.remover_atividade, name='remover_atividade'),
+    path('editar_atividade/<int:idatividade>/', views.editar_atividade, name='editar_atividade'),
 ]

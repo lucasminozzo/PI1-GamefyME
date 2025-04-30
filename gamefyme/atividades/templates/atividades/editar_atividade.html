@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Edição de Atividade</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/cadastro_atividade.css' %}">
+    <script src="{% static 'scripts/cadastro_atividade.js' %}"></script>
+</head>
+<body>
+    {% include 'header.html'%}
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="msg-flutuante {% if message.tags == 'error' %}erro{% else %}sucesso{% endif %}">
+                {{ message }}
+                <span class="fechar" onclick="fecharMsg(this)">×</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+    </div>
+
+    <form action="{% url 'atividades:atividade' %}" class="form-container" method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <input type="hidden" id="idusuario" name="idusuario" maxlength="100" value="{{ usuario.idusuario }}">
+                <div class="form-group">
+                    <label for="nmatividade">Atividade</label>
+                    <input type="text" id="nmatividade" name="nmatividade" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="dsatividade">Descrição</label>
+                    <textarea id="dsatividade" name="dsatividade" maxlength="200"></textarea>
+                    <div style="text-align: right; color: #fff; font-size: 1rem;">Max 200</div>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="recorrencia">Recorrência</label>
+                    <select id="recorrencia" name="recorrencia" required>
+                        <option value="">Selecione uma opção</option>
+                        <option value="unica">Única</option>
+                        <option value="recorrente">Recorrente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tpestimado">Tempo estimado</label>
+                    <div class="input-minutos-wrapper">
+                        <input 
+                            type="number" 
+                            id="tpestimado" 
+                            name="tpestimado" 
+                            min="1" 
+                            max="240" 
+                            required 
+                            placeholder="Ex: 20" 
+                            class="input-full"
+                            oninput="validarTempo(this)"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        >
+                        <span class="minutos-label">minutos</span>
+                    </div>
+                    <small class="tempo-feedback" id="tempo-feedback">Máximo 240 minutos (4 horas)</small>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso da atividade</label>
+                    <select id="peso" name="peso" required>
+                        <option value="">Selecione uma opção</option>
+                        <option value="muito_facil">Muito fácil</option>
+                        <option value="facil">Fácil</option>
+                        <option value="medio">Médio</option>
+                        <option value="dificil">Difícil</option>
+                        <option value="muito_dificil">Muito difícil</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-add">Add Tarefa <span>+</span></button>
+            <button type="reset" class="btn-clear">Limpar <span>🗑️</span></button>
+            {% comment %} <a href="{% url 'usuarios:main' %}" class="btn-cancel" style="display:flex;align-items:center;">
+                Cancelar <span>✖️</span>
+            </a> {% endcomment %}
+            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">
+                Voltar<span>✖️</span>
+            </a>
+        </div>
+    </form>
+</body>
+</html>

@@ -13,9 +13,8 @@ class Atividade(models.Model):
         MUITO_DIFICIL = 'muito_dificil', 'Muito difícil'
 
     class Situacao(models.TextChoices):
-        INICIADA = 'iniciada', 'Iniciada'
+        ATIVA = 'ativa', 'Ativa'
         PAUSADA = 'pausada', 'Pausada'
-        REALIZADA = 'realizada', 'Realizada'
         CANCELADA = 'cancelada', 'Cancelada'
 
     class Recorrencia(models.TextChoices):
@@ -29,7 +28,7 @@ class Atividade(models.Model):
     )
     nmatividade = models.CharField(max_length=100)
     peso = models.CharField(max_length=20, choices=Peso.choices)
-    situacao = models.CharField(max_length=20, choices=Situacao.choices, default=Situacao.INICIADA)
+    situacao = models.CharField(max_length=20, choices=Situacao.choices, default=Situacao.ATIVA)
     recorrencia = models.CharField(max_length=20, choices=Recorrencia.choices)
     dtatividade = models.DateField()
     dtatividaderealizada = models.DateField(null=True, blank=True)

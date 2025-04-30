@@ -116,13 +116,13 @@
                     </div>
                     <div class="form-actions">
                         <button id="btn-finalizar" class="action-btn add-task-btn">
-                            Concluir
+                            Concluir Atividade
                         </button>
-                        <button id="btn-editar" class="action-btn voltar-task-btn">
-                            Editar
-                        </button>
+                        <a href="{% url 'atividades:editar_atividade' atividade.idatividade %}" class="action-btn voltar-task-btn">
+                            Editar Atividade
+                        </a>
                         <a href="{% url 'atividades:remover_atividade' atividade.idatividade %}" class="action-btn remove-task-btn">
-                            <span></span> Cancelar
+                            <span></span> Cancelar Atividade
                         </a>
                     </div>
                 </form>

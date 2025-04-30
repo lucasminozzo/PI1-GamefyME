@@ -243,14 +243,25 @@ a {
 }
 
 /* Botões de Ação */
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-left: 32px;
-    align-items: flex-end;
-    justify-content: flex-start;
-    align-items: stretch;
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+    padding: 0 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    background: var(--roxo-card3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+    white-space: nowrap;
 }
 
 .ciclos-counter {
@@ -286,7 +297,6 @@ a {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
-
 .add-btn {
     background-color: var(--verde-xp);
     color: var(--roxo-card3);

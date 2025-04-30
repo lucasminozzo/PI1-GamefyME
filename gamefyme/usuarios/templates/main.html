@@ -80,50 +80,36 @@
             <div class="task-section habits-section">
                 <h3 class="section-title">Recorrentes</h3>
                 <div class="tasks-list habits-list">
-                    {% if atividades_recorrentes %}
-                        {% for atividade in atividades_recorrentes %}
-                            {% if atividade.recorrencia == 'recorrente' and atividade.situacao != 'realizada' %}
-                                {% with recorrentes_existem=True %}
-                                    <div class="task-item daily-item">
-                                        <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
-                                            class="task-btn add-btn">+</a>
-                                        <div class="task-description">{{ atividade.nmatividade }}</div>
-                                        <div class="xp-reward">{{ atividade.expatividade }} </div>
-                                    </div>
-                                {% endwith %}
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
+                    {% for atividade in atividades_recorrentes %}
+                        <div class="task-item daily-item">
+                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">+</a>
+                            <div class="task-description">{{ atividade.nmatividade }}</div>
+                            <div class="xp-reward">{{ atividade.expatividade }}</div>
+                        </div>
+                    {% empty %}
                         <div class="empty-tasks-message">
-                            <p>Sem atividades únicas para realizar</p>
+                            <p>Sem atividades recorrentes para realizar</p>
                             <p>Registre uma atividade</p>
                         </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             
             <div class="task-section dailies-section">
                 <h3 class="section-title">Únicas</h3>
-                <div class="tasks-list dailies-list">
-                    {% if atividades_unicas %}
-                        {% for atividade in atividades_unicas %}
-                            {% if atividade.recorrencia == 'unica' and atividade.situacao != 'realizada' %}
-                                {% with unicas_existem=True %}
-                                    <div class="task-item daily-item">
-                                        <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" 
-                                            class="task-btn add-btn">+</a>
-                                        <div class="task-description">{{ atividade.nmatividade }}</div>
-                                        <div class="xp-reward">{{ atividade.expatividade }}</div>
-                                    </div>
-                                {% endwith %}
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
+                <div class="tasks-list habits-list">
+                    {% for atividade in atividades_unicas %}
+                        <div class="task-item daily-item">
+                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">+</a>
+                            <div class="task-description">{{ atividade.nmatividade }}</div>
+                            <div class="xp-reward">{{ atividade.expatividade }}</div>
+                        </div>
+                    {% empty %}
                         <div class="empty-tasks-message">
                             <p>Sem atividades únicas para realizar</p>
                             <p>Registre uma atividade</p>
                         </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>

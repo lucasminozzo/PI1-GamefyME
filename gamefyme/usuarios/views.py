@@ -8,6 +8,8 @@ from django.contrib.auth.hashers import check_password
 from services import login_service, atividades_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
+from django.db.models import Q
+from atividades.models import Atividade
 
 def cadastro(request):
     if request.method == 'POST':
@@ -129,6 +131,19 @@ def main(request):
 
     usuario = login_service.get_usuario_logado(request)
     atividades = atividades_service.get_atividades_separadas(request)
+
+    atividades_recorrentes = Atividade.objects.filter(
+        idusuario=usuario,
+        situacao=Atividade.Situacao.ATIVA,
+        recorrencia=Atividade.Recorrencia.RECORRENTE
+    )
+
+    atividades_unicas = Atividade.objects.filter(
+        idusuario=usuario,
+        situacao=Atividade.Situacao.ATIVA,
+        recorrencia=Atividade.Recorrencia.UNICA,
+        dtatividaderealizada__isnull=True
+    )
 
     return render(request, 'main.html', {
         'usuario': usuario,
