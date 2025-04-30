@@ -108,11 +108,11 @@ def esqueceu(request):
         email = request.POST.get('email')
         try:
             usuario = Usuario.objects.get(emailusuario=email)
-            if email(usuario.emailusuario):
-                subject = "Nova Senha"
+            if email == usuario.emailusuario:
+                subject = "Recuperação da Senha"
                 message = "Nova Senha teste"
-                send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True)
-                return redirect('auth:esqueceu')
+                send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True)
+                return redirect('usuarios:esqueceu')
             else:
                 return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email})
         except Usuario.DoesNotExist:
