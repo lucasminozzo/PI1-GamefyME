@@ -105,6 +105,9 @@ def login(request):
             if check_password(senha, usuario.password):
                 request.session['usuario_id'] = usuario.idusuario
                 request.session['usuario_nome'] = usuario.nmusuario
+
+                atividades_service.verificar_streak_no_login(usuario)
+
                 return redirect('usuarios:main')
             else:
                 return render(request, 'login.html', {'erro': 'Email ou senha incorretos.', 'email': email})
@@ -145,7 +148,6 @@ def main(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
-    atividades = atividades_service.get_atividades_separadas(request)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
@@ -162,8 +164,8 @@ def main(request):
 
     return render(request, 'main.html', {
         'usuario': usuario,
-        'atividades_unicas': atividades['unicas'],
-        'atividades_recorrentes': atividades['recorrentes']
+        'atividades_unicas': atividades_unicas,
+        'atividades_recorrentes': atividades_recorrentes
     })
     
 def nova_senha(request, uidb64, token):

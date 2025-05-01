@@ -4,12 +4,8 @@ from django.utils import timezone
 from services import login_service, atividades_service
 from django.contrib import messages
 from django.db import IntegrityError
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_protect
-import json
 from django.db import transaction
-from .models import Atividade, SessaoPomodoro, Usuario
+from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
@@ -45,6 +41,8 @@ def criar_atividade(request):
         'usuario': usuario
     })
     
+from django.utils import timezone
+
 @transaction.atomic
 def realizar_atividade(request, idatividade):
     if not login_service.is_usuario_logado(request):
@@ -52,14 +50,18 @@ def realizar_atividade(request, idatividade):
 
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-    
+
     if atividade.situacao in [Atividade.Situacao.CANCELADA]:
-        messages.error(request, "Esta atividade não pode ser cancelada.")
+        messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
 
     if request.method == 'POST':
         try:
-            atividade.situacao = Atividade.Situacao.ATIVA
+            if atividade.recorrencia in [Atividade.Recorrencia.RECORRENTE]:
+                atividade.situacao = Atividade.Situacao.ATIVA
+            else:
+                atividade.situacao = Atividade.Situacao.REALIZADA
+
             atividade.dtatividaderealizada = timezone.now().date()
 
             exp_ganha = atividades_service.calcular_experiencia(
@@ -73,6 +75,15 @@ def realizar_atividade(request, idatividade):
                 nova_exp -= 1000
 
             usuario.expusuario = nova_exp
+
+            atividade.save()
+            usuario.save()
+
+            AtividadeConcluidas.objects.create(
+                idusuario=usuario,
+                idatividade=atividade,
+                dtconclusao=timezone.now()
+            )
 
             inicio = request.POST.get('inicio')
             fim = request.POST.get('fim')
@@ -92,9 +103,6 @@ def realizar_atividade(request, idatividade):
                         request,
                         f"Atividade concluída, mas houve um erro ao salvar a sessão Pomodoro: {str(e)}"
                     )
-
-            atividade.save()
-            usuario.save()
 
             atividades_service.atualizar_streak(usuario)
 
@@ -157,20 +165,15 @@ def remover_atividade(request, idatividade):
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
 
-    if atividade.situacao in [Atividade.Situacao.CANCELADA, Atividade.Situacao.ATIVA]:
-        messages.error(request, "Esta atividade não pode ser removida.")
+    if atividade.situacao == Atividade.Situacao.CANCELADA:
+        messages.error(request, "Esta atividade já está cancelada.")
         return redirect('usuarios:main')
 
-    if request.method == 'POST':
-        try:
-            atividade.situacao = Atividade.Situacao.CANCELADA
-            atividade.save()
-            messages.success(request, "Atividade removida com sucesso!")
-            return redirect('usuarios:main')
-        except Exception as e:
-            messages.error(request, f"Erro ao remover a atividade: {str(e)}")
+    try:
+        atividade.situacao = Atividade.Situacao.CANCELADA
+        atividade.save()
+        messages.success(request, "Atividade removida com sucesso!")
+    except Exception as e:
+        messages.error(request, f"Erro ao remover a atividade: {str(e)}")
 
-    return render(request, 'atividades/remover_atividade.html', {
-        'atividade': atividade,
-        'usuario': usuario
-    })
+    return redirect('usuarios:main')

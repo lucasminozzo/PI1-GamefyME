@@ -14,7 +14,7 @@ class Atividade(models.Model):
 
     class Situacao(models.TextChoices):
         ATIVA = 'ativa', 'Ativa'
-        PAUSADA = 'pausada', 'Pausada'
+        REALIZADA = 'realizada', 'Realizada'
         CANCELADA = 'cancelada', 'Cancelada'
 
     class Recorrencia(models.TextChoices):
@@ -60,3 +60,23 @@ class SessaoPomodoro(models.Model):
 
     def __str__(self):
         return f'Sessão {self.nrciclo} - Usuário {self.idusuario_id} - Atividade {self.idatividade_id}'
+    
+class AtividadeConcluidas(models.Model):
+    idatividade_concluida = models.AutoField(primary_key=True)
+    idusuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='idusuario'
+    )
+    idatividade = models.ForeignKey(
+        Atividade,
+        on_delete=models.CASCADE,
+        db_column='idatividade'
+    )
+    dtconclusao = models.DateTimeField()
+
+    class Meta:
+        db_table = 'atividades_concluidas'
+
+    def __str__(self):
+        return f'Usuário {self.idusuario_id} - Atividade {self.idatividade_id}'
