@@ -24,7 +24,7 @@ def criar_atividade(request):
                 atividade = form.save(commit=False)
                 atividade.idusuario = usuario
                 atividade.dtatividade = timezone.now().date()
-                atividade.situacao = 'iniciada'
+                atividade.situacao = 'ativa'
 
                 atividade.expatividade = atividades_service.calcular_experiencia(
                     atividade.peso,
@@ -102,7 +102,7 @@ def realizar_atividade(request, idatividade):
                 request,
                 f'Atividade "{atividade.nmatividade}" concluída com sucesso! ' +
                 f'Você ganhou {exp_ganha} pontos de experiência!' +
-                (f' Ciclos Pomodoro completados: {nrciclo}' if nrciclo else '')
+                (f' Ciclos Pomodoro completos: {nrciclo}' if nrciclo else '')
             )
             return redirect('usuarios:main')
 

@@ -10,6 +10,10 @@ from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from django.db.models import Q
 from atividades.models import Atividade
+from urllib.parse import quote, unquote
+from django.shortcuts import render, get_object_or_404
+
+
 
 def cadastro(request):
     if request.method == 'POST':
@@ -111,10 +115,16 @@ def esqueceu(request):
         try:
             usuario = Usuario.objects.get(emailusuario=email)
             if email == usuario.emailusuario:
-                subject = "Recuperação da Senha"
-                message = "Nova Senha teste"
+                id= usuario.idusuario
+                subject = "Esqueceu a senha - Gamefyme"
+                # Criação do link para redefinir a senha
+                message = "Clique no link abaixo para redefinir sua senha:\n\n"
+                message += f"{request.build_absolute_uri(reverse('usuarios:nova_senha', args=[quote(str(id))]))}\n\n"
+                message += "Se você não solicitou essa alteração, ignore este e-mail."
+                # Enviar o e-mail
                 send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True)
-                return redirect('usuarios:esqueceu')
+                messages.success(request, 'Email enviado com sucesso! Verifique sua caixa de entrada.')
+                return redirect('usuarios:login')
             else:
                 return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email})
         except Usuario.DoesNotExist:
@@ -150,3 +160,38 @@ def main(request):
         'atividades_unicas': atividades['unicas'],
         'atividades_recorrentes': atividades['recorrentes']
     })
+    
+def nova_senha(request, idusuario):
+    usuario = Usuario.objects.get(idusuario=idusuario)
+
+
+    if request.method == 'POST':
+        id = Usuario.objects.get(idusuario=idusuario)
+        senha = request.POST.get('senha')
+        confsenha = request.POST.get('confsenha')
+
+        if not all([id, senha, confsenha]):
+            return render(request, 'nova_senha.html', {
+                'erro': 'Preencha todos os campos.',
+                'idusuario': id
+            })
+
+        if senha != confsenha:
+            return render(request, 'nova_senha.html', {
+                'erro': 'Senhas não coincidem.',
+                'idusuario': id
+            })
+
+        try:
+            usuario = Usuario.objects.get(idusuario=idusuario)
+            usuario.senha = make_password(senha)
+            usuario.save()
+            messages.success(request, 'Senha alterada com sucesso! Faça login para continuar.')
+            return redirect('usuarios:login')
+        except Usuario.DoesNotExist:
+            return render(request, 'nova_senha.html', {'erro': 'Usuário não encontrado.', 'idusuario': id})
+
+    return render(request, 'nova_senha.html', {
+            'usuario': usuario,
+            'idusuario': idusuario  
+        })
