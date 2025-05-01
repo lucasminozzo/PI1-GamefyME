@@ -10,15 +10,6 @@ def get_atividade(request):
     usuario = Usuario.objects.get(pk=usuario_id)
     return Atividade.objects.filter(idusuario=usuario.idusuario).all()
 
-def get_atividades_separadas(request):
-    """Retorna as atividades separadas por tipo e não realizadas"""
-    atividades = get_atividade(request)
-
-    return {
-        'unicas': [a for a in atividades if a.recorrencia == 'unica' and a.situacao != 'realizada'],
-        'recorrentes': [a for a in atividades if a.recorrencia == 'recorrente' and a.situacao != 'realizada']
-    }
-
 def atualizar_streak(usuario):
     """Atualiza o streak do usuário baseado na última atividade"""
     hoje = date.today()
@@ -40,6 +31,31 @@ def atualizar_streak(usuario):
 
     usuario.ultima_atividade = hoje
     usuario.save()
+    
+def verificar_streak_no_login(usuario):
+    hoje = date.today()
+
+    atividades_hoje = Atividade.objects.filter(
+        idusuario=usuario.idusuario,
+        dtatividaderealizada=hoje,
+        situacao='realizada'
+    ).exists()
+
+    if not atividades_hoje:
+        usuario.streak_semanal = 0
+
+        ultima_atividade_obj = Atividade.objects.filter(
+            idusuario=usuario.idusuario,
+            situacao='realizada'
+        ).order_by('-dtatividaderealizada').first()
+
+        if ultima_atividade_obj:
+            usuario.ultima_atividade = ultima_atividade_obj.dtatividaderealizada
+        else:
+            usuario.ultima_atividade = None
+
+        usuario.save() 
+
 
 def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
     """

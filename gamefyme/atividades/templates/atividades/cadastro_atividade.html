@@ -11,22 +11,6 @@
 </head>
 <body>
     {% include 'header.html'%}
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="msg-flutuante {% if message.tags == 'error' %}erro{% else %}sucesso{% endif %}">
-                {{ message }}
-                <span class="fechar" onclick="fecharMsg(this)">×</span>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div id="loading-overlay" style="display:none;">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <span>Carregando...</span>
-        </div>
-    </div>
 
     <form action="{% url 'atividades:atividade' %}" class="form-container" method="post">
         {% csrf_token %}

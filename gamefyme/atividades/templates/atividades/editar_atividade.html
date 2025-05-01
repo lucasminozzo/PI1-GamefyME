@@ -11,35 +11,20 @@
 </head>
 <body>
     {% include 'header.html'%}
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="msg-flutuante {% if message.tags == 'error' %}erro{% else %}sucesso{% endif %}">
-                {{ message }}
-                <span class="fechar" onclick="fecharMsg(this)">×</span>
-            </div>
-        {% endfor %}
-    {% endif %}
 
-    <div id="loading-overlay" style="display:none;">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <span>Carregando...</span>
-        </div>
-    </div>
-
-    <form action="{% url 'atividades:atividade' %}" class="form-container" method="post">
+    <form action="{% url 'atividades:editar_atividade' atividade.idatividade %}" class="form-container" method="post">
         {% csrf_token %}
         <div class="form-grid">
             <div>
                 <input type="hidden" id="idusuario" name="idusuario" maxlength="100" value="{{ usuario.idusuario }}">
+                <input type="hidden" id="idatividade" name="idatividade" maxlength="100" value="{{ atividade.idatividade }}">
                 <div class="form-group">
                     <label for="nmatividade">Atividade</label>
-                    <input type="text" id="nmatividade" name="nmatividade" maxlength="100" required>
+                    <input type="text" id="nmatividade" name="nmatividade" maxlength="100" required value="{{ atividade.nmatividade }}">
                 </div>
                 <div class="form-group">
                     <label for="dsatividade">Descrição</label>
-                    <textarea id="dsatividade" name="dsatividade" maxlength="200"></textarea>
+                    <textarea id="dsatividade" name="dsatividade" maxlength="200">{{ atividade.dsatividade }}</textarea>
                     <div style="text-align: right; color: #fff; font-size: 1rem;">Max 200</div>
                 </div>
             </div>
@@ -48,8 +33,8 @@
                     <label for="recorrencia">Recorrência</label>
                     <select id="recorrencia" name="recorrencia" required>
                         <option value="">Selecione uma opção</option>
-                        <option value="unica">Única</option>
-                        <option value="recorrente">Recorrente</option>
+                        <option value="unica" {% if atividade.recorrencia == 'unica' %}selected{% endif %}>Única</option>
+                        <option value="recorrente" {% if atividade.recorrencia == 'recorrente' %}selected{% endif %}>Recorrente</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -66,6 +51,7 @@
                             class="input-full"
                             oninput="validarTempo(this)"
                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            value="{{ atividade.tpestimado }}"
                         >
                         <span class="minutos-label">minutos</span>
                     </div>
@@ -75,23 +61,20 @@
                     <label for="peso">Peso da atividade</label>
                     <select id="peso" name="peso" required>
                         <option value="">Selecione uma opção</option>
-                        <option value="muito_facil">Muito fácil</option>
-                        <option value="facil">Fácil</option>
-                        <option value="medio">Médio</option>
-                        <option value="dificil">Difícil</option>
-                        <option value="muito_dificil">Muito difícil</option>
+                        <option value="muito_facil" {% if atividade.peso == 'muito_facil' %}selected{% endif %}>Muito fácil</option>
+                        <option value="facil" {% if atividade.peso == 'facil' %}selected{% endif %}>Fácil</option>
+                        <option value="medio" {% if atividade.peso == 'medio' %}selected{% endif %}>Médio</option>
+                        <option value="dificil" {% if atividade.peso == 'dificil' %}selected{% endif %}>Difícil</option>
+                        <option value="muito_dificil" {% if atividade.peso == 'muito_dificil' %}selected{% endif %}>Muito difícil</option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn-add">Add Tarefa <span>+</span></button>
+            <button type="submit" class="btn-add">Salvar Alterações</button>
             <button type="reset" class="btn-clear">Limpar <span>🗑️</span></button>
-            {% comment %} <a href="{% url 'usuarios:main' %}" class="btn-cancel" style="display:flex;align-items:center;">
-                Cancelar <span>✖️</span>
-            </a> {% endcomment %}
-            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">
-                Voltar<span>✖️</span>
+            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="btn-cancel" style="display:flex;align-items:center;">
+                Voltar <span>✖️</span>
             </a>
         </div>
     </form>
