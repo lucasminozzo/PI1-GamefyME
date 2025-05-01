@@ -10,8 +10,12 @@ from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from django.db.models import Q
 from atividades.models import Atividade
-from urllib.parse import quote, unquote
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str, force_bytes
+from django.contrib.auth import get_user_model
 
 
 
@@ -53,7 +57,7 @@ def cadastro(request):
                 usuario = Usuario(
                     nmusuario=nome,
                     emailusuario=email,
-                    senha=make_password(senha),
+                    password=make_password(senha),
                     dtnascimento=dt_nascimento,
                     flsituacao=True,
                     nivelusuario=1,
@@ -98,7 +102,7 @@ def login(request):
         senha = request.POST.get('senha')
         try:
             usuario = Usuario.objects.get(emailusuario=email)
-            if check_password(senha, usuario.senha):
+            if check_password(senha, usuario.password):
                 request.session['usuario_id'] = usuario.idusuario
                 request.session['usuario_nome'] = usuario.nmusuario
                 return redirect('usuarios:main')
@@ -115,20 +119,21 @@ def esqueceu(request):
         try:
             usuario = Usuario.objects.get(emailusuario=email)
             if email == usuario.emailusuario:
-                id= usuario.idusuario
-                subject = "Esqueceu a senha - Gamefyme"
-                # Criação do link para redefinir a senha
-                message = "Clique no link abaixo para redefinir sua senha:\n\n"
-                message += f"{request.build_absolute_uri(reverse('usuarios:nova_senha', args=[quote(str(id))]))}\n\n"
-                message += "Se você não solicitou essa alteração, ignore este e-mail."
-                # Enviar o e-mail
-                send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True)
-                messages.success(request, 'Email enviado com sucesso! Verifique sua caixa de entrada.')
-                return redirect('usuarios:login')
+                id=usuario.idusuario
+                uidb64 = urlsafe_base64_encode(force_bytes(id)) ## Codifica o ID do usuário
+                token = default_token_generator.make_token(usuario) ## Cria um token para o usuário
+                url = reverse('usuarios:nova_senha', kwargs={'uidb64': uidb64, 'token': token}) ## URL para redefinir a senha
+                subject = "Esqueceu a senha - Gamefyme" ## Assunto do e-mail
+                message = "Clique no link abaixo para redefinir sua senha:\n\n" ## Mensagem do e-mail
+                message += f"{request.build_absolute_uri(url)}\n\n" ## Link para redefinir a senha
+                message += "Se você não solicitou essa alteração, ignore este e-mail." ## Mensagem do e-mail
+                send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True) ## Envia o e-mail
+                messages.success(request, 'Email enviado com sucesso! Verifique sua caixa de entrada.') ## Mensagem de sucesso caso o e-mail tenha sido enviado
+                return redirect('usuarios:login') ## Redireciona para a página de login
             else:
-                return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email})
+                return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email}) ## Mensagem de erro caso o e-mail esteja incorreto
         except Usuario.DoesNotExist:
-            return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email})
+            return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email}) ## Mensagem de erro caso o usuário não exista
     return render(request, 'esqueceu.html')
 
 def logout(request):
@@ -161,37 +166,55 @@ def main(request):
         'atividades_recorrentes': atividades['recorrentes']
     })
     
-def nova_senha(request, idusuario):
-    usuario = Usuario.objects.get(idusuario=idusuario)
+def nova_senha(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
 
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            senha = request.POST.get('senha')
+            confsenha = request.POST.get('confsenha')
 
-    if request.method == 'POST':
-        id = Usuario.objects.get(idusuario=idusuario)
-        senha = request.POST.get('senha')
-        confsenha = request.POST.get('confsenha')
+            if not senha or not confsenha:
+                return render(request, 'nova_senha.html', {
+                    'erro': 'Preencha todos os campos.',
+                    'usuario': user,
+                    'uidb64': uidb64,
+                    'token': token,
+                })
 
-        if not all([id, senha, confsenha]):
-            return render(request, 'nova_senha.html', {
-                'erro': 'Preencha todos os campos.',
-                'idusuario': id
-            })
+            if senha != confsenha:
+                return render(request, 'nova_senha.html', {
+                    'erro': 'Senhas não coincidem.',
+                    'usuario': user,
+                    'uidb64': uidb64,
+                    'token': token,
+                })
 
-        if senha != confsenha:
-            return render(request, 'nova_senha.html', {
-                'erro': 'Senhas não coincidem.',
-                'idusuario': id
-            })
+            try:
+                usuario = Usuario.objects.get(emailusuario=user.emailusuario) 
+                usuario.password = make_password(senha)
+                usuario.save()
+                messages.success(request, 'Senha alterada com sucesso! Faça login para continuar.')
+                return redirect('usuarios:login')
+            except Usuario.DoesNotExist:
+                return render(request, 'nova_senha.html', {
+                    'erro': 'Usuário não encontrado.',
+                    'usuario': user,
+                    'uidb64': uidb64,
+                    'token': token,
+                })
 
-        try:
-            usuario = Usuario.objects.get(idusuario=idusuario)
-            usuario.senha = make_password(senha)
-            usuario.save()
-            messages.success(request, 'Senha alterada com sucesso! Faça login para continuar.')
-            return redirect('usuarios:login')
-        except Usuario.DoesNotExist:
-            return render(request, 'nova_senha.html', {'erro': 'Usuário não encontrado.', 'idusuario': id})
-
-    return render(request, 'nova_senha.html', {
-            'usuario': usuario,
-            'idusuario': idusuario  
+        ## renderiza o formulário
+        return render(request, 'nova_senha.html', {
+            'usuario': user,
+            'uidb64': uidb64,
+            'token': token,
         })
+    
+    messages.error(request, 'Link inválido. Senha já foi alterada ou o link expirou.') ## Mensagem de erro caso o link seja inválido
+    return redirect('usuarios:login') ## Redireciona para a página de login

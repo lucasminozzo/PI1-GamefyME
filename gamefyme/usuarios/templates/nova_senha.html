@@ -29,7 +29,7 @@
             </div>
             {% endif %}
             <div class="content-right">
-                <form action="{% url 'usuarios:nova_senha' idusuario=idusuario  %}" method="POST">
+                <form action="{% url 'usuarios:nova_senha' uidb64=uidb64 token=token %}" method="POST">
                     {% csrf_token %}
                     <label for="senha">Senha</label>
                 <input type="password" id="senha" name="senha" placeholder="********" required>
