@@ -123,7 +123,8 @@ def realizar_atividade(request, idatividade):
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
-        'usuario': usuario
+        'usuario': usuario,
+        'exibir_voltar': True,
     })
     
 def editar_atividade(request, idatividade):
