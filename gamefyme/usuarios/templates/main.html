@@ -5,59 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GamefyME - Menu Principal</title>
     {% load static %}
-    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <script src="{% static 'scripts/main.js' %}"></script>
 </head>
 <body>
     
     {% include 'header.html'%}
+    {% include 'loading.html'%}
 
     <div class="app-container">
-        <div class="profile-section">
-            <div class="avatar-container">
-                <div class="avatar">
-                    <svg viewBox="0 0 100 100" width="100" height="100">
-                        <circle cx="50" cy="40" r="25" fill="#fff"/>
-                        <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
-                        <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
-                        <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="profile-info">
-                <h2 class="nmusuario">{{ usuario.nmusuario }}</h2>
-                <p class="user-date">{{ usuario.dtnascimento|date:"d/m/Y" }}</p>
-                <div class="streak-container">
-                    <div class="streak-title">Dias consecutivos de atividades completas:</div>
-                    <div class="weekdays">
-                        <div class="weekday" id="dom">Dom</div>
-                        <div class="weekday" id="seg">Seg</div>
-                        <div class="weekday" id="ter">Ter</div>
-                        <div class="weekday" id="qua">Qua</div>
-                        <div class="weekday" id="qui">Qui</div>
-                        <div class="weekday" id="sex">Sex</div>
-                        <div class="weekday" id="sab">Sab</div>
-                    </div>
-                    <div class="level">
-                        <span class="level-number">Nível: {{ usuario.nivelusuario }}</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%">
-                                <div class="progress-text">
-                                    <span style="margin-left: 80px;">{{ usuario.expusuario }}</span><span>/1000</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <a href="{% url 'atividades:atividade' %}" class="action-btn add-task-btn">
-                    <span>➕</span> Add Tarefa
-                </a>
-            </div>
-        </div>
+        {% include 'perfil.html'%}
         
         <div class="tasks-container">
             <div class="task-section habits-section">

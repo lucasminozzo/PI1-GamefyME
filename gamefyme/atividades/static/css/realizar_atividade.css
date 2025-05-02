@@ -1,25 +1,3 @@
-:root {
-    --roxo-header: #4E008A;
-    --roxo-botao: #3d0066;
-    --roxo-gradiente-top: #2d0052;
-    --roxo-gradiente-bottom: #390066;
-    --roxo-card: #6c1bbd;
-    --roxo-card2: #7a2be2;
-    --roxo-card3: #4e008a;
-    --roxo-card4: #400071;
-    --verde-xp: #00cc7a; /* Ajustado para melhor contraste */
-    --amarelo-moeda: #ffe066;
-    --cinza-sub: #7a7a7a;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
-    font-size: 25px;
-}
-
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -29,21 +7,6 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-}
-
-body {
-    background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
-    min-height: 100vh;
-    color: #fff;
-}
-
-header {
-    width: 100%;
-    background: var(--roxo-header);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 24px 48px 16px 48px;
 }
 
 .user-menu-container {
@@ -590,17 +553,6 @@ input[type="number"] {
 .add-task-btn { color: var(--verde-xp)}
 .voltar-task-btn { color: var(--amarelo-moeda)}
 
-@media (max-width: 900px) {
-    .main-content {
-        flex-direction: column;
-        gap: 24px;
-    }
-    .pomodoro-bloco {
-        justify-content: center;
-        margin-top: 24px;
-    }
-}
-
 @keyframes spin {
     0% { transform: rotate(0deg);}
     100% { transform: rotate(360deg);}
@@ -634,106 +586,4 @@ input[type="number"] {
         transform: translateY(-20px);
     }
 }
-/* Media Queries */
-@media (max-width: 1100px) {
-    .main-container { 
-        width: 98vw; 
-    }
-    
-    .profile-section {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .profile-info {
-        padding: 20px 0 0 0;
-        text-align: center;
-        margin-left: 0;
-    }
-    
-    .tasks-container {
-        flex-direction: column;
-    }
-    
-    header {
-        padding: 16px 24px;
-    }
 
-    .action-buttons {
-        flex-direction: row;
-        margin-left: 0;
-        margin-top: 24px;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .weekdays {
-        gap: 5px;
-    }
-    
-    .weekday {
-        width: 35px;
-        height: 35px;
-        font-size: 14px;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .action-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .profile-section {
-        padding: 20px;
-    }
-    
-    .msg-flutuante {
-        max-width: 90%;
-        font-size: 16px;
-    }
-}
-@media (max-width: 1100px) {
-    .form-container { 
-        width: 98vw; 
-        padding: 24px 8px 16px 8px;
-    }
-    header {
-        padding: 16px 24px;
-    }
-    .form-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 700px) {
-    .form-container {
-        max-width: 98vw;
-        padding: 24px 8px 16px 8px;
-        margin: 20px auto 0 auto;
-    }
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 24px 0;
-    }
-    .form-actions {
-        flex-direction: column;
-        gap: 16px;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 1.2rem;
-        padding: 10px;
-    }
-    .input-minutes-wrapper input[type="number"] {
-        height: 40px;
-    }
-    .minutes-label {
-        font-size: 1rem;
-        right: 10px;
-    }
-}

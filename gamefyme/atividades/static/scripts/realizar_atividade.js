@@ -172,6 +172,17 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnFinalizar) {
       btnFinalizar.addEventListener("click", finalizarAtividade);
   }
+  
+  if (btnVoltar) {
+    btnVoltar.addEventListener("click", function(e) {
+        e.preventDefault();
+        showLoading();
+        const href = this.getAttribute("href");
+        setTimeout(() => {
+            window.location.href = href;
+        }, 100);
+    });
+}
 
   window.addEventListener("load", hideLoading);
 });
