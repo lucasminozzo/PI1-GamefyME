@@ -51,7 +51,11 @@ def realizar_atividade(request, idatividade):
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
 
-    if atividade.situacao in [Atividade.Situacao.CANCELADA]:
+    if atividade.situacao in [Atividade.Situacao.CANCELADA ]:
+        messages.error(request, "Esta atividade não pode ser alterada.")
+        return redirect('usuarios:main')
+    
+    elif atividade.situacao in [Atividade.Situacao.REALIZADA] and atividade.recorrencia in [Atividade.Recorrencia.UNICA]:
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
 
