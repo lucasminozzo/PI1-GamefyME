@@ -18,6 +18,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Jersey 10', cursive;
+    font-size: 25px;
 }
 
 body {
@@ -33,7 +34,6 @@ header {
     align-items: center;
     padding: 24px 48px 16px 48px;
     color: #fff;
-    justify-content: space-between;
 }
 
 a {
@@ -47,7 +47,6 @@ a {
     margin: 24px auto;
     padding: 18px 32px 18px 22px;
     border-radius: 12px;
-    font-size: 20px;
     font-family: 'Jersey 10', cursive;
     box-shadow: 0 4px 24px #0002;
     opacity: 0;
@@ -69,7 +68,6 @@ a {
 .msg-flutuante .fechar {
     margin-left: auto;
     cursor: pointer;
-    font-size: 26px;
     font-weight: bold;
     color: inherit;
     opacity: 0.7;
@@ -106,7 +104,6 @@ a {
 }
 #loading-overlay span {
     color: #fff;
-    font-size: 2rem;
     font-family: 'Jersey 10', cursive;
     text-shadow: 1px 1px 4px #000;
 }

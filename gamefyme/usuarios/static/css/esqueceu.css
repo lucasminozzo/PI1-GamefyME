@@ -9,7 +9,6 @@
     background: var(--roxo-botao);
     padding: 8px 18px;
     border-radius: 8px;
-    font-size: 22px;
     font-weight: bold;
     transition: background 0.2s, box-shadow 0.2s;
     box-shadow: 0 2px 0 #2d0052;
@@ -41,49 +40,6 @@ main {
     max-width: 550px;
 }
 
-.msg-flutuante {
-    position: relative;
-    width: 100%;
-    max-width: 550px;
-    margin-bottom: 24px;
-    padding: 18px 32px 18px 22px;
-    border-radius: 12px;
-    font-size: 20px;
-    font-family: 'Jersey 10', cursive;
-    box-shadow: 0 4px 24px #0002;
-    opacity: 0;
-    animation: msg-entrada 0.5s forwards;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.msg-flutuante.sucesso {
-    background: #e0ffe6;
-    color: #1a7f3c;
-    border: 1.5px solid #b3ffcc;
-}
-
-.msg-flutuante.erro {
-    background: #ffe0e0;
-    color: #b30000;
-    border: 1.5px solid #ffb3b3;
-}
-
-.msg-flutuante .fechar {
-    margin-left: auto;
-    cursor: pointer;
-    font-size: 26px;
-    font-weight: bold;
-    color: inherit;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.msg-flutuante .fechar:hover {
-    opacity: 1;
-}
-
 .content-right {
     background: #fff;
     border-radius: 14px;
@@ -102,7 +58,6 @@ main {
     font-weight: bold;
     display: block;
     margin-bottom: 10px;
-    font-size: 30px;
     color: #222;
 }
 
@@ -114,7 +69,6 @@ main {
     background: #fafafa;
     color: #222;
     margin-bottom: 22px;
-    font-size: 20px;
     font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
     transition: border 0.3s;
@@ -138,7 +92,6 @@ main {
     border: none;
     padding: 18px 0;
     border-radius: 8px;
-    font-size: 26px;
     cursor: pointer;
     font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
@@ -158,7 +111,6 @@ main {
     margin-top: 18px;
     color: var(--roxo-header);
     text-decoration: none;
-    font-size: 25px;
     font-family: 'Jersey 10', cursive;
     font-weight: bold;
     transition: color 0.2s;
@@ -167,29 +119,6 @@ main {
 .forgot-password:hover {
     color: #222;
     text-decoration: underline;
-    font-size: 27px;
-}
-
-@keyframes msg-entrada {
-    from { 
-        opacity: 0; 
-        transform: translateY(-20px);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-}
-
-@keyframes msg-saida {
-    from { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-    to { 
-        opacity: 0; 
-        transform: translateY(-20px);
-    }
 }
 
 @keyframes fadeIn {

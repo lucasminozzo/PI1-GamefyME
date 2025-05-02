@@ -122,14 +122,6 @@ class PomodoroTimer {
   }
 }
 
-function showLoading() {
-  document.getElementById("loading-overlay").style.display = "flex";
-}
-
-function hideLoading() {
-  document.getElementById("loading-overlay").style.display = "none";
-}
-
 function finalizarAtividade(e) {
   e.preventDefault();
   showLoading();
@@ -172,27 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnFinalizar) {
       btnFinalizar.addEventListener("click", finalizarAtividade);
   }
-  
-  if (btnVoltar) {
-    btnVoltar.addEventListener("click", function(e) {
-        e.preventDefault();
-        showLoading();
-        const href = this.getAttribute("href");
-        setTimeout(() => {
-            window.location.href = href;
-        }, 100);
-    });
-}
 
   window.addEventListener("load", hideLoading);
 });
-
-window.onload = function() {
-  var msgs = document.querySelectorAll('.msg-flutuante');
-  msgs.forEach(function(msg) {
-      setTimeout(function() {
-          msg.style.animation = 'msg-saida 0.4s forwards';
-          setTimeout(function() { msg.style.display = 'none'; }, 400);
-      }, 5000);
-  });
-};

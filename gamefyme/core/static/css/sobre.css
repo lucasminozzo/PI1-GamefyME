@@ -13,7 +13,6 @@ header {
     background: var(--roxo-botao);
     padding: 8px 18px;
     border-radius: 8px;
-    font-size: 22px;
     font-weight: bold;
     transition: background 0.2s, box-shadow 0.2s;
     box-shadow: 0 2px 0 #2d0052;

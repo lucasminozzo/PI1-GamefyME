@@ -1,3 +1,7 @@
+header {
+    justify-content: flex-end;
+}
+
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -20,7 +24,6 @@
     border: none;
     border-radius: 8px;
     padding: 8px 18px;
-    font-size: 22px;
     font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
     cursor: pointer;
     display: flex;
@@ -55,7 +58,6 @@
     padding: 14px 18px;
     text-decoration: none;
     display: block;
-    font-size: 20px;
     border-bottom: 1px solid #eee;
     transition: background 0.2s ease;
 }
@@ -127,13 +129,11 @@ a {
 }
 
 .profile-info .username {
-    font-size: 32px;
     font-weight: bold;
     color: #fff;
 }
 
 .profile-info .user-date {
-    font-size: 22px;
     color: #e0e0e0;
 }
 
@@ -143,7 +143,6 @@ a {
 }
 
 .streak-title {
-    font-size: 22px;
     margin-bottom: 10px;
 }
 
@@ -161,7 +160,6 @@ a {
     align-items: center;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.1);
-    font-size: 16px;
 }
 
 .progress-bar {
@@ -195,7 +193,6 @@ a {
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 20px;
     font-weight: bold;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     pointer-events: none;
@@ -217,7 +214,6 @@ a {
     align-items: center;
     justify-content: center;
     height: 50px;
-    font-size: 20px;
     font-weight: bold;
     border-radius: 10px;
     border: none;
@@ -245,7 +241,6 @@ a {
     border: none;
     border-radius: 10px;
     padding: 16px 32px;
-    font-size: 20px;
     font-weight: bold;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -272,41 +267,11 @@ a {
 .xp-reward {
     font-weight: bold;
     color: var(--verde-xp);
-    font-size: 18px;
     margin-right: 5px;
 }
 
 .level {
-    font-size: 20px;
     margin-left: 10px;
-}
-
-#loading-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(30, 0, 60, 0.7);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loading-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 7px solid #fff;
-    border-top: 7px solid #4e008a;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
 }
 
 .form-container {
@@ -552,38 +517,4 @@ input[type="number"] {
 .remove-task-btn { color: rgb(221, 0, 0)}
 .add-task-btn { color: var(--verde-xp)}
 .voltar-task-btn { color: var(--amarelo-moeda)}
-
-@keyframes spin {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
-}
-
-#loading-overlay span {
-    color: #fff;
-    font-size: 2rem;
-    font-family: 'Jersey 10', cursive;
-    text-shadow: 1px 1px 4px #000;
-}
-/* Animações */
-@keyframes msg-entrada {
-    from { 
-        opacity: 0; 
-        transform: translateY(-20px);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-}
-
-@keyframes msg-saida {
-    from { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-    to { 
-        opacity: 0; 
-        transform: translateY(-20px);
-    }
-}
 
