@@ -8,7 +8,6 @@ from django.contrib.auth.hashers import check_password
 from services import login_service, atividades_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
-from django.db.models import Q
 from atividades.models import Atividade
 from django.shortcuts import render
 
@@ -16,7 +15,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
 
 
 def cadastro(request):
@@ -105,9 +104,9 @@ def login(request):
             if check_password(senha, usuario.password):
                 request.session['usuario_id'] = usuario.idusuario
                 request.session['usuario_nome'] = usuario.nmusuario
-
                 atividades_service.verificar_streak_no_login(usuario)
-
+                usuario.last_login = timezone.now()
+                usuario.save()
                 return redirect('usuarios:main')
             else:
                 return render(request, 'login.html', {'erro': 'Email ou senha incorretos.', 'email': email})
