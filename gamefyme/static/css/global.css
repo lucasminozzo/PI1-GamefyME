@@ -124,3 +124,258 @@ a {
     0% { transform: rotate(0deg);}
     100% { transform: rotate(360deg);}
 }
+
+.notifications-wrapper {
+    position: relative;
+    margin-right: 20px;
+    background: var(--roxo-botao);
+    border-radius: 8px;
+}
+
+.notifications-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    position: relative;
+    color: #fff;
+    transition: transform 0.2s;
+}
+
+.notifications-btn:hover {
+    transform: scale(1.1);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--verde-xp);
+    color: var(--roxo-header);
+    border-radius: 50%;
+    padding: 0 6px;
+    font-size: 16px;
+    min-width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Dropdown de notificações */
+.notifications-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    background: var(--roxo-card4);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    width: 350px;
+    max-height: 480px;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 2px solid var(--roxo-card2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.notifications-header {
+    padding: 16px;
+    border-bottom: 2px solid var(--roxo-card2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notifications-header h4 {
+    color: #fff;
+    font-size: 22px;
+}
+
+.mark-all-read {
+    background: none;
+    border: none;
+    color: var(--verde-xp);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.mark-all-read:hover {
+    background-color: rgba(0, 255, 153, 0.1);
+}
+
+.notification-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--roxo-card2);
+    cursor: pointer;
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+    background-color: var(--roxo-card3);
+}
+
+.notification-item.unread {
+    background-color: var(--roxo-card);
+}
+
+.notification-icon {
+    font-size: 24px;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-message {
+    margin-bottom: 4px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.notification-date {
+    font-size: 14px;
+    color: var(--cinza-sub);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1001;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    position: relative;
+    background: linear-gradient(to bottom, var(--roxo-card3), var(--roxo-card4));
+    margin: 15% auto;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    border: 2px solid var(--roxo-card2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-modal:hover {
+    opacity: 1;
+}
+
+.modal-header {
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: #fff;
+    font-size: 24px;
+}
+
+.modal-body {
+    padding: 20px 0;
+}
+
+.modal-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.modal-date {
+    margin-top: 16px;
+    color: var(--cinza-sub);
+    font-size: 16px;
+    text-align: right;
+}
+
+/* Scrollbar personalizada para o dropdown */
+.notifications-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notifications-dropdown::-webkit-scrollbar-track {
+    background: var(--roxo-card4);
+    border-radius: 0 12px 12px 0;
+}
+
+.notifications-dropdown::-webkit-scrollbar-thumb {
+    background: var(--roxo-card2);
+    border-radius: 4px;
+}
+
+.notifications-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--roxo-card);
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.no-notifications {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--cinza-sub);
+    font-size: 18px;
+}
+
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    min-width: 140px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 100;
+    margin-top: 8px;
+}
+
+.user-dropdown a {
+    color: #4E008A;
+    padding: 14px 18px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown a:hover {
+    background: #f3e6ff;
+}

@@ -14,8 +14,9 @@ header {
 }
 
 .user-menu-container {
+    display: flex;
+    align-items: center;
     position: relative;
-    display: inline-block;
 }
 
 .user-menu-btn {
@@ -39,35 +40,6 @@ header {
 .user-menu-btn:focus {
     outline: 2px solid #fff;
     outline-offset: 2px;
-}
-
-.user-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    background: #fff;
-    min-width: 140px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    z-index: 100;
-    margin-top: 8px;
-}
-
-.user-dropdown a {
-    color: #4E008A;
-    padding: 14px 18px;
-    text-decoration: none;
-    display: block;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s ease;
-}
-
-.user-dropdown a:last-child {
-    border-bottom: none;
-}
-
-.user-dropdown a:hover {
-    background: #f3e6ff;
 }
 
 /* Estilos do Avatar */

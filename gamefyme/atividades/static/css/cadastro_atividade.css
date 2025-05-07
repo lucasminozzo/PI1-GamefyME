@@ -118,8 +118,9 @@ input[type="number"] {
 .btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: #2d0052; }
 
 .user-menu-container {
-    position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    position: relative; /* Adicionar para posicionar dropdown corretamente */
 }
 
 .user-menu-btn {
@@ -138,35 +139,6 @@ input[type="number"] {
 
 .user-menu-btn:hover {
     background: #2d0052;
-}
-
-.user-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    background: #fff;
-    min-width: 140px;
-    box-shadow: 0 8px 24px #0003;
-    border-radius: 10px;
-    z-index: 100;
-    margin-top: 8px;
-}
-
-.user-dropdown a {
-    color: #4E008A;
-    padding: 14px 18px;
-    text-decoration: none;
-    display: block;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.user-dropdown a:last-child {
-    border-bottom: none;
-}
-
-.user-dropdown a:hover {
-    background: #f3e6ff;
 }
 
 .avatar-header {

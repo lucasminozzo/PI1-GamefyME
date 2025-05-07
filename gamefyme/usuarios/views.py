@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Usuario, TipoUsuario
+from .models import Usuario, TipoUsuario, Notificacao
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
@@ -10,12 +10,13 @@ from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from atividades.models import Atividade
 from django.shortcuts import render
-
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 
 def cadastro(request):
@@ -160,11 +161,22 @@ def main(request):
         recorrencia=Atividade.Recorrencia.UNICA,
         dtatividaderealizada__isnull=True
     )
+    
+    notificacoes = Notificacao.objects.filter(
+        idusuario=usuario
+    ).order_by('-dtcriacao')[:5]
+
+    notificacoes_nao_lidas = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).count()
 
     return render(request, 'main.html', {
         'usuario': usuario,
         'atividades_unicas': atividades_unicas,
-        'atividades_recorrentes': atividades_recorrentes
+        'atividades_recorrentes': atividades_recorrentes,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas
     })
     
 def nova_senha(request, uidb64, token):
@@ -210,12 +222,51 @@ def nova_senha(request, uidb64, token):
                     'token': token,
                 })
 
-        ## renderiza o formulário
         return render(request, 'nova_senha.html', {
             'usuario': user,
             'uidb64': uidb64,
             'token': token,
         })
     
-    messages.error(request, 'Link inválido. Senha já foi alterada ou o link expirou.') ## Mensagem de erro caso o link seja inválido
-    return redirect('usuarios:login') ## Redireciona para a página de login
+    messages.error(request, 'Link inválido. Senha já foi alterada ou o link expirou.')
+    return redirect('usuarios:login')
+
+
+@require_POST
+def marcar_notificacao_lida(request, notificacao_id):
+    if not login_service.is_usuario_logado(request):
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
+
+    usuario = login_service.get_usuario_logado(request)
+
+    try:
+        notificacao = Notificacao.objects.get(
+            idnotificacao=notificacao_id,
+            idusuario=usuario
+        )
+        notificacao.flstatus = True
+        notificacao.save()
+        return JsonResponse({'success': True})
+    except Notificacao.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Notificação não encontrada'}, status=404)
+
+@require_POST
+def marcar_todas_lidas(request):
+    if not login_service.is_usuario_logado(request):
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
+
+    usuario = login_service.get_usuario_logado(request)
+
+    Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).update(flstatus=True)
+
+    return JsonResponse({'success': True})
+
+def criar_notificacao(usuario, mensagem, tipo='info'):
+    return Notificacao.objects.create(
+        idusuario=usuario,
+        dsmensagem=mensagem,
+        fltipo=tipo
+    )

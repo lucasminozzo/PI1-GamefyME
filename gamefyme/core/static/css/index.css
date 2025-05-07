@@ -48,12 +48,14 @@ main {
     letter-spacing: 2px;
     margin-bottom: 40px;
     text-shadow: 2px 2px 0 #2d0052;
+    font-size: 150px;
 }
 
 .content-left p {
     color: var(--cinza-sub);
     font-weight: bold;
     text-shadow: none;margin-bottom: 200px;
+    font-size: 75px;
 }
 
 .content-right {
