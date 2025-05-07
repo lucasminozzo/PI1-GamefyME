@@ -163,7 +163,8 @@ def main(request):
     )
     
     notificacoes = Notificacao.objects.filter(
-        idusuario=usuario
+        idusuario=usuario,
+        flstatus=False
     ).order_by('-dtcriacao')[:5]
 
     notificacoes_nao_lidas = Notificacao.objects.filter(

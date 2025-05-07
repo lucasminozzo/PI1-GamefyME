@@ -52,9 +52,21 @@ def criar_atividade(request):
     else:
         form = AtividadeForm()
 
+    notificacoes = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).order_by('-dtcriacao')[:5]
+
+    notificacoes_nao_lidas = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).count()
+
     return render(request, 'atividades/cadastro_atividade.html', {
         'form': form,
-        'usuario': usuario
+        'usuario': usuario,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas
     })
 
 @transaction.atomic
@@ -65,7 +77,6 @@ def realizar_atividade(request, idatividade):
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
 
-    # Verificações iniciais
     if atividade.situacao in [Atividade.Situacao.CANCELADA]:
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
@@ -175,10 +186,22 @@ def realizar_atividade(request, idatividade):
                 'usuario': usuario
             })
 
+    notificacoes = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).order_by('-dtcriacao')[:5]
+
+    notificacoes_nao_lidas = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).count()
+    
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
         'usuario': usuario,
         'exibir_voltar': True,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas
     })
     if not login_service.is_usuario_logado(request):
         return redirect('usuarios:login')
@@ -327,11 +350,23 @@ def editar_atividade(request, idatividade):
     else:
         form = AtividadeForm(instance=atividade)
 
+    notificacoes = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).order_by('-dtcriacao')[:5]
+
+    notificacoes_nao_lidas = Notificacao.objects.filter(
+        idusuario=usuario,
+        flstatus=False
+    ).count()
+
     return render(request, 'atividades/editar_atividade.html', {
         'form': form,
         'usuario': usuario,
         'editar': True,
         'atividade': atividade,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas
     })
 
 def remover_atividade(request, idatividade):

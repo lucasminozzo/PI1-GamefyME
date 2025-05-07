@@ -1,91 +1,87 @@
 <header>
-    {% csrf_token %}
-    <div class="notifications-wrapper">
-        <button type="button" class="notifications-btn" onclick="toggleNotifications(event)" title="Notificações">
-            <i class="fas fa-bell"></i>
-            {% if notificacoes_nao_lidas > 0 %}
-                <span class="notification-badge">{{ notificacoes_nao_lidas }}</span>
-            {% endif %}
-        </button>
-        <div id="notifications-dropdown" class="notifications-dropdown">
-            <div class="notifications-header">
-                <h4>Notificações</h4>
-                {% if notificacoes_nao_lidas > 0 %}
-                    <button onclick="marcarTodasComoLidas()" class="mark-all-read">
-                        Marcar todas como lidas
-                    </button>
-                {% endif %}
+  {% csrf_token %}
+  <div class="notifications-wrapper">
+    <button type="button" class="notifications-btn" onclick="toggleNotifications(event)" title="Notificações">
+      <i class="fas fa-bell"></i>
+      {% if notificacoes_nao_lidas > 0 %}
+        <span class="notification-badge">{{ notificacoes_nao_lidas }}</span>
+      {% endif %}
+    </button>
+    <div id="notifications-dropdown" class="notifications-dropdown">
+      <div class="notifications-header">
+        <h4>Notificações</h4>
+        {% if notificacoes_nao_lidas > 0 %}
+          <button onclick="marcarTodasComoLidas()" class="mark-all-read">Marcar todas como lidas</button>
+        {% endif %}
+      </div>
+      <div class="notifications-list">
+        {% for notificacao in notificacoes %}
+          <div class="notification-item unread" onclick="abrirModalNotificacao({{ notificacao.idnotificacao }}, '{{ notificacao.dsmensagem|escapejs }}', '{{ notificacao.dtcriacao|date:'d/m/Y' }}', '{{ notificacao.fltipo }}')" data-id="{{ notificacao.idnotificacao }}">
+            <div class="notification-icon">
+              {% if notificacao.fltipo == 'sucesso' %}
+                 🎉
+              {% elif notificacao.fltipo == 'aviso' %}
+                 ⚠️
+              {% elif notificacao.fltipo == 'erro' %}
+                 ❌
+              {% else %}
+                ℹ️
+              {% endif %}
             </div>
-            <div class="notifications-list">
-                {% for notificacao in notificacoes %}
-                    <div class="notification-item {% if not notificacao.flstatus %}unread{% endif %}"
-                         onclick="abrirModalNotificacao({{ notificacao.idnotificacao }}, '{{ notificacao.dsmensagem|escapejs }}', '{{ notificacao.dtcriacao|date:'d/m/Y' }}', '{{ notificacao.fltipo }}')"
-                         data-id="{{ notificacao.idnotificacao }}">
-                        <div class="notification-icon">
-                            {% if notificacao.fltipo == 'sucesso' %}
-                                🎉
-                            {% elif notificacao.fltipo == 'aviso' %}
-                                ⚠️
-                            {% elif notificacao.fltipo == 'erro' %}
-                                ❌
-                            {% else %}
-                                ℹ️
-                            {% endif %}
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-message">{{ notificacao.dsmensagem|truncatechars:50 }}</div>
-                            <div class="notification-date">{{ notificacao.dtcriacao|date:'d/m/Y' }}</div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <div class="no-notifications">
-                        Nenhuma notificação
-                    </div>
-                {% endfor %}
+            <div class="notification-content">
+              <div class="notification-message">{{ notificacao.dsmensagem|truncatechars:50 }}</div>
+              <div class="notification-date">{{ notificacao.dtcriacao|date:'d/m/Y' }}</div>
             </div>
-        </div>
+          </div>
+        {% empty %}
+          <div class="no-notifications">Nenhuma notificação não lida</div>
+        {% endfor %}
+      </div>
     </div>
+  </div>
 
-    <div class="user-menu-container">
-        <button class="user-menu-btn" onclick="toggleUserMenu()" title="Menu do usuário">
-            <span class="avatar-header">
-                <svg viewBox="0 0 100 100" width="32" height="32">
-                    <circle cx="50" cy="40" r="25" fill="#fff"/>
-                    <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
-                    <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
-                    <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
-                </svg>
-            </span>
-            <span style="font-size: 20px; margin-left: 4px;">{{ usuario.nmusuario }}</span>
-            <span style="font-size: 20px; margin-left: 2px;">&#9662;</span>
-        </button>
-        <div id="user-dropdown" class="user-dropdown">
-            <a href="{% url 'usuarios:logout' %}" style="font-size: 20px;">Sair</a>
-        </div>
+  <div class="user-menu-container">
+    <button class="user-menu-btn" onclick="toggleUserMenu()" title="Menu do usuário">
+      <span class="avatar-header">
+        <svg viewBox="0 0 100 100" width="32" height="32">
+          <circle cx="50" cy="40" r="25" fill="#fff" />
+          <circle cx="50" cy="40" r="15" fill="#bca8e6" />
+          <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff" />
+          <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6" />
+        </svg>
+      </span>
+      <span style="font-size: 20px; margin-left: 4px">{{ usuario.nmusuario }}</span>
+      <span style="font-size: 20px; margin-left: 2px">&#9662;</span>
+    </button>
+    <div id="user-dropdown" class="user-dropdown">
+      <a href="{% url 'usuarios:logout' %}" style="font-size: 20px">Sair</a>
     </div>
+  </div>
 </header>
 
 <div id="notificationModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="fecharModalNotificacao()">&times;</span>
-        <div class="modal-header">
-            <h3>Detalhes da Notificação</h3>
-        </div>
-        <div class="modal-body">
-            <div id="modalIcon" class="modal-icon"></div>
-            <p id="modalMessage"></p>
-            <div id="modalDate" class="modal-date"></div>
-        </div>
+  <div class="modal-content">
+    <span class="close-modal" onclick="fecharModalNotificacao()">&times;</span>
+    <div class="modal-header">
+      <h3>Detalhes da Notificação</h3>
     </div>
+    <div class="modal-body">
+      <div id="modalIcon" class="modal-icon"></div>
+      <p id="modalMessage"></p>
+      <div id="modalDate" class="modal-date"></div>
+    </div>
+  </div>
 </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="msg-flutuante {% if message.tags == 'error' %}erro{% else %}sucesso{% endif %}">
-                {{ message }}
-                <span class="fechar" onclick="fecharMsg(this)">×</span>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    
+{% if messages %}
+  {% for message in messages %}
+    <div class="msg-flutuante {% if message.tags == 'error' %}
+        erro
+      {% else %}
+        sucesso
+      {% endif %}">
+      {{ message }}
+      <span class="fechar" onclick="fecharMsg(this)">×</span>
+    </div>
+  {% endfor %}
+{% endif %}
