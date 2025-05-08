@@ -15,16 +15,28 @@
         <div class="streak-container">
             <div class="streak-title">Dias consecutivos de atividades completas:</div>
             <div class="weekdays">
-                <div class="weekday" id="dom">Dom</div>
-                <div class="weekday" id="seg">Seg</div>
-                <div class="weekday" id="ter">Ter</div>
-                <div class="weekday" id="qua">Qua</div>
-                <div class="weekday" id="qui">Qui</div>
-                <div class="weekday" id="sex">Sex</div>
-                <div class="weekday" id="sab">Sab</div>
+                {% load static %}
+                <div class="weekdays-div">
+                    {% for dia in streak_data %}
+                        <div class="weekday" title="{{ dia.data|date:'d/m/Y' }}">
+                            <div class="weekday-label">{{ dia.dia_semana }}</div>
+                            <div>
+                                {% if dia.concluiu %}
+                                <div class="weekday-icon">
+                                    <img src="{% static 'img/fogo-ativo.png' %}" alt="Atividade concluída" />
+                                </div>
+                                {% else %}
+                                <div class="weekday-icon">
+                                    <img src="{% static 'img/fogo-inativo.png' %}" alt="Atividade concluída" />
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
             <div class="level">
-                <span class="level-number">Nível: {{ usuario.nivelusuario }}</span>
+                <span class="level-number">Nível: <span class="nivel-circle">{{ usuario.nivelusuario }}</span></span>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: {% widthratio usuario.expusuario 1000 100 %}%">
                         <div class="progress-text">

@@ -379,3 +379,64 @@ a {
 .user-dropdown a:hover {
     background: #f3e6ff;
 }
+
+/* Container de Streak */
+.streak-container {
+    margin-top: 15px;
+}
+
+.streak-title {
+    margin-bottom: 10px;
+}
+
+.weekdays {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-right: 200px;
+    background: #2d0052;
+    border-radius: 30px;
+    justify-content: center;  /* centraliza horizontalmente os filhos */
+    align-items: center;      /* centraliza verticalmente os filhos */
+}
+
+.weekdays-div {
+    display: flex;              /* Alinha os dias em linha */
+    gap: 12px;                  /* Espaço entre os dias */
+    justify-content: center;    /* Centraliza horizontalmente o grupo */
+    padding: 10px 0;
+}
+
+.weekday {
+    display: flex;
+    flex-direction: column;     /* Empilha o texto e a imagem verticalmente */
+    align-items: center;        /* Centraliza horizontalmente dentro do dia */
+    width: 60px;                /* Largura fixa para cada dia */
+    cursor: default;
+    text-align: center;
+}
+
+.weekday-label {
+    font-size: 18px;
+    margin-bottom: 8px;         /* Espaço entre o texto e a imagem */
+    color: #fff;
+}
+
+.weekday-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weekday-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.nivel-circle {
+    border-radius: 50%; /* faz o círculo */
+    background: #2d0052;
+}

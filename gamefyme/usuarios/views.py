@@ -171,13 +171,16 @@ def main(request):
         idusuario=usuario,
         flstatus=False
     ).count()
+    
+    streak_data = atividades_service.get_streak_data(usuario)
 
     return render(request, 'main.html', {
         'usuario': usuario,
         'atividades_unicas': atividades_unicas,
         'atividades_recorrentes': atividades_recorrentes,
         'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'streak_data': streak_data,
     })
     
 def nova_senha(request, uidb64, token):
