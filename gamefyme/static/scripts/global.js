@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('a:not(.user-dropdown a)').forEach(function(link) {
+    document.querySelectorAll('a').forEach(function(link) {
         link.addEventListener('click', function() {
             if (!this.target || this.target !== '_blank') {
                 showLoading();

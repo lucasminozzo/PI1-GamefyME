@@ -20,6 +20,9 @@ from django.http import JsonResponse
 
 
 def cadastro(request):
+    if login_service.is_usuario_logado(request):
+        return redirect('usuarios:main')
+    
     if request.method == 'POST':
         nome = request.POST.get('nmusuario')
         email = request.POST.get('emailusuario')
@@ -97,6 +100,9 @@ def cadastro(request):
     return render(request, 'cadastro.html', {'emailusuario': email})
 
 def login(request):
+    if login_service.is_usuario_logado(request):
+        return redirect('usuarios:main')
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         senha = request.POST.get('senha')
@@ -116,7 +122,9 @@ def login(request):
     return render(request, 'login.html')
 
 def esqueceu(request):
-
+    if login_service.is_usuario_logado(request):
+        return redirect('usuarios:main')
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
@@ -184,6 +192,9 @@ def main(request):
     })
     
 def nova_senha(request, uidb64, token):
+    if login_service.is_usuario_logado(request):
+        return redirect('usuarios:main')
+    
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -274,3 +285,79 @@ def criar_notificacao(usuario, mensagem, tipo='info'):
         dsmensagem=mensagem,
         fltipo=tipo
     )
+    
+def config_usuario(request):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    
+    notificacoes = Notificacao.objects.filter( ## Pega as 5 últimas notificações
+        idusuario=usuario,
+        flstatus=False
+    ).order_by('-dtcriacao')[:5]
+    notificacoes_nao_lidas = Notificacao.objects.filter( ## Pega o total de notificações não lidas
+        idusuario=usuario,
+        flstatus=False
+    ).count()
+
+    if request.method == 'POST':
+        nome = request.POST.get('nmusuario')
+        email = request.POST.get('emailusuario')
+        dtnascimento = request.POST.get('dtnascimento')
+        try:
+            if not all([nome, email, dtnascimento]):
+                return render(request, 'config_usuario.html', {
+                    'erro': 'Preencha todos os campos.',
+                    'usuario': usuario,
+                    'notificacoes': notificacoes,
+                    'notificacoes_nao_lidas': notificacoes_nao_lidas,
+                    'exibir_voltar': True,
+                    'esconder_add': True
+                })
+            if not (nome == usuario.nmusuario):
+                usuario.nmusuario = nome
+            if not (email == usuario.emailusuario):
+                usuario.emailusuario = email
+            if not (dtnascimento == usuario.dtnascimento):
+                usuario.dtnascimento = dtnascimento
+            usuario.save()
+            messages.success(request, 'Configurações atualizadas com sucesso!')
+            return redirect('usuarios:main')
+        except Exception as e:
+            messages.error(request, 'Erro ao atualizar configurações. Tente novamente.')
+            return render('config_usuario.html',{
+                'usuario': usuario,
+                'notificacoes': notificacoes,
+                'notificacoes_nao_lidas': notificacoes_nao_lidas,
+                'exibir_voltar': True,
+                'esconder_add': True
+            })
+            ## TODO: implementar alteração de senha dentro de um modal
+        #     if request.method == 'POST':
+        # email = request.POST.get('email')
+        # try:
+        #     usuario = Usuario.objects.get(emailusuario=email)
+        #     if email == usuario.emailusuario:
+        #         id=usuario.idusuario
+        #         uidb64 = urlsafe_base64_encode(force_bytes(id)) ## Codifica o ID do usuário
+        #         token = default_token_generator.make_token(usuario) ## Cria um token para o usuário
+        #         url = reverse('usuarios:nova_senha', kwargs={'uidb64': uidb64, 'token': token}) ## URL para redefinir a senha
+        #         subject = "Esqueceu a senha - Gamefyme" ## Assunto do e-mail
+        #         message = "Clique no link abaixo para redefinir sua senha:\n\n" ## Mensagem do e-mail
+        #         message += f"{request.build_absolute_uri(url)}\n\n" ## Link para redefinir a senha
+        #         message += "Se você não solicitou essa alteração, ignore este e-mail." ## Mensagem do e-mail
+        #         send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True) ## Envia o e-mail
+        #         messages.success(request, 'Email enviado com sucesso! Verifique sua caixa de entrada.') ## Mensagem de sucesso caso o e-mail tenha sido enviado
+        #         return redirect('usuarios:login') ## Redireciona para a página de login
+        #     else:
+        #         return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email}) ## Mensagem de erro caso o e-mail esteja incorreto
+        # except Usuario.DoesNotExist:
+        #     return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email}) ## Mensagem de erro caso o usuário não exista
+    return render(request, 'config_usuario.html',{
+        'usuario': usuario,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'exibir_voltar': True,
+        'esconder_add': True
+    })
