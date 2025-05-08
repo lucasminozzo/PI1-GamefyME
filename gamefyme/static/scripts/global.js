@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer)').forEach(function(btn) {
+    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer)').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (!btn.closest('.user-dropdown')) {
                 showLoading();
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer)').forEach(function(btn) {
+    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer)').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
                 showLoading();
