@@ -1,0 +1,303 @@
+header {
+    justify-content: flex-end;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.user-menu-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.user-menu-btn {
+    background: var(--roxo-botao);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.user-menu-btn:hover {
+    background: #2d0052;
+}
+
+.user-menu-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Estilos do Avatar */
+.avatar-header {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+.avatar-header svg {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+/* Container Principal */
+.app-container {
+    width: 90vw;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Seção de Perfil */
+.profile-section {
+    display: flex;
+    align-items: flex-start;
+    background: var(--roxo-card4);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    gap: 32px;
+}
+
+.avatar-container {
+    margin-right: 24px;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #bca8e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Informações do Perfil */
+.profile-info {
+    flex: 1;
+}
+
+.profile-info .username {
+    font-weight: bold;
+    color: #fff;
+}
+
+.profile-info .user-date {
+    color: #e0e0e0;
+}
+
+/* Container de Streak */
+.streak-container {
+    margin-top: 15px;
+}
+
+.streak-title {
+    margin-bottom: 10px;
+}
+
+.weekdays {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.weekday {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #2d0052;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--verde-xp);
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    will-change: width;
+    transition: width 0.4s;
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.progress-text span {
+    margin: 0 4px;
+}
+
+.btn-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 200px;
+}
+
+.btn-perfil a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    background: var(--roxo-card3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.action-btn {
+    background: var(--roxo-card3);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 32px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.action-btn:hover {
+    background: var(--roxo-botao);
+    transform: translateY(-2px);
+}
+
+.action-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.action-btn.add-task-btn { color: var(--verde-xp); }
+
+.action-btn.edit-task-btn { color: var(--amarelo-moeda); }
+
+/* Container de Edição */
+.editar-container {
+    display: flex;
+    gap: 20px;
+}
+
+.editar-perfil {
+    flex: 1;
+    background-color: var(--roxo-card3);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+.editar-perfil h1{
+    font-size: xx-large;
+}
+
+.editar-perfil a{
+    color: var(--cinza-sub);
+}
+.editar-perfil button[type="submit"] {
+    width: 100%;
+    background-color: var(--roxo-card3);
+    color: var(--amarelo-moeda);
+    font-weight: bold;
+    border: none;
+    padding: 18px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-family: 'Jersey 10', cursive;
+    letter-spacing: 1px;
+    transition: background 0.2s, transform 0.2s;
+    margin-bottom: 10px;
+}
+
+.editar-perfil button[type="submit"]:hover {
+    background: #444;
+    transform: scale(1.03);
+}
+.editar-perfil input:focus {
+    outline: none;
+    border: 2px solid var(--roxo-header);
+    background: #fff;
+}
+.editar-perfil label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+    color: #fff;
+}
+.editar-perfil {
+    background: var(--roxo-card4);
+    border-radius: 14px;
+    padding: 40px 32px 32px 32px;
+    color: #fff;
+    box-shadow: 0 0 24px rgba(0,0,0,0.10);
+    width: 80%;
+    max-width: 2000px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1s ease-out 0.3s backwards;
+}
+
+.editar-perfil input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    background: #fafafa;
+    color: #222;
+    margin-bottom: 22px;
+    font-family: 'Jersey 10', cursive;
+    letter-spacing: 1px;
+    transition: border 0.3s;
+}

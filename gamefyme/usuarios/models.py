@@ -35,7 +35,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         choices=TipoUsuario.choices,
         default=TipoUsuario.COMUM
     )
-    streak_semanal = models.IntegerField(default=0)
     ultima_atividade = models.DateField(null=True, blank=True)
 
     is_active = models.BooleanField(default=True)

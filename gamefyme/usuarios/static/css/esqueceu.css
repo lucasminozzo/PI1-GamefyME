@@ -16,6 +16,7 @@
     outline: none;
     cursor: pointer;
     font-family: 'Jersey 10', cursive;
+    
 }
 
 .nav-left a:hover, .nav-right a:hover {
@@ -124,4 +125,7 @@ main {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px);}
     to { opacity: 1; transform: translateY(0);}
+}
+header{
+    justify-content: space-between;
 }
