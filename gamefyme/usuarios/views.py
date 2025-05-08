@@ -9,7 +9,6 @@ from services import login_service, atividades_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from atividades.models import Atividade
-from django.shortcuts import render
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_str, force_bytes
@@ -17,6 +16,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from datetime import date
 
 
 def cadastro(request):
@@ -30,21 +30,18 @@ def cadastro(request):
         confsenha = request.POST.get('confsenha')
         dt_nascimento = request.POST.get('dtnascimento')
 
+        contexto = {
+            'nmusuario': nome,
+            'emailusuario': email,
+            'dtnascimento': dt_nascimento
+        }
         if not all([nome, email, senha, confsenha, dt_nascimento]):
-            return render(request, 'cadastro.html', {
-                'erro': 'Preencha todos os campos.',
-                'nmusuario': nome,
-                'emailusuario': email,
-                'dtnascimento': dt_nascimento
-            })
+            contexto['erro'] = 'Preencha todos os campos.'
+            return render(request, 'cadastro.html', contexto)
 
         if senha != confsenha:
-            return render(request, 'cadastro.html', {
-                'erro': 'Senhas não coincidem.',
-                'nmusuario': nome,
-                'emailusuario': email,
-                'dtnascimento': dt_nascimento
-            })
+            contexto['erro'] = 'Senhas não coincidem.'
+            return render(request, 'cadastro.html', contexto)
 
         if Usuario.objects.filter(emailusuario=email).exists():
             return render(request, 'cadastro.html', {
@@ -156,39 +153,35 @@ def main(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
+    streak_data = atividades_service.get_streak_data(usuario)
+    streak_atual = atividades_service.calcular_streak_atual(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
         situacao=Atividade.Situacao.ATIVA,
         recorrencia=Atividade.Recorrencia.RECORRENTE
     )
-
     atividades_unicas = Atividade.objects.filter(
         idusuario=usuario,
         situacao=Atividade.Situacao.ATIVA,
         recorrencia=Atividade.Recorrencia.UNICA,
         dtatividaderealizada__isnull=True
     )
-    
     notificacoes = Notificacao.objects.filter(
         idusuario=usuario,
         flstatus=False
     ).order_by('-dtcriacao')[:5]
-
-    notificacoes_nao_lidas = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).count()
-    
-    streak_data = atividades_service.get_streak_data(usuario)
+    notificacoes_nao_lidas = notificacoes.count()
 
     return render(request, 'main.html', {
         'usuario': usuario,
-        'atividades_unicas': atividades_unicas,
+        'streak_data': streak_data,
+        'streak_atual': streak_atual,
         'atividades_recorrentes': atividades_recorrentes,
+        'atividades_unicas': atividades_unicas,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'streak_data': streak_data,
+        'today': date.today(),
     })
     
 def nova_senha(request, uidb64, token):
@@ -291,7 +284,8 @@ def config_usuario(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
-    
+    streak_data = atividades_service.get_streak_data(usuario)
+    streak_atual = atividades_service.calcular_streak_atual(usuario)
     notificacoes = Notificacao.objects.filter( ## Pega as 5 últimas notificações
         idusuario=usuario,
         flstatus=False
@@ -313,9 +307,12 @@ def config_usuario(request):
                     'notificacoes': notificacoes,
                     'notificacoes_nao_lidas': notificacoes_nao_lidas,
                     'exibir_voltar': True,
-                    'esconder_add': True
+                    'esconder_add': True,
+                    'streak_data': streak_data,
+                    'streak_atual': streak_atual,
+                    'today': date.today(),
                 })
-            if not (nome == usuario.nmusuario):
+            if nome != usuario.nmusuario:
                 usuario.nmusuario = nome
             if not (email == usuario.emailusuario):
                 usuario.emailusuario = email
@@ -331,7 +328,10 @@ def config_usuario(request):
                 'notificacoes': notificacoes,
                 'notificacoes_nao_lidas': notificacoes_nao_lidas,
                 'exibir_voltar': True,
-                'esconder_add': True
+                'esconder_add': True,
+                'streak_data': streak_data,
+                'streak_atual': streak_atual,
+                'today': date.today(),
             })
             ## TODO: implementar alteração de senha dentro de um modal
         #     if request.method == 'POST':
@@ -359,5 +359,8 @@ def config_usuario(request):
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'exibir_voltar': True,
-        'esconder_add': True
+        'esconder_add': True,
+        'streak_data': streak_data,
+        'streak_atual': streak_atual,
+        'today': date.today(),
     })

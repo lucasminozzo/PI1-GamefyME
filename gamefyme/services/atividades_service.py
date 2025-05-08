@@ -4,17 +4,58 @@ from atividades.models import Atividade, AtividadeConcluidas
 from datetime import date, timedelta
 from django.db.models import Q
 
-def get_atividades_do_dia(request):
-    usuario_id = request.session.get('usuario_id')
-    usuario = Usuario.objects.get(pk=usuario_id)
+def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
+    """
+    Calcula a experiência baseada no peso e tempo estimado da atividade
+
+    Args:
+        peso (str): Peso da atividade (muito_facil, facil, medio, dificil, muito_dificil)
+        tempo_estimado (int): Tempo estimado em minutos
+
+    Returns:
+        int: Quantidade de experiência (máximo 500)
+    """
+    exp_base = 50
+
+    multiplicadores_peso = {
+        'muito_facil': 1.0,
+        'facil': 2.0,
+        'medio': 3.0,
+        'dificil': 4.0,
+        'muito_dificil': 5.0
+    }
+
+    multiplicador_peso = multiplicadores_peso.get(peso, 1.0)
+
+    if tempo_estimado <= 30:
+        multiplicador_tempo = 1.0
+    elif tempo_estimado <= 60:
+        multiplicador_tempo = 1.5
+    elif tempo_estimado <= 120:
+        multiplicador_tempo = 2.0
+    else:
+        multiplicador_tempo = 2.5
+
+    experiencia = round(exp_base * multiplicador_peso * multiplicador_tempo)
+
+    return min(experiencia, 500)
+
+def calcular_streak_atual(usuario):
+    """Retorna quantos dias consecutivos (incluindo hoje) o usuário concluiu atividades."""
     hoje = date.today()
+    streak = 0
+    
+    while True:
+        dia = hoje - timedelta(days=streak)
+        houve = AtividadeConcluidas.objects.filter(
+            idusuario=usuario.idusuario,
+            dtconclusao=dia
+        ).exists()
+        if not houve:
+            break
+        streak += 1
 
-    atividades_concluidas = AtividadeConcluidas.objects.filter(
-        idusuario=usuario.idusuario,
-        dtconclusao=hoje
-    ).values_list('idatividade', flat=True)
-
-    return Atividade.objects.filter(idatividade__in=atividades_concluidas)
+    return streak
 
 def atualizar_streak(usuario):
     """Atualiza o streak do usuário baseado na última atividade concluída"""
@@ -74,42 +115,6 @@ def verificar_streak_no_login(usuario):
 
         usuario.save()
 
-def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
-    """
-    Calcula a experiência baseada no peso e tempo estimado da atividade
-
-    Args:
-        peso (str): Peso da atividade (muito_facil, facil, medio, dificil, muito_dificil)
-        tempo_estimado (int): Tempo estimado em minutos
-
-    Returns:
-        int: Quantidade de experiência (máximo 500)
-    """
-    exp_base = 50
-
-    multiplicadores_peso = {
-        'muito_facil': 1.0,
-        'facil': 2.0,
-        'medio': 3.0,
-        'dificil': 4.0,
-        'muito_dificil': 5.0
-    }
-
-    multiplicador_peso = multiplicadores_peso.get(peso, 1.0)
-
-    if tempo_estimado <= 30:
-        multiplicador_tempo = 1.0
-    elif tempo_estimado <= 60:
-        multiplicador_tempo = 1.5
-    elif tempo_estimado <= 120:
-        multiplicador_tempo = 2.0
-    else:
-        multiplicador_tempo = 2.5
-
-    experiencia = round(exp_base * multiplicador_peso * multiplicador_tempo)
-
-    return min(experiencia, 500)
-
 def get_atividades_do_dia(request):
     """Retorna as atividades realizadas hoje"""
     usuario_id = request.session.get('usuario_id')
@@ -124,11 +129,9 @@ def get_atividades_do_dia(request):
     
 def get_streak_data(usuario):
     hoje = date.today()
-    streak_data = []
-
+    domingo = hoje - timedelta(days=(hoje.weekday() + 1) % 7)
     dias_semana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
-
-    domingo = hoje - timedelta(days=hoje.weekday() + 1 if hoje.weekday() < 6 else 0)
+    streak_data = []
 
     for i in range(7):
         dia = domingo + timedelta(days=i)
@@ -136,7 +139,6 @@ def get_streak_data(usuario):
             idusuario=usuario.idusuario,
             dtconclusao=dia
         ).exists()
-
         streak_data.append({
             'dia_semana': dias_semana[i],
             'data': dia,

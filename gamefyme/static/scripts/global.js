@@ -116,6 +116,7 @@ function marcarComoLida(notificacaoId) {
             const notificacao = document.querySelector(`.notification-item[data-id="${notificacaoId}"]`);
             notificacao.classList.remove('unread');
             atualizarContadorNotificacoes();
+            location.reload();
         }
     })
     .finally(() => {
@@ -139,12 +140,14 @@ function marcarTodasComoLidas() {
             });
             const badge = document.querySelector('.notification-badge');
             if (badge) badge.remove();
+            location.reload();
         }
     })
     .finally(() => {
         hideLoading();
     });
 }
+
 
 function atualizarContadorNotificacoes() {
     const badge = document.querySelector('.notification-badge');

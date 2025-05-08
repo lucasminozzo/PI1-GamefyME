@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils import timezone
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 from usuarios.models import Notificacao
+from datetime import date
 
 def criar_notificacao(usuario, mensagem, tipo='info'):
     return Notificacao.objects.create(
@@ -76,7 +77,8 @@ def realizar_atividade(request, idatividade):
 
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-
+    streak_data = atividades_service.get_streak_data(usuario)
+    streak_atual = atividades_service.calcular_streak_atual(usuario)
     if atividade.situacao in [Atividade.Situacao.CANCELADA]:
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
@@ -201,7 +203,10 @@ def realizar_atividade(request, idatividade):
         'usuario': usuario,
         'exibir_voltar': True,
         'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'streak_data': streak_data,
+        'streak_atual': streak_atual,
+        'today': date.today(),
     })
     if not login_service.is_usuario_logado(request):
         return redirect('usuarios:login')
