@@ -1,3 +1,4 @@
+// FUNÇÕES GERAIS DE LOADING, MENUS E NOTIFICAÇÕES (o seu código original)
 function showLoading() {
     document.getElementById('loading-overlay').style.display = 'flex';
 }
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('a').forEach(function(link) {
+    document.querySelectorAll('a:not(.user-dropdown a)').forEach(function(link) {
         link.addEventListener('click', function() {
             if (!this.target || this.target !== '_blank') {
                 showLoading();
@@ -45,18 +46,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer)').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            if (!btn.closest('.user-dropdown')) {
+            if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
                 showLoading();
             }
         });
     });
 
-    var logoutLink = document.querySelector('.user-dropdown a[href*="logout"]');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', function() {
-            showLoading();
-        });
-    }
+    document.addEventListener('click', function(event) {
+        const userMenu = document.getElementById('user-dropdown');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
+        const notificationsBtn = document.querySelector('.notifications-btn');
+        const userMenuBtn = document.querySelector('.user-menu-btn');
+        const modal = document.getElementById('notificationModal');
+
+        if (userMenu && userMenuBtn && !userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
+            userMenu.style.display = 'none';
+        }
+
+        if (notificationsDropdown && notificationsBtn && !notificationsDropdown.contains(event.target) && !notificationsBtn.contains(event.target)) {
+            notificationsDropdown.style.display = 'none';
+        }
+
+        if (modal && event.target === modal) {
+            fecharModalNotificacao();
+        }
+    });
 
     setTimeout(function() {
         var msgs = document.querySelectorAll('.msg-flutuante');
@@ -69,9 +83,25 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('load', hideLoading);
     window.addEventListener('popstate', hideLoading);
     window.setTimeout(hideLoading, 10000);
+
+    // NOVO: Integração com o relatório
+    const formRelatorio = document.getElementById('formRelatorio');
+    if (formRelatorio) {
+        formRelatorio.addEventListener('submit', function(e){
+            e.preventDefault();
+            const ini = this.data_inicio.value;
+            const fim = this.data_fim.value;
+            if (!ini || !fim) {
+                alert('Por favor, selecione as duas datas.');
+                return;
+            }
+            const url = `/relatorios/atividades/pdf/?data_inicio=${ini}&data_fim=${fim}`;
+            document.getElementById('iframeRelatorio').src = url;
+        });
+    }
 });
 
-
+// NOTIFICAÇÕES (o seu código original)
 function toggleNotifications(event) {
     event.stopPropagation();
     var dropdown = document.getElementById('notifications-dropdown');
@@ -148,11 +178,10 @@ function marcarTodasComoLidas() {
     });
 }
 
-
 function atualizarContadorNotificacoes() {
     const badge = document.querySelector('.notification-badge');
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-    
+
     if (badge) {
         if (unreadCount === 0) {
             badge.remove();
@@ -177,58 +206,10 @@ function getCookie(name) {
     return cookieValue;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('form').forEach(function(form) {
-        form.addEventListener('submit', function() {
-            showLoading();
-        });
-    });
-
-    document.querySelectorAll('a:not(.user-dropdown a)').forEach(function(link) {
-        link.addEventListener('click', function() {
-            if (!this.target || this.target !== '_blank') {
-                showLoading();
-            }
-        });
-    });
-
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer)').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
-                showLoading();
-            }
-        });
-    });
-
-    document.addEventListener('click', function(event) {
-        const userMenu = document.getElementById('user-dropdown');
-        const notificationsDropdown = document.getElementById('notifications-dropdown');
-        const notificationsBtn = document.querySelector('.notifications-btn');
-        const userMenuBtn = document.querySelector('.user-menu-btn');
-        const modal = document.getElementById('notificationModal');
-    
-        if (userMenu && userMenuBtn && !userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
-            userMenu.style.display = 'none';
-        }
-    
-        if (notificationsDropdown && notificationsBtn && !notificationsDropdown.contains(event.target) && !notificationsBtn.contains(event.target)) {
-            notificationsDropdown.style.display = 'none';
-        }
-    
-        if (modal && event.target === modal) {
-            fecharModalNotificacao();
-        }
-    });
-
-    setTimeout(function() {
-        var msgs = document.querySelectorAll('.msg-flutuante');
-        msgs.forEach(function(msg) {
-            msg.style.animation = 'msg-saida 0.4s forwards';
-            setTimeout(function() { msg.style.display = 'none'; }, 400);
-        });
-    }, 5000);
-
-    window.addEventListener('load', hideLoading);
-    window.addEventListener('popstate', hideLoading);
-    window.setTimeout(hideLoading, 10000);
-});
+// NOVO: Funções para abrir/fechar a modal de relatório
+function openRelatorioModal(){
+    document.getElementById('relatorioModal').style.display = 'block';
+}
+function closeRelatorioModal(){
+    document.getElementById('relatorioModal').style.display = 'none';
+}

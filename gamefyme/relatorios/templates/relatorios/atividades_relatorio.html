@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+        body {
+            font-family: 'Jersey 10', cursive;
+            font-size: 14px;
+            color: #fff;
+            background: linear-gradient(to bottom, #2d0052, #390066);
+            padding: 30px;
+        }
+        h1, p {
+            text-align: center;
+            color: #ffe066;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #7a2be2;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background: #4e008a;
+            color: #ffe066;
+        }
+        tr:nth-child(even) {
+            background: #400071;
+        }
+        tr:nth-child(odd) {
+            background: #2d0052;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #7a7a7a;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Atividades</h1>
+    <p>Usuário: {{ usuario.nmusuario }}</p>
+    <p>Período: {{ data_inicio }} até {{ data_fim }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Data Realização</th>
+                <th>Atividade</th>
+                <th>Peso</th>
+                <th>XP</th>
+                <th>Situação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atividade in atividades %}
+            <tr>
+                <td>{{ atividade.dtatividaderealizada|date:"d/m/Y" }}</td>
+                <td>{{ atividade.nmatividade }}</td>
+                <td>{{ atividade.get_peso_display }}</td>
+                <td>{{ atividade.expatividade }}</td>
+                <td>{{ atividade.get_situacao_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhuma atividade realizada neste período.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Relatório gerado automaticamente em {{ now|date:"d/m/Y H:i" }}
+    </div>
+</body>
+</html>
