@@ -5,10 +5,9 @@ from services import login_service, atividades_service
 from django.contrib import messages
 from django.db import IntegrityError
 from django.db import transaction
-from django.utils import timezone
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 from usuarios.models import Notificacao
-from datetime import date
+from datetime import date, datetime
 
 def criar_notificacao(usuario, mensagem, tipo='info'):
     return Notificacao.objects.create(
@@ -77,36 +76,28 @@ def realizar_atividade(request, idatividade):
 
     usuario = login_service.get_usuario_logado(request)
     atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
-    if atividade.situacao in [Atividade.Situacao.CANCELADA]:
+
+    if atividade.situacao in [Atividade.Situacao.CANCELADA] or \
+       (atividade.situacao == Atividade.Situacao.REALIZADA and atividade.recorrencia == Atividade.Recorrencia.UNICA):
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
 
-    elif atividade.situacao in [Atividade.Situacao.REALIZADA] and atividade.recorrencia in [Atividade.Recorrencia.UNICA]:
-        messages.error(request, "Esta atividade não pode ser alterada.")
-        return redirect('usuarios:main')
+    streak_data = atividades_service.get_streak_data(usuario)
+    streak_atual = atividades_service.calcular_streak_atual(usuario)
 
     if request.method == 'POST':
         sid = transaction.savepoint()
-
         try:
             nivel_anterior = usuario.nivelusuario or 0
-            exp_ganha = atividades_service.calcular_experiencia(
-                atividade.peso,
-                atividade.tpestimado
-            )
+            exp_ganha = atividades_service.calcular_experiencia(atividade.peso, atividade.tpestimado)
             nova_exp = (usuario.expusuario or 0) + exp_ganha
 
-            novo_nivel = (usuario.nivelusuario or 0)
+            novo_nivel = nivel_anterior
             while nova_exp >= 1000:
                 novo_nivel += 1
                 nova_exp -= 1000
 
-            if atividade.recorrencia in [Atividade.Recorrencia.RECORRENTE]:
-                atividade.situacao = Atividade.Situacao.ATIVA
-            else:
-                atividade.situacao = Atividade.Situacao.REALIZADA
+            atividade.situacao = Atividade.Situacao.ATIVA if atividade.recorrencia == Atividade.Recorrencia.RECORRENTE else Atividade.Situacao.REALIZADA
             atividade.dtatividaderealizada = timezone.now().date()
 
             atividade_concluida = AtividadeConcluidas(
@@ -143,61 +134,37 @@ def realizar_atividade(request, idatividade):
             if sessao_pomodoro:
                 sessao_pomodoro.save()
 
-            criar_notificacao(
-                usuario=usuario,
-                mensagem=f'Parabéns! Você completou a atividade "{atividade.nmatividade}" e ganhou {exp_ganha} XP!',
-                tipo='sucesso'
-            )
+            criar_notificacao(usuario, f'Parabéns! Você completou a atividade "{atividade.nmatividade}" e ganhou {exp_ganha} XP!', 'sucesso')
 
             if novo_nivel > nivel_anterior:
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'🎉 Incrível! Você alcançou o nível {novo_nivel}!',
-                    tipo='sucesso'
-                )
+                criar_notificacao(usuario, f'🎉 Incrível! Você alcançou o nível {novo_nivel}!', 'sucesso')
 
-            if sessao_pomodoro and nrciclo and int(nrciclo) > 0:
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'Ótimo trabalho! Você completou {nrciclo} ciclos Pomodoro na atividade "{atividade.nmatividade}"',
-                    tipo='sucesso'
-                )
+            if sessao_pomodoro and sessao_pomodoro.nrciclo > 0:
+                criar_notificacao(usuario, f'Ótimo trabalho! Você completou {sessao_pomodoro.nrciclo} ciclos Pomodoro na atividade "{atividade.nmatividade}"', 'sucesso')
 
             if streak_atual and streak_atual > 1:
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'🔥 Impressionante! Você manteve sua streak por {streak_atual} dias consecutivos!',
-                    tipo='sucesso'
-                )
+                criar_notificacao(usuario, f'🔥 Impressionante! Você manteve sua streak por {streak_atual} dias consecutivos!', 'sucesso')
 
             transaction.savepoint_commit(sid)
 
             messages.success(
                 request,
-                f'Atividade "{atividade.nmatividade}" concluída com sucesso! ' +
-                f'Você ganhou {exp_ganha} pontos de experiência!' +
-                (f' Ciclos Pomodoro completos: {nrciclo}' if nrciclo else '')
+                f'Atividade "{atividade.nmatividade}" concluída com sucesso! Você ganhou {exp_ganha} pontos de experiência!'
+                + (f' Ciclos Pomodoro completos: {nrciclo}' if nrciclo else '')
             )
             return redirect('usuarios:main')
 
         except Exception as e:
             transaction.savepoint_rollback(sid)
             messages.error(request, f"Erro ao salvar a atividade: {str(e)}")
-            return render(request, 'atividades/realizar_atividade.html', {
-                'atividade': atividade,
-                'usuario': usuario
-            })
 
     notificacoes = Notificacao.objects.filter(
         idusuario=usuario,
         flstatus=False
     ).order_by('-dtcriacao')[:5]
 
-    notificacoes_nao_lidas = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).count()
-    
+    notificacoes_nao_lidas = notificacoes.count()
+
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
         'usuario': usuario,
@@ -207,119 +174,6 @@ def realizar_atividade(request, idatividade):
         'streak_data': streak_data,
         'streak_atual': streak_atual,
         'today': date.today(),
-    })
-    if not login_service.is_usuario_logado(request):
-        return redirect('usuarios:login')
-
-    usuario = login_service.get_usuario_logado(request)
-    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-
-    if atividade.situacao in [Atividade.Situacao.CANCELADA]:
-        messages.error(request, "Esta atividade não pode ser alterada.")
-        return redirect('usuarios:main')
-
-    elif atividade.situacao in [Atividade.Situacao.REALIZADA] and atividade.recorrencia in [Atividade.Recorrencia.UNICA]:
-        messages.error(request, "Esta atividade não pode ser alterada.")
-        return redirect('usuarios:main')
-
-    if request.method == 'POST':
-        try:
-            nivel_anterior = usuario.nivelusuario or 0
-            if atividade.recorrencia in [Atividade.Recorrencia.RECORRENTE]:
-                atividade.situacao = Atividade.Situacao.ATIVA
-            else:
-                atividade.situacao = Atividade.Situacao.REALIZADA
-
-            atividade.dtatividaderealizada = timezone.now().date()
-
-            exp_ganha = atividades_service.calcular_experiencia(
-                atividade.peso,
-                atividade.tpestimado
-            )
-            nova_exp = (usuario.expusuario or 0) + exp_ganha
-
-            while nova_exp >= 1000:
-                usuario.nivelusuario = (usuario.nivelusuario or 0) + 1
-                nova_exp -= 1000
-
-            usuario.expusuario = nova_exp
-
-            atividade.save()
-            usuario.save()
-
-            criar_notificacao(
-                usuario=usuario,
-                mensagem=f'Parabéns! Você completou a atividade "{atividade.nmatividade}" e ganhou {exp_ganha} XP!',
-                tipo='sucesso'
-            )
-
-            if usuario.nivelusuario is not None and nivel_anterior is not None:
-                if usuario.nivelusuario > nivel_anterior:
-                    criar_notificacao(
-                        usuario=usuario,
-                        mensagem=f'🎉 Incrível! Você alcançou o nível {usuario.nivelusuario}!',
-                        tipo='sucesso'
-                    )
-
-            AtividadeConcluidas.objects.create(
-                idusuario=usuario,
-                idatividade=atividade,
-                dtconclusao=timezone.now()
-            )
-
-            inicio = request.POST.get('inicio')
-            fim = request.POST.get('fim')
-            nrciclo = request.POST.get('nrciclo')
-
-            if inicio and fim:
-                try:
-                    SessaoPomodoro.objects.create(
-                        idusuario=usuario,
-                        idatividade=atividade,
-                        inicio=inicio,
-                        fim=fim,
-                        nrciclo=int(nrciclo or 0)
-                    )
-
-                    if nrciclo and int(nrciclo) > 0:
-                        criar_notificacao(
-                            usuario=usuario,
-                            mensagem=f'Ótimo trabalho! Você completou {nrciclo} ciclos Pomodoro na atividade "{atividade.nmatividade}"',
-                            tipo='sucesso'
-                        )
-                except Exception as e:
-                    messages.warning(
-                        request,
-                        f"Atividade concluída, mas houve um erro ao salvar a sessão Pomodoro: {str(e)}"
-                    )
-
-            streak_atual = atividades_service.atualizar_streak(usuario)
-            if streak_atual is not None and streak_atual > 1:
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'🔥 Impressionante! Você manteve sua streak por {streak_atual} dias consecutivos!',
-                    tipo='sucesso'
-                )
-
-            messages.success(
-                request,
-                f'Atividade "{atividade.nmatividade}" concluída com sucesso! ' +
-                f'Você ganhou {exp_ganha} pontos de experiência!' +
-                (f' Ciclos Pomodoro completos: {nrciclo}' if nrciclo else '')
-            )
-            return redirect('usuarios:main')
-
-        except Exception as e:
-            messages.error(request, f"Erro ao salvar a atividade: {str(e)}")
-            return render(request, 'atividades/realizar_atividade.html', {
-                'atividade': atividade,
-                'usuario': usuario
-            })
-
-    return render(request, 'atividades/realizar_atividade.html', {
-        'atividade': atividade,
-        'usuario': usuario,
-        'exibir_voltar': True,
     })
 
 def editar_atividade(request, idatividade):

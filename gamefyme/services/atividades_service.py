@@ -1,22 +1,12 @@
 from django.shortcuts import render
+from django.utils import timezone
 from usuarios.models import Usuario
 from atividades.models import Atividade, AtividadeConcluidas
-from datetime import date, timedelta
+from datetime import timedelta
 from django.db.models import Q
 
 def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
-    """
-    Calcula a experiência baseada no peso e tempo estimado da atividade
-
-    Args:
-        peso (str): Peso da atividade (muito_facil, facil, medio, dificil, muito_dificil)
-        tempo_estimado (int): Tempo estimado em minutos
-
-    Returns:
-        int: Quantidade de experiência (máximo 500)
-    """
     exp_base = 50
-
     multiplicadores_peso = {
         'muito_facil': 1.0,
         'facil': 2.0,
@@ -24,7 +14,6 @@ def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
         'dificil': 4.0,
         'muito_dificil': 5.0
     }
-
     multiplicador_peso = multiplicadores_peso.get(peso, 1.0)
 
     if tempo_estimado <= 30:
@@ -37,19 +26,20 @@ def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
         multiplicador_tempo = 2.5
 
     experiencia = round(exp_base * multiplicador_peso * multiplicador_tempo)
-
     return min(experiencia, 500)
 
 def calcular_streak_atual(usuario):
-    """Retorna quantos dias consecutivos (incluindo hoje) o usuário concluiu atividades."""
-    hoje = date.today()
+    """
+    Retorna quantos dias consecutivos (incluindo hoje) o usuário concluiu atividades.
+    """
+    hoje = timezone.localdate()
     streak = 0
     
     while True:
         dia = hoje - timedelta(days=streak)
         houve = AtividadeConcluidas.objects.filter(
             idusuario=usuario.idusuario,
-            dtconclusao=dia
+            dtconclusao__date=dia
         ).exists()
         if not houve:
             break
@@ -58,26 +48,26 @@ def calcular_streak_atual(usuario):
     return streak
 
 def atualizar_streak(usuario):
-    """Atualiza o streak do usuário baseado na última atividade concluída"""
-    hoje = date.today()
+    """
+    Atualiza o streak do usuário baseado na última atividade concluída.
+    """
+    hoje = timezone.localdate()
 
+    # Se já atualizou hoje, sai
     if usuario.ultima_atividade == hoje:
         return
 
-    if usuario.ultima_atividade:
-        dias_desde_ultima = (hoje - usuario.ultima_atividade).days
-    else:
-        dias_desde_ultima = None
-
+    dias_desde_ultima = (hoje - usuario.ultima_atividade).days if usuario.ultima_atividade else None
     ontem = hoje - timedelta(days=1)
+
     concluiu_ontem = AtividadeConcluidas.objects.filter(
         idusuario=usuario.idusuario,
-        dtconclusao=ontem
+        dtconclusao__date=ontem
     ).exists()
 
     concluiu_hoje = AtividadeConcluidas.objects.filter(
         idusuario=usuario.idusuario,
-        dtconclusao=hoje
+        dtconclusao__date=hoje
     ).exists()
 
     if not concluiu_hoje:
@@ -89,46 +79,50 @@ def atualizar_streak(usuario):
         usuario.streak_semanal = 1
 
     usuario.streak_semanal = min(usuario.streak_semanal, 7)
-
     usuario.ultima_atividade = hoje
     usuario.save()
-    
+
 def verificar_streak_no_login(usuario):
-    hoje = date.today()
+    """
+    Zera o streak se ele não concluiu atividade hoje.
+    Ajusta 'ultima_atividade' para a data do último registro.
+    """
+    hoje = timezone.localdate()
 
     concluiu_hoje = AtividadeConcluidas.objects.filter(
         idusuario=usuario.idusuario,
-        dtconclusao=hoje
+        dtconclusao__date=hoje
     ).exists()
 
     if not concluiu_hoje:
         usuario.streak_semanal = 0
 
-        ultima_atividade_obj = AtividadeConcluidas.objects.filter(
+        ultima = AtividadeConcluidas.objects.filter(
             idusuario=usuario.idusuario
         ).order_by('-dtconclusao').first()
 
-        if ultima_atividade_obj:
-            usuario.ultima_atividade = ultima_atividade_obj.dtconclusao
-        else:
-            usuario.ultima_atividade = None
-
+        usuario.ultima_atividade = ultima.dtconclusao.date() if ultima else None
         usuario.save()
 
 def get_atividades_do_dia(request):
-    """Retorna as atividades realizadas hoje"""
+    """
+    Retorna as atividades realizadas hoje pelo usuário logado.
+    """
     usuario_id = request.session.get('usuario_id')
     usuario = Usuario.objects.get(pk=usuario_id)
-    hoje = date.today()
+    hoje = timezone.localdate()
 
     return Atividade.objects.filter(
         idusuario=usuario.idusuario,
         dtatividaderealizada=hoje,
         situacao='realizada'
-    ).all()
+    )
     
 def get_streak_data(usuario):
-    hoje = date.today()
+    """
+    Monta os dados de conclusão para os 7 dias da semana atual.
+    """
+    hoje = timezone.localdate()
     domingo = hoje - timedelta(days=(hoje.weekday() + 1) % 7)
     dias_semana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
     streak_data = []
@@ -137,7 +131,7 @@ def get_streak_data(usuario):
         dia = domingo + timedelta(days=i)
         concluiu = AtividadeConcluidas.objects.filter(
             idusuario=usuario.idusuario,
-            dtconclusao=dia
+            dtconclusao__date=dia
         ).exists()
         streak_data.append({
             'dia_semana': dias_semana[i],
