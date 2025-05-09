@@ -243,57 +243,12 @@ def remover_atividade(request, idatividade):
         atividade.situacao = Atividade.Situacao.CANCELADA
         atividade.save()
 
-        # Notificação para remoção de atividade
         criar_notificacao(
             usuario=usuario,
             mensagem=f'Atividade "{atividade.nmatividade}" foi removida.',
             tipo='aviso'
         )
 
-        messages.success(request, "Atividade removida com sucesso!")
-    except Exception as e:
-        messages.error(request, f"Erro ao remover a atividade: {str(e)}")
-
-    return redirect('usuarios:main')
-    if not login_service.is_usuario_logado(request):
-        return redirect('usuarios:login')
-
-    usuario = login_service.get_usuario_logado(request)
-    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-
-    if atividade.situacao == Atividade.Situacao.CANCELADA:
-        messages.error(request, "Esta atividade já está cancelada.")
-        return redirect('usuarios:main')
-
-    try:
-        atividade.situacao = Atividade.Situacao.CANCELADA
-        atividade.save()
-
-        # Notificação para remoção de atividade
-        criar_notificacao(
-            usuario=usuario,
-            mensagem=f'Atividade "{atividade.nmatividade}" foi removida.',
-            tipo='aviso'
-        )
-
-        messages.success(request, "Atividade removida com sucesso!")
-    except Exception as e:
-        messages.error(request, f"Erro ao remover a atividade: {str(e)}")
-
-    return redirect('usuarios:main')
-    if not login_service.is_usuario_logado(request):
-        return redirect('usuarios:login')
-
-    usuario = login_service.get_usuario_logado(request)
-    atividade = get_object_or_404(Atividade, pk=idatividade, idusuario=usuario)
-
-    if atividade.situacao == Atividade.Situacao.CANCELADA:
-        messages.error(request, "Esta atividade já está cancelada.")
-        return redirect('usuarios:main')
-
-    try:
-        atividade.situacao = Atividade.Situacao.CANCELADA
-        atividade.save()
         messages.success(request, "Atividade removida com sucesso!")
     except Exception as e:
         messages.error(request, f"Erro ao remover a atividade: {str(e)}")
