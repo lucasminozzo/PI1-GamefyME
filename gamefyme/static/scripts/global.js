@@ -1,4 +1,3 @@
-// FUNÇÕES GERAIS DE LOADING, MENUS E NOTIFICAÇÕES (o seu código original)
 function showLoading() {
     document.getElementById('loading-overlay').style.display = 'flex';
 }
@@ -31,10 +30,13 @@ function fecharMsg(elemento) {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('form').forEach(function(form) {
+    if (form.id !== 'formRelatorio') {
         form.addEventListener('submit', function() {
             showLoading();
         });
-    });
+    }
+});
+
 
     document.querySelectorAll('a:not(.user-dropdown a)').forEach(function(link) {
         link.addEventListener('click', function() {
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer)').forEach(function(btn) {
+    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer):not(.btnPDF)').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
                 showLoading();
@@ -84,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('popstate', hideLoading);
     window.setTimeout(hideLoading, 10000);
 
-    // NOVO: Integração com o relatório
     const formRelatorio = document.getElementById('formRelatorio');
     if (formRelatorio) {
         formRelatorio.addEventListener('submit', function(e){
@@ -101,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// NOTIFICAÇÕES (o seu código original)
 function toggleNotifications(event) {
     event.stopPropagation();
     var dropdown = document.getElementById('notifications-dropdown');
@@ -206,10 +206,40 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// NOVO: Funções para abrir/fechar a modal de relatório
 function openRelatorioModal(){
     document.getElementById('relatorioModal').style.display = 'block';
 }
 function closeRelatorioModal(){
     document.getElementById('relatorioModal').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const formRelatorio = document.getElementById('formRelatorio');
+    const btnGerarPDF = document.getElementById('btnGerarPDF');
+
+    if (formRelatorio) {
+        formRelatorio.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const ini = this.data_inicio.value;
+            const fim = this.data_fim.value;
+            if (!ini || !fim) {
+                alert('Por favor, selecione as duas datas.');
+                return;
+            }
+
+            btnGerarPDF.classList.add('loading');
+            btnGerarPDF.querySelector('.btn-text').style.display = 'none';
+            btnGerarPDF.querySelector('.btn-spinner').style.display = 'inline-block';
+
+            const url = `/relatorios/atividades/pdf/?data_inicio=${ini}&data_fim=${fim}`;
+            document.getElementById('iframeRelatorio').src = url;
+
+            const iframe = document.getElementById('iframeRelatorio');
+            iframe.onload = function () {
+                btnGerarPDF.classList.remove('loading');
+                btnGerarPDF.querySelector('.btn-text').style.display = 'inline-block';
+                btnGerarPDF.querySelector('.btn-spinner').style.display = 'none';
+            }
+        });
+    }
+});

@@ -28,7 +28,7 @@ def criar_atividade(request):
             try:
                 atividade = form.save(commit=False)
                 atividade.idusuario = usuario
-                atividade.dtatividade = timezone.now().date()
+                atividade.dtatividade = timezone.now()
                 atividade.situacao = 'ativa'
 
                 atividade.expatividade = atividades_service.calcular_experiencia(
@@ -98,7 +98,7 @@ def realizar_atividade(request, idatividade):
                 nova_exp -= 1000
 
             atividade.situacao = Atividade.Situacao.ATIVA if atividade.recorrencia == Atividade.Recorrencia.RECORRENTE else Atividade.Situacao.REALIZADA
-            atividade.dtatividaderealizada = timezone.now().date()
+            atividade.dtatividaderealizada = timezone.now()
 
             atividade_concluida = AtividadeConcluidas(
                 idusuario=usuario,

@@ -1,13 +1,10 @@
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
+from weasyprint import HTML
 from atividades.models import Atividade
 from services import login_service
 from django.views.decorators.clickjacking import xframe_options_exempt
 from datetime import datetime
-import io
-import os
-from django.conf import settings
 
 @xframe_options_exempt
 def gerar_relatorio_atividades(request):
@@ -32,29 +29,18 @@ def gerar_relatorio_atividades(request):
         dtatividaderealizada__range=(data_inicio_dt, data_fim_dt)
     ).order_by('dtatividaderealizada')
 
-    # Caminho absoluto para a fonte personalizada
-    font_path = os.path.join(settings.BASE_DIR, 'static/fonts/Jersey10-Regular.ttf')
-
-    # Incluir a fonte usando @font-face no HTML gerado
     template = get_template('relatorios/atividades_relatorio.html')
-    html = template.render({
+    html_string = template.render({
         'usuario': usuario,
         'atividades': atividades,
         'data_inicio': data_inicio_dt,
         'data_fim': data_fim_dt,
         'now': datetime.now(),
-        'font_path': font_path.replace('\\', '/'),  # para compatibilidade em Windows/Linux
     })
 
-    response = HttpResponse(content_type='application/pdf')
+    # ESSENCIAL: base_url garante que os arquivos estáticos (fontes, imagens) funcionem!
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="relatorio_atividades.pdf"'
-
-    pisa_status = pisa.CreatePDF(
-        io.BytesIO(html.encode('utf-8')),
-        dest=response,
-        encoding='utf-8'
-    )
-
-    if pisa_status.err:
-        return HttpResponse("Erro ao gerar o PDF", status=500)
     return response
