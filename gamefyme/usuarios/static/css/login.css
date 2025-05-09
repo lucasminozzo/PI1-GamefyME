@@ -19,7 +19,6 @@ header {
     border: none;
     outline: none;
     cursor: pointer;
-    font-family: 'Jersey 10', cursive;
 }
 
 .nav-left a:hover, .nav-right a:hover {
@@ -74,7 +73,6 @@ main {
     background: #fafafa;
     color: #222;
     margin-bottom: 22px;
-    font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
     transition: border 0.3s;
 }
@@ -98,7 +96,6 @@ main {
     padding: 18px 0;
     border-radius: 8px;
     cursor: pointer;
-    font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
     box-shadow: 0 2px 0 #7a7a7a;
     transition: background 0.2s, transform 0.2s;
@@ -116,7 +113,6 @@ main {
     margin-top: 18px;
     color: var(--roxo-header);
     text-decoration: none;
-    font-family: 'Jersey 10', cursive;
     font-weight: bold;
     transition: color 0.2s;
 }

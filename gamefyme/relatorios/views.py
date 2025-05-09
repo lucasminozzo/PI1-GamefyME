@@ -6,6 +6,8 @@ from services import login_service
 from django.views.decorators.clickjacking import xframe_options_exempt
 from datetime import datetime
 import io
+import os
+from django.conf import settings
 
 @xframe_options_exempt
 def gerar_relatorio_atividades(request):
@@ -30,7 +32,10 @@ def gerar_relatorio_atividades(request):
         dtatividaderealizada__range=(data_inicio_dt, data_fim_dt)
     ).order_by('dtatividaderealizada')
 
-    # Carrega o template HTML
+    # Caminho absoluto para a fonte personalizada
+    font_path = os.path.join(settings.BASE_DIR, 'static/fonts/Jersey10-Regular.ttf')
+
+    # Incluir a fonte usando @font-face no HTML gerado
     template = get_template('relatorios/atividades_relatorio.html')
     html = template.render({
         'usuario': usuario,
@@ -38,6 +43,7 @@ def gerar_relatorio_atividades(request):
         'data_inicio': data_inicio_dt,
         'data_fim': data_fim_dt,
         'now': datetime.now(),
+        'font_path': font_path.replace('\\', '/'),  # para compatibilidade em Windows/Linux
     })
 
     response = HttpResponse(content_type='application/pdf')

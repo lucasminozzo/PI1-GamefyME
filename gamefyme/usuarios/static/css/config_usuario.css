@@ -25,7 +25,6 @@ header {
     border: none;
     border-radius: 8px;
     padding: 8px 18px;
-    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -228,7 +227,6 @@ header {
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
     transition: background 0.2s, transform 0.2s;
     margin-bottom: 10px;
@@ -272,7 +270,6 @@ header {
     background: #fafafa;
     color: #222;
     margin-bottom: 22px;
-    font-family: 'Jersey 10', cursive;
     letter-spacing: 1px;
     transition: border 0.3s;
 }

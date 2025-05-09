@@ -25,7 +25,6 @@ header {
     border: none;
     border-radius: 8px;
     padding: 8px 18px;
-    font-family: 'Jersey 10', system-ui, -apple-system, sans-serif;
     cursor: pointer;
     display: flex;
     align-items: center;

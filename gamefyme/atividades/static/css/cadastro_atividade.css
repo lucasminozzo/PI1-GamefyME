@@ -35,7 +35,6 @@ header {
 .form-group input,
 .form-group select,
 .form-group textarea {
-    font-family: 'Jersey 10', cursive;
     background: #e0e0e0;
     color: #333;
     border: none;
@@ -97,7 +96,6 @@ input[type="number"] {
 
 .form-actions button,
 .btn-cancel {
-    font-family: 'Jersey 10', cursive;
     font-weight: bold;
     border: none;
     border-radius: 10px;
@@ -129,7 +127,6 @@ input[type="number"] {
     border: none;
     border-radius: 8px;
     padding: 8px 18px;
-    font-family: 'Jersey 10', cursive;
     cursor: pointer;
     display: flex;
     align-items: center;

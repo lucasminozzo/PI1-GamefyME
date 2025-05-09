@@ -16,6 +16,7 @@
     
     {% include 'header.html'%}
     {% include 'loading.html'%}
+    {% include 'relatorios_modal.html'%}
 
     <div class="app-container">
         {% include 'perfil.html'%}
@@ -66,7 +67,7 @@
                             Editar Atividade
                         </a>
                         <a href="{% url 'atividades:remover_atividade' atividade.idatividade %}" class="action-btn remove-task-btn">
-                            <span></span> Cancelar Atividade
+                            <span></span> Remover Atividade
                         </a>
                     </div>
                 </form>

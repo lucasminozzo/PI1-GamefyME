@@ -15,6 +15,7 @@
 <body>
     {% include 'header.html'%}
     {% include 'loading.html'%}
+    {% include 'relatorios_modal.html'%}
 
     <form action="{% url 'atividades:editar_atividade' atividade.idatividade %}" class="form-container" method="post">
         {% csrf_token %}
