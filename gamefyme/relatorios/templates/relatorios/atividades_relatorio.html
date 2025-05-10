@@ -56,19 +56,14 @@
         <p>Período: <strong>{{ data_inicio|date:"d/m/Y" }}</strong> até <strong>{{ data_fim|date:"d/m/Y" }}</strong></p>
     </div>
 
-    {% for atividade in atividades %}
+    {% for atividade_concluida in atividades_concluidas %}
     <div class="atividade">
-        <h3>{{ atividade.nmatividade }}</h3>
-        <p><strong>Descrição:</strong> {{ atividade.dsatividade|default:"Sem descrição" }}</p>
-        <p><strong>Data realizada:</strong> {{ atividade.dtatividaderealizada|date:"d/m/Y" }}</p>
-        <p><strong>Tempo estimado:</strong> {{ atividade.tpestimado }} minutos</p>
-        <p><strong>Pomodoros:</strong>
-            {% with pomodoros=atividade.sessaopomodoro_set.count %}
-                {{ pomodoros }}
-            {% endwith %}
-        </p>
-        <p><strong>Experiência:</strong> {{ atividade.expatividade }} XP</p>
-        <p><strong>Peso:</strong> {{ atividade.get_peso_display }}</p>
+        <h3>{{ atividade_concluida.idatividade.nmatividade }}</h3>
+        <p><strong>Descrição:</strong> {{ atividade_concluida.idatividade.dsatividade|default:"Sem descrição" }}</p>
+        <p><strong>Data realizada:</strong> {{ atividade_concluida.dtconclusao|date:"d/m/Y" }}</p>
+        <p><strong>Tempo estimado:</strong> {{ atividade_concluida.idatividade.tpestimado }} minutos</p>
+        <p><strong>Experiência:</strong> {{ atividade_concluida.idatividade.expatividade }} XP</p>
+        <p><strong>Peso:</strong> {{ atividade_concluida.idatividade.get_peso_display }}</p>
     </div>
     {% empty %}
     <p style="text-align:center; font-size: 20px; margin-top: 50px;">Nenhuma atividade realizada nesse período.</p>

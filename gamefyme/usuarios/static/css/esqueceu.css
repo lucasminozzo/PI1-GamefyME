@@ -11,7 +11,7 @@
     border-radius: 8px;
     font-weight: bold;
     transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 0 #2d0052;
+    box-shadow: 0 2px 0 var(--roxo-gradiente-top);
     border: none;
     outline: none;
     cursor: pointer;
@@ -19,8 +19,8 @@
 }
 
 .nav-left a:hover, .nav-right a:hover {
-    background: #2d0052;
-    box-shadow: 0 4px 8px #2d0052aa;
+    background: var(--roxo-gradiente-top);
+    box-shadow: 0 4px 8px var(--roxo-gradiente-top);
 }
 
 main {

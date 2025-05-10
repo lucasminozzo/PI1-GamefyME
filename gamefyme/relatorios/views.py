@@ -1,10 +1,10 @@
 from django.http import HttpResponse
 from django.template.loader import get_template
 from weasyprint import HTML
-from atividades.models import Atividade
+from atividades.models import AtividadeConcluidas
 from services import login_service
 from django.views.decorators.clickjacking import xframe_options_exempt
-from datetime import datetime
+from datetime import datetime, time
 
 @xframe_options_exempt
 def gerar_relatorio_atividades(request):
@@ -24,21 +24,23 @@ def gerar_relatorio_atividades(request):
     except ValueError:
         return HttpResponse("Formato de data inválido.", status=400)
 
-    atividades = Atividade.objects.filter(
+    data_inicio_dt = datetime.combine(data_inicio_dt, time.min)
+    data_fim_dt = datetime.combine(data_fim_dt, time.max)
+
+    atividades_concluidas = AtividadeConcluidas.objects.filter(
         idusuario=usuario,
-        dtatividaderealizada__range=(data_inicio_dt, data_fim_dt)
-    ).order_by('dtatividaderealizada')
+        dtconclusao__range=(data_inicio_dt, data_fim_dt)
+    ).select_related('idatividade').order_by('dtconclusao')
 
     template = get_template('relatorios/atividades_relatorio.html')
     html_string = template.render({
         'usuario': usuario,
-        'atividades': atividades,
-        'data_inicio': data_inicio_dt,
-        'data_fim': data_fim_dt,
+        'atividades_concluidas': atividades_concluidas,
+        'data_inicio': data_inicio_dt.date(),
+        'data_fim': data_fim_dt.date(),
         'now': datetime.now(),
     })
 
-    # ESSENCIAL: base_url garante que os arquivos estáticos (fontes, imagens) funcionem!
     pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf()
 
     response = HttpResponse(pdf_file, content_type='application/pdf')

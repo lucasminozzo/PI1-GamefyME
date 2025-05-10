@@ -33,7 +33,7 @@ header {
 }
 
 .user-menu-btn:hover {
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
 }
 
 .user-menu-btn:focus {
@@ -106,7 +106,7 @@ header {
 .progress-bar {
     width: 100%;
     height: 30px;
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
     border-radius: 8px;
     overflow: hidden;
     position: relative;

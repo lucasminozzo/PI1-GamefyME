@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer):not(.btnPDF)').forEach(function(btn) {
+    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer):not(.btnPDF):not(.theme-btn)').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
                 showLoading();
@@ -243,3 +243,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+function alternarTema() {
+    const overlay = document.getElementById('theme-transition-overlay');
+    const themeBtn = document.querySelector('.theme-btn');
+
+    // Inicia a transição
+    overlay.classList.add('active');
+
+    // Depois da animação (~300ms), troca o tema e recolhe
+    setTimeout(() => {
+        document.body.classList.toggle('theme-dark');
+
+        // Fecha a cortina
+        overlay.classList.remove('active');
+
+        // Foca no botão (animação de foco visual rápida)
+        themeBtn.style.transition = 'transform 0.2s ease';
+        themeBtn.style.transform = 'scale(1.1)';
+
+        setTimeout(() => {
+            themeBtn.style.transform = 'scale(1)';
+        }, 200);
+    }, 300);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem('tema') === 'dark') {
+        document.body.classList.add('theme-dark');
+    }
+});
+

@@ -33,7 +33,7 @@ header {
 }
 
 .user-menu-btn:hover {
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
 }
 
 .user-menu-btn:focus {
@@ -106,7 +106,7 @@ a {
 .progress-bar {
     width: 100%;
     height: 30px;
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -325,7 +325,7 @@ input[type="number"] {
 .btn-add { background: #4e008a; color: #00ff99; }
 .btn-cancel { background: #4e008a; color: #ff4d4d; }
 
-.btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: #2d0052; }
+.btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: var(--roxo-gradiente-top); }
 
 .main-content {
     display: flex;

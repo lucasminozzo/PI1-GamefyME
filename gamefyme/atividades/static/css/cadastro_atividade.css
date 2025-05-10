@@ -113,7 +113,7 @@ input[type="number"] {
 .btn-clear { background: #4e008a; color: #fff; }
 .btn-cancel { background: #4e008a; color: #ff4d4d; }
 
-.btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: #2d0052; }
+.btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: var(--roxo-gradiente-top) }
 
 .user-menu-container {
     display: flex;
@@ -135,7 +135,7 @@ input[type="number"] {
 }
 
 .user-menu-btn:hover {
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
 }
 
 .avatar-header {

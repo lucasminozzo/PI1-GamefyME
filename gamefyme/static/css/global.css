@@ -397,7 +397,7 @@ a {
     gap: 10px;
     margin-bottom: 15px;
     margin-right: 200px;
-    background: #2d0052;
+    background: var(--roxo-card);
     border-radius: 30px;
     justify-content: center;  /* centraliza horizontalmente os filhos */
     align-items: center;      /* centraliza verticalmente os filhos */
@@ -441,7 +441,7 @@ a {
 
 .nivel-circle {
     border-radius: 50%; /* faz o círculo */
-    background: #2d0052;
+    background: var(--roxo-gradiente-top);
 }
 .modal-content {
     position: relative;
@@ -495,3 +495,97 @@ a {
     cursor: not-allowed;
     opacity: 0.8;
 }
+
+.theme-switcher {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.theme-btn {
+    background: var(--roxo-botao);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-family: 'Jersey', system-ui, -apple-system, sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.theme-btn:hover {
+    background: var(--roxo-gradiente-top);
+}
+
+.theme-dark {
+    --roxo-header: #1a1a1a;
+    --roxo-botao: #333;
+    --roxo-gradiente-top: #000;
+    --roxo-gradiente-bottom: #222;
+    --roxo-card: #444;
+    --roxo-card2: #555;
+    --roxo-card3: #333;
+    --roxo-card4: #222;
+    --verde-xp: #00964b;
+    --amarelo-moeda: #ffcc00;
+    --cinza-sub: #aaa;
+    background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
+    color: #fff;
+}
+
+body.pixel-transition::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(
+        var(--roxo-card3) 0% 25%, 
+        var(--roxo-card4) 25% 50%, 
+        var(--roxo-card3) 50% 75%, 
+        var(--roxo-card2) 75% 100%
+    );
+    opacity: 1;
+    z-index: 9999;
+    animation: pixelFade 0.8s forwards;
+    pointer-events: none;
+}
+
+@keyframes pixelFade {
+    0% {
+        clip-path: polygon(
+            0 0, 100% 0, 100% 100%, 0% 100%
+        );
+        opacity: 1;
+    }
+    100% {
+        clip-path: polygon(
+            50% 50%, 50% 50%, 50% 50%, 50% 50%
+        );
+        opacity: 0;
+    }
+}
+
+#theme-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--roxo-gradiente-top); /* ou qualquer cor sólida se preferir */
+    z-index: 9999;
+    pointer-events: none;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s ease-in-out;
+}
+
+#theme-transition-overlay.active {
+    transform: scaleY(1);
+    transition: transform 0.3s ease-in-out;
+}
+
+
