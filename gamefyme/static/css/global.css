@@ -196,6 +196,20 @@ a {
     font-size: 22px;
 }
 
+.home-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    position: relative;
+    color: #fff;
+    transition: transform 0.2s;
+}
+
+.home-btn:hover {
+    transform: scale(1.1);
+}
+
 .mark-all-read {
     background: none;
     border: none;
@@ -367,7 +381,7 @@ a {
 }
 
 .user-dropdown a {
-    color: #4E008A;
+    color: var(--roxo-botao);
     padding: 14px 18px;
     text-decoration: none;
     display: block;
@@ -517,7 +531,7 @@ a {
 }
 
 .theme-btn:hover {
-    background: var(--roxo-gradiente-top);
+    background: var(--roxo-card2);
 }
 
 .theme-dark {
@@ -589,3 +603,141 @@ body.pixel-transition::before {
 }
 
 
+@media (max-width: 1024px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .main-content {
+      flex-direction: column;
+    }
+  
+    .atividade-bloco,
+    .pomodoro-bloco,
+    .form-container,
+    .pomodoro-card,
+    .profile-section {
+      width: 100%;
+      max-width: 100%;
+    }
+  
+    .form-actions {
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    .switch-container {
+      position: static;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+  
+    .btn-perfil {
+      width: 100%;
+    }
+  
+    .tasks-container {
+      flex-direction: column;
+    }
+  
+    .progress-bar {
+      height: 24px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    * {
+      font-size: 20px;
+    }
+  
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px;
+      gap: 12px;
+    }
+  
+    .notifications-dropdown {
+      width: 100%;
+      left: 0;
+      right: 0;
+    }
+  
+    .modal-content {
+      margin: 10% auto;
+      width: 95%;
+      height: auto;
+    }
+  
+    .content-left h1 {
+      font-size: 60px;
+    }
+  
+    .content-left p {
+      font-size: 28px;
+      margin-bottom: 100px;
+    }
+  
+    .pomodoro-card {
+      padding: 20px;
+    }
+  
+    .profile-section {
+      flex-direction: column;
+      padding: 24px;
+    }
+  
+    .editar-container {
+      flex-direction: column;
+    }
+  
+    .btn-perfil {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    * {
+      font-size: 18px;
+    }
+  
+    .form-container,
+    .content-right,
+    .login-container,
+    .pomodoro-card {
+      padding: 20px;
+    }
+  
+    .form-actions button,
+    .btn-cancel {
+      padding: 14px 24px;
+    }
+  
+    .content-left h1 {
+      font-size: 40px;
+    }
+  
+    .content-left p {
+      font-size: 22px;
+      margin-bottom: 60px;
+    }
+  
+    .switch-label {
+      font-size: 16px;
+    }
+  
+    .switch {
+      width: 40px;
+      height: 22px;
+    }
+  
+    .slider:before {
+      width: 16px;
+      height: 16px;
+    }
+  
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+  }
+  

@@ -29,31 +29,6 @@ function fecharMsg(elemento) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('form').forEach(function(form) {
-    if (form.id !== 'formRelatorio') {
-        form.addEventListener('submit', function() {
-            showLoading();
-        });
-    }
-});
-
-
-    document.querySelectorAll('a:not(.user-dropdown a)').forEach(function(link) {
-        link.addEventListener('click', function() {
-            if (!this.target || this.target !== '_blank') {
-                showLoading();
-            }
-        });
-    });
-
-    document.querySelectorAll('.task-btn, .action-btn, button:not(.user-menu-btn):not(.fechar):not(.notifications-btn):not(#start-timer):not(#reset-timer):not(.btnPDF):not(.theme-btn)').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            if (!btn.closest('.user-dropdown') && !btn.closest('.notifications-dropdown')) {
-                showLoading();
-            }
-        });
-    });
-
     document.addEventListener('click', function(event) {
         const userMenu = document.getElementById('user-dropdown');
         const notificationsDropdown = document.getElementById('notifications-dropdown');
@@ -100,6 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('iframeRelatorio').src = url;
         });
     }
+    document.querySelectorAll('.with-loading').forEach(function(el) {
+        el.addEventListener('click', function () {
+            showLoading();
+        });
+    });
 });
 
 function toggleNotifications(event) {
@@ -144,15 +124,17 @@ function marcarComoLida(notificacaoId) {
     .then(data => {
         if (data.success) {
             const notificacao = document.querySelector(`.notification-item[data-id="${notificacaoId}"]`);
-            notificacao.classList.remove('unread');
+            if (notificacao) {
+                notificacao.remove();
+            }
             atualizarContadorNotificacoes();
-            location.reload();
         }
     })
     .finally(() => {
         hideLoading();
     });
 }
+
 
 function marcarTodasComoLidas() {
     showLoading();
@@ -166,11 +148,11 @@ function marcarTodasComoLidas() {
     .then(data => {
         if (data.success) {
             document.querySelectorAll('.notification-item.unread').forEach(item => {
-                item.classList.remove('unread');
+                item.remove();
             });
             const badge = document.querySelector('.notification-badge');
             if (badge) badge.remove();
-            location.reload();
+            atualizarContadorNotificacoes();            
         }
     })
     .finally(() => {

@@ -197,3 +197,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.addEventListener("load", hideLoading);
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const togglePomodoro = document.getElementById('toggle-pomodoro');
+  const pomodoroBloco = document.querySelector('.pomodoro-bloco');
+
+  togglePomodoro.addEventListener('change', function () {
+      if (this.checked) {
+          pomodoroBloco.style.display = 'block';
+      } else {
+          pomodoroBloco.style.display = 'none';
+      }
+  });
+});

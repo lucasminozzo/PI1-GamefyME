@@ -1,8 +1,20 @@
 <header>
   {% csrf_token %}
+  {% load static %}
+  <div style="margin-right: auto;">
+    <a href="{% url 'usuarios:main' %}" class="btn-voltar-menu with-loading" title="Menu Principal" style="
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      display: inline-block;">
+      <img src="{% static 'img/home.png' %}" alt="Menu" style="width: 40px; height: 40px; vertical-align: middle;">
+    </a>
+  </div>  
+
   <div class="notifications-wrapper">
     <button type="button" class="notifications-btn" onclick="toggleNotifications(event)" title="Notificações">
-      <i class="fas fa-bell"></i>
+      <img src="{% static 'img/notification.png' %}" alt="Menu" style="width: 35px; height: 35px; vertical-align: middle;">
       {% if notificacoes_nao_lidas > 0 %}
         <span class="notification-badge">{{ notificacoes_nao_lidas }}</span>
       {% endif %}
@@ -11,7 +23,7 @@
       <div class="notifications-header">
         <h4>Notificações</h4>
         {% if notificacoes_nao_lidas > 0 %}
-          <button onclick="marcarTodasComoLidas()" class="mark-all-read">Marcar todas como lidas</button>
+          <button onclick="marcarTodasComoLidas()" class="mark-all-read with-loading">Marcar todas como lidas</button>
         {% endif %}
       </div>
       <div class="notifications-list">
@@ -41,7 +53,9 @@
   </div>
 
   <div class="theme-switcher">
-    <button type="button" class="theme-btn" onclick="alternarTema()">Trocar Tema</button>
+    <button type="button" class="theme-btn" onclick="alternarTema()" title="Trocar Tema">
+      <img src="{% static 'img/theme.png' %}" alt="Menu" style="width: 35px; height: 35px; vertical-align: middle;">
+    </button>
   </div>
 
   <div class="user-menu-container">
@@ -58,7 +72,7 @@
       <span style="font-size: 20px; margin-left: 2px">&#9662;</span>
     </button>
     <div id="user-dropdown" class="user-dropdown">
-      <a href="{% url 'usuarios:config_usuario' %}" style="font-size: 20px">Configurações</a>
+      <a href="{% url 'usuarios:config_usuario' %}" style="font-size: 20px" class="with-loading">Configurações</a>
       <a href="#" onclick="openRelatorioModal(); toggleUserMenu();" style="font-size: 20px">Relatórios</a>
       <a href="{% url 'usuarios:logout' %}" style="font-size: 20px">Sair</a>
     </div>

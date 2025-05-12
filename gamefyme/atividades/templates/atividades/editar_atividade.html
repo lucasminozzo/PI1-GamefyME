@@ -76,9 +76,9 @@
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn-add">Salvar Alterações</button>
+            <button type="submit" class="btn-add with-loading">Salvar Alterações</button>
             <button type="reset" class="btn-clear">Limpar <span>🗑️</span></button>
-            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="btn-cancel" style="display:flex;align-items:center;">
+            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="btn-cancel with-loading" style="display:flex;align-items:center;">
                 Voltar <span>✖️</span>
             </a>
         </div>

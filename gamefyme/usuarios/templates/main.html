@@ -27,7 +27,7 @@
                 <div class="tasks-list habits-list">
                     {% for atividade in atividades_recorrentes %}
                         <div class="task-item daily-item">
-                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">+</a>
+                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn with-loading">+</a>
                             <div class="task-description">{{ atividade.nmatividade }}</div>
                             <div class="xp-reward">{{ atividade.expatividade }}</div>
                         </div>
@@ -45,7 +45,7 @@
                 <div class="tasks-list habits-list">
                     {% for atividade in atividades_unicas %}
                         <div class="task-item daily-item">
-                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn">+</a>
+                            <a href="{% url 'atividades:realizar_atividade' atividade.idatividade %}" class="task-btn add-btn with-loading">+</a>
                             <div class="task-description">{{ atividade.nmatividade }}</div>
                             <div class="xp-reward">{{ atividade.expatividade }}</div>
                         </div>

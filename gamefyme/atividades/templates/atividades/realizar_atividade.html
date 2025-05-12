@@ -23,6 +23,13 @@
 
         <div class="main-content">
             <div class="atividade-bloco">
+                <div class="switch-container">
+                    <label for="toggle-pomodoro" class="switch-label">Exibir Pomodoro</label>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-pomodoro" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
                 <form action="{% url 'atividades:realizar_atividade' atividade.idatividade %}" method="post" class="form-container">
                     {% csrf_token %}
                     <div class="form-grid">
@@ -60,18 +67,19 @@
                         <input type="hidden" name="nrciclo" id="nrciclo">
                     </div>
                     <div class="form-actions">
-                        <button id="btn-finalizar" class="action-btn add-task-btn">
+                        <button id="btn-finalizar" class="action-btn add-task-btn with-loading">
                             Concluir Atividade
                         </button>
-                        <a href="{% url 'atividades:editar_atividade' atividade.idatividade %}" class="action-btn voltar-task-btn">
+                        <a href="{% url 'atividades:editar_atividade' atividade.idatividade %}" class="action-btn voltar-task-btn with-loading">
                             Editar Atividade
                         </a>
-                        <a href="{% url 'atividades:remover_atividade' atividade.idatividade %}" class="action-btn remove-task-btn">
+                        <a href="{% url 'atividades:remover_atividade' atividade.idatividade %}" class="action-btn remove-task-btn with-loading">
                             <span></span> Remover Atividade
                         </a>
                     </div>
                 </form>
             </div>
+                      
             <div class="pomodoro-bloco">
                 <div class="pomodoro-card">
                     <div class="pomodoro-title">Pomodoro</div>
