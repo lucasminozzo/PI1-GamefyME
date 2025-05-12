@@ -230,20 +230,21 @@ function alternarTema() {
     const overlay = document.getElementById('theme-transition-overlay');
     const themeBtn = document.querySelector('.theme-btn');
   
-    overlay.classList.add('active');
+    if (!themeBtn) return;
+    const isDark = document.body.classList.toggle('theme-dark');
+    localStorage.setItem('tema', isDark ? 'dark' : 'light');
   
-    setTimeout(() => {
-      const isDark = document.body.classList.toggle('theme-dark');
-      localStorage.setItem('tema', isDark ? 'dark' : 'light');
-  
-      overlay.classList.remove('active');
-  
-      themeBtn.style.transition = 'transform 0.2s ease';
-      themeBtn.style.transform = 'scale(1.1)';
+    if (overlay) {
+      overlay.classList.add('active');
       setTimeout(() => {
-        themeBtn.style.transform = 'scale(1)';
-      }, 200);
-    }, 300);
+        overlay.classList.remove('active');
+        themeBtn.style.transition = 'transform 0.2s ease';
+        themeBtn.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          themeBtn.style.transform = 'scale(1)';
+        }, 200);
+      }, 300);
+    }
   }
 
 document.addEventListener('DOMContentLoaded', function () {

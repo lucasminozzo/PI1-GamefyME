@@ -216,7 +216,7 @@ a {
 }
 
 .form-container {
-    background: #6300af;
+    background: var(--roxo-card3);
     border-radius: 16px;
     max-width: 1100px;
     margin: 60px auto 0 auto;
@@ -332,7 +332,7 @@ input[type="number"] {
     align-items: stretch;
     gap: 16px;
     margin-top: 32px;
-    background-color: #5A009E;
+    background-color: var(--roxo-card3);
     border-radius: 20px;
   }
 
@@ -349,6 +349,7 @@ input[type="number"] {
   }
   
   .pomodoro-card {
+    background: var(--roxo-card3);
     display: flex;
     flex-direction: column;
     justify-content: center;
