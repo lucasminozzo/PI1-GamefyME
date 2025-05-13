@@ -65,17 +65,14 @@
       <div class="modal-header">
         <h3>Escolha seu Avatar</h3>
       </div>
-      <form id="formAvatar" method="POST" action="{% url 'usuarios:config_usuario' %}">
-        {% csrf_token %}
-        <div class="modal-body" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-          {% for img in avatares_disponiveis %}
-            <label style="cursor: pointer;">
-              <input type="radio" name="imagem_perfil" value="{{ img }}" style="display: none;" {% if usuario.imagem_perfil == img %}checked{% endif %}>
-              <img src="{% static 'img/avatares/' %}{{ img }}" class="avatar-select" onclick="document.getElementById('formAvatar').submit();" />
-            </label>
-          {% endfor %}
-        </div>
-      </form>
+      <div class="modal-body" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+        {% for img in avatares_disponiveis %}
+          <label style="cursor: pointer;">
+            <input type="radio" name="imagem_perfil" value="{{ img }}" style="display: none;">
+            <img src="{% static 'img/avatares/' %}{{ img }}" class="avatar-select" onclick="selecionarAvatar('{{ img }}')" />
+          </label>
+        {% endfor %}
+      </div>
     </div>
 </div>
   

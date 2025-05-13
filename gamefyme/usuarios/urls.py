@@ -12,4 +12,5 @@ urlpatterns = [
     path('marcar_notificacao_lida/<int:notificacao_id>/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
     path('marcar_todas_lidas/', views.marcar_todas_lidas, name='marcar_todas_lidas'),
     path('config_usuario/', views.config_usuario, name='config_usuario'),
+    path('atualizar_avatar/', views.atualizar_avatar, name='atualizar_avatar'),
 ]

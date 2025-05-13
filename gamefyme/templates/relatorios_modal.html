@@ -18,26 +18,32 @@
             <h3>Gerar Relatório</h3>
         </div>
         <div class="modal-body">
-            <form id="formRelatorio" style="width: 100%; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center;">
-                <div style="flex: 1; min-width: 200px;">
-                    <label for="data_inicio" style="font-weight: bold; color: #fff; display: block; margin-bottom: 10px;">Data início:</label>
+            <form id="formRelatorio" style="width: 100%; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: center;">
+                <div style="min-width: 200px; flex: 1;">
+                    <label for="data_inicio" style="font-weight: bold; color: #fff; margin-bottom: 6px; display: block;">Data início:</label>
                     <input type="date" name="data_inicio" id="data_inicio" required
-                           style="width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fafafa; color: #222; letter-spacing: 1px; transition: border 0.3s;">
+                           style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fafafa; color: #222;">
                 </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <label for="data_fim" style="font-weight: bold; color: #fff; display: block; margin-bottom: 10px;">Data fim:</label>
+                <div style="min-width: 200px; flex: 1;">
+                    <label for="data_fim" style="font-weight: bold; color: #fff; margin-bottom: 6px; display: block;">Data fim:</label>
                     <input type="date" name="data_fim" id="data_fim" required
-                           style="width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fafafa; color: #222; cursive; letter-spacing: 1px; transition: border 0.3s;">
+                           style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fafafa; color: #222;">
                 </div>
-                <div style="flex: 1 1 100%; display: flex; justify-content: center; margin-top: 10px;">
-                    <button type="submit" class="btnPDF" id="btnGerarPDF">
+                <div style="min-width: 150px;">
+                    <button type="submit" class="btnPDF" id="btnGerarPDF" style="width: 100%;">
                         <span class="btn-text">Gerar PDF</span>
                         <span class="btn-spinner" style="display: none;">
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>
                     </button>
                 </div>
+                <div style="min-width: 150px;">
+                    <button type="button" onclick="toggleFullscreenRelatorio()" class="btnPDF" style="width: 100%; background-color: var(--roxo-card2);">
+                        Tela Cheia
+                    </button>
+                </div>
             </form>
+            
         </div>
         
         <div class="modal-body" style="flex: 1; margin-top:16px;">
@@ -47,3 +53,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleFullscreenRelatorio() {
+        const iframe = document.getElementById('iframeRelatorio');
+        if (!document.fullscreenElement) {
+            iframe.requestFullscreen().catch(err => {
+                alert(`Erro ao entrar em tela cheia: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+</script>

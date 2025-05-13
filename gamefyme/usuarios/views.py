@@ -374,3 +374,19 @@ def config_usuario(request):
         'today': date.today(),
         'avatares_disponiveis': arquivos,
     })
+    
+    
+@require_POST
+def atualizar_avatar(request):
+    if not login_service.is_usuario_logado(request):
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
+
+    usuario = login_service.get_usuario_logado(request)
+    novo_avatar = request.POST.get('imagem_perfil')
+
+    if not novo_avatar:
+        return JsonResponse({'success': False, 'error': 'Nenhum avatar selecionado'}, status=400)
+
+    usuario.imagem_perfil = novo_avatar
+    usuario.save()
+    return JsonResponse({'success': True, 'imagem_perfil': novo_avatar})
