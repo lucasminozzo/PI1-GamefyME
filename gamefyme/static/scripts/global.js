@@ -287,36 +287,44 @@ function fecharModalAvatar() {
   document.getElementById("avatarModal").style.display = "none";
 }
 
+let isSelectingAvatar = false;
+
 function selecionarAvatar(nomeAvatar) {
-    const imagens = document.querySelectorAll('.avatar-select');
-    imagens.forEach(img => img.classList.remove('loading'));
-  
-    const imgSelecionada = Array.from(imagens).find(img => img.src.includes(nomeAvatar));
-    if (imgSelecionada) {
-      imgSelecionada.classList.add('loading');
-    }
-  
-    fetch('/usuarios/atualizar_avatar/', {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({ imagem_perfil: nomeAvatar })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        document.querySelector('.avatar-atual').src = `/static/img/avatares/${data.imagem_perfil}`;
-        fecharModalAvatar();
-      } else {
-        alert('Erro ao salvar avatar: ' + data.error);
-      }
-    })
-    .finally(() => {
-      if (imgSelecionada) {
-        imgSelecionada.classList.remove('loading');
-      }
-    });
+  if (isSelectingAvatar) return;
+  isSelectingAvatar = true;
+
+  const imagens = document.querySelectorAll('.avatar-select');
+  imagens.forEach(img => {
+    img.classList.remove('loading');
+    img.style.pointerEvents = 'none';
+  });
+
+  const imgSelecionada = Array.from(imagens).find(img => img.src.includes(nomeAvatar));
+  if (imgSelecionada) {
+    imgSelecionada.classList.add('loading');
   }
-  
+
+  fetch('/usuarios/atualizar_avatar/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({ imagem_perfil: nomeAvatar })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.querySelector('.avatar-atual').src = `/static/img/avatares/${data.imagem_perfil}`;
+      fecharModalAvatar();
+    } else {
+      alert('Erro ao salvar avatar: ' + data.error);
+    }
+  })
+  .finally(() => {
+    imagens.forEach(img => img.style.pointerEvents = 'auto');
+    if (imgSelecionada) imgSelecionada.classList.remove('loading');
+    isSelectingAvatar = false;
+  });
+}
+

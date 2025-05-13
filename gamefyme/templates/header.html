@@ -57,9 +57,15 @@
           data-id="{{ notificacao.idnotificacao }}"
         >
           <div class="notification-icon">
-            {% if notificacao.fltipo == 'sucesso' %} 🎉 {% elif
-            notificacao.fltipo == 'aviso' %} ⚠️ {% elif notificacao.fltipo ==
-            'erro' %} ❌ {% else %} ℹ️ {% endif %}
+            {% if notificacao.fltipo == 'sucesso' %} 
+                🎉 
+            {% elif notificacao.fltipo == 'aviso' %}
+                ⚠️ 
+            {% elif notificacao.fltipo == 'erro' %} 
+                ❌ 
+            {% else %} 
+                ℹ️ 
+            {% endif %}
           </div>
           <div class="notification-content">
             <div class="notification-message">
