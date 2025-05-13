@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import Usuario, TipoUsuario, Notificacao
@@ -17,6 +18,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from datetime import date
+from django.conf import settings
 
 
 def cadastro(request):
@@ -153,6 +155,8 @@ def main(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
+    pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
+    arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
     streak_data = atividades_service.get_streak_data(usuario)
     streak_atual = atividades_service.calcular_streak_atual(usuario)
 
@@ -182,6 +186,7 @@ def main(request):
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'today': date.today(),
+        'avatares_disponiveis': arquivos,
     })
     
 def nova_senha(request, uidb64, token):
@@ -284,6 +289,8 @@ def config_usuario(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
+    pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
+    arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
     streak_data = atividades_service.get_streak_data(usuario)
     streak_atual = atividades_service.calcular_streak_atual(usuario)
     notificacoes = Notificacao.objects.filter( ## Pega as 5 últimas notificações
@@ -311,6 +318,7 @@ def config_usuario(request):
                     'streak_data': streak_data,
                     'streak_atual': streak_atual,
                     'today': date.today(),
+                    'avatares_disponiveis': arquivos,
                 })
             if nome != usuario.nmusuario:
                 usuario.nmusuario = nome
@@ -332,6 +340,7 @@ def config_usuario(request):
                 'streak_data': streak_data,
                 'streak_atual': streak_atual,
                 'today': date.today(),
+                'avatares_disponiveis': arquivos,
             })
             ## TODO: implementar alteração de senha dentro de um modal
         #     if request.method == 'POST':
@@ -363,4 +372,5 @@ def config_usuario(request):
         'streak_data': streak_data,
         'streak_atual': streak_atual,
         'today': date.today(),
+        'avatares_disponiveis': arquivos,
     })

@@ -254,3 +254,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+function abrirModalAvatar() {
+    document.getElementById('avatarModal').style.display = 'block';
+  }
+  function fecharModalAvatar() {
+    document.getElementById('avatarModal').style.display = 'none';
+  }
+  

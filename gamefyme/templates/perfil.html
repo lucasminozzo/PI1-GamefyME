@@ -1,12 +1,10 @@
+{% load static %}
 <div class="profile-section">
     <div class="avatar-container">
         <div class="avatar">
-            <svg viewBox="0 0 100 100" width="100" height="100">
-                <circle cx="50" cy="40" r="25" fill="#fff"/>
-                <circle cx="50" cy="40" r="15" fill="#bca8e6"/>
-                <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff"/>
-                <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6"/>
-            </svg>
+            <div class="avatar" onclick="abrirModalAvatar()">
+                <img src="{% static 'img/avatares/' %}{{ usuario.imagem_perfil }}" alt="Avatar" class="avatar-atual" />
+              </div>
         </div>
     </div>
     <div class="profile-info">
@@ -15,7 +13,7 @@
         <div class="streak-container">
             <div class="streak-title">Dias consecutivos de atividades completas:</div>
             <div class="weekdays">
-                {% load static %}
+              
                 <div class="weekdays-div">
                     {% for dia in streak_data %}
                         <div class="weekday" title="{{ dia.data|date:'d/m/Y' }}">
@@ -60,3 +58,25 @@
         {% endif %}
     </div>
 </div>
+
+<div id="avatarModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <span class="close-modal" onclick="fecharModalAvatar()">&times;</span>
+      <div class="modal-header">
+        <h3>Escolha seu Avatar</h3>
+      </div>
+      <form id="formAvatar" method="POST" action="{% url 'usuarios:config_usuario' %}">
+        {% csrf_token %}
+        <div class="modal-body" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+          {% for img in avatares_disponiveis %}
+            <label style="cursor: pointer;">
+              <input type="radio" name="imagem_perfil" value="{{ img }}" style="display: none;" {% if usuario.imagem_perfil == img %}checked{% endif %}>
+              <img src="{% static 'img/avatares/' %}{{ img }}" class="avatar-select" onclick="document.getElementById('formAvatar').submit();" />
+            </label>
+          {% endfor %}
+        </div>
+      </form>
+    </div>
+</div>
+  
+  

@@ -40,6 +40,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    imagem_perfil = models.CharField(
+    max_length=100,
+    choices=[
+        ('avatar1.png', 'Avatar 1'),
+        ('avatar2.png', 'Avatar 2'),
+        ('avatar3.png', 'Avatar 3'),
+    ],
+    default='avatar1.png'
+)
+
 
     objects = UsuarioManager()
 
