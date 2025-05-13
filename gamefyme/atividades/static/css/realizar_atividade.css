@@ -223,7 +223,6 @@ a {
     padding: 48px 48px 32px 48px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 24px #0002;
 }
 
 .form-grid {
@@ -351,11 +350,13 @@ input[type="number"] {
   .pomodoro-card {
     background: var(--roxo-card3);
     display: flex;
+    border-radius: 16px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     margin: 0;
+    box-shadow: 0 4px 24px #0002;
 }
 
 
@@ -473,7 +474,6 @@ input[type="number"] {
     font-size: 18px;
 }
 
-/* Switch estilo (mesmo de antes) */
 .switch {
   position: relative;
   display: inline-block;

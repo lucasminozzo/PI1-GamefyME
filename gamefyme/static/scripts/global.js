@@ -230,22 +230,23 @@ function alternarTema() {
     const overlay = document.getElementById('theme-transition-overlay');
     const themeBtn = document.querySelector('.theme-btn');
   
-    if (!themeBtn) return;
-    const isDark = document.body.classList.toggle('theme-dark');
-    localStorage.setItem('tema', isDark ? 'dark' : 'light');
-  
-    if (overlay) {
-      overlay.classList.add('active');
-      setTimeout(() => {
+    if (!themeBtn || !overlay) return;
+
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+        const isDark = document.body.classList.toggle('theme-dark');
+        localStorage.setItem('tema', isDark ? 'dark' : 'light');
+
         overlay.classList.remove('active');
+
         themeBtn.style.transition = 'transform 0.2s ease';
         themeBtn.style.transform = 'scale(1.1)';
         setTimeout(() => {
-          themeBtn.style.transform = 'scale(1)';
+            themeBtn.style.transform = 'scale(1)';
         }, 200);
-      }, 300);
-    }
-  }
+    }, 300);
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     if (localStorage.getItem('tema') === 'dark') {

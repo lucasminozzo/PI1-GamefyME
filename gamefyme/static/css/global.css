@@ -17,6 +17,7 @@
     --verde-xp: #00ff99;
     --amarelo-moeda: #ffe066;
     --cinza-sub: #7a7a7a;
+    --branco: #fff;
 }
 * {
     margin: 0;
@@ -86,7 +87,7 @@ a {
     top: 0; left: 0; right: 0; bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(30, 0, 60, 0.7);
+    background: rgba(73, 73, 73, 0.7);
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -102,7 +103,7 @@ a {
     width: 60px;
     height: 60px;
     border: 7px solid #fff;
-    border-top: 7px solid #4e008a;
+    border-top: 7px solid var(--roxo-card4);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -535,10 +536,10 @@ a {
 }
 
 .theme-dark {
-    --roxo-header: #1a1a1a;
-    --roxo-botao: #333;
-    --roxo-gradiente-top: #000;
-    --roxo-gradiente-bottom: #222;
+    --roxo-header: #5a5a5a;
+    --roxo-botao: #333333;
+    --roxo-gradiente-top: #494949;
+    --roxo-gradiente-bottom: #5c5c5c;   
     --roxo-card: #444;
     --roxo-card2: #555;
     --roxo-card3: #333;
@@ -547,40 +548,7 @@ a {
     --amarelo-moeda: #ffcc00;
     --cinza-sub: #aaa;
     background: linear-gradient(to bottom, var(--roxo-gradiente-top), var(--roxo-gradiente-bottom));
-    color: #fff;
-}
-
-body.pixel-transition::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-conic-gradient(
-        var(--roxo-card3) 0% 25%, 
-        var(--roxo-card4) 25% 50%, 
-        var(--roxo-card3) 50% 75%, 
-        var(--roxo-card2) 75% 100%
-    );
-    opacity: 1;
-    z-index: 9999;
-    animation: pixelFade 0.8s forwards;
-    pointer-events: none;
-}
-
-@keyframes pixelFade {
-    0% {
-        clip-path: polygon(
-            0 0, 100% 0, 100% 100%, 0% 100%
-        );
-        opacity: 1;
-    }
-    100% {
-        clip-path: polygon(
-            50% 50%, 50% 50%, 50% 50%, 50% 50%
-        );
-        opacity: 0;
-    }
+    --branco: #fff;
 }
 
 #theme-transition-overlay {
@@ -589,7 +557,7 @@ body.pixel-transition::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--roxo-gradiente-top); /* ou qualquer cor sólida se preferir */
+    background: var(--roxo-gradiente-top);
     z-index: 9999;
     pointer-events: none;
     transform: scaleY(0);

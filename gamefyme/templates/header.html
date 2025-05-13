@@ -1,65 +1,103 @@
 <header>
-  {% csrf_token %}
-  {% load static %}
-  <div style="margin-right: auto;">
-    <a href="{% url 'usuarios:main' %}" class="btn-voltar-menu with-loading" title="Menu Principal" style="
-      font-size: 24px;
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 16px;
-      display: inline-block;">
-      <img src="{% static 'img/home.png' %}" alt="Menu" style="width: 40px; height: 40px; vertical-align: middle;">
+  {% csrf_token %} {% load static %}
+  <div style="margin-right: auto">
+    <a
+      href="{% url 'usuarios:main' %}"
+      class="btn-voltar-menu with-loading"
+      title="Menu Principal"
+      style="
+        font-size: 24px;
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 16px;
+        display: inline-block;
+      "
+    >
+      <img
+        src="{% static 'img/home.png' %}"
+        alt="Menu"
+        style="width: 40px; height: 40px; vertical-align: middle"
+      />
     </a>
-  </div>  
+  </div>
 
   <div class="notifications-wrapper">
-    <button type="button" class="notifications-btn" onclick="toggleNotifications(event)" title="Notificações">
-      <img src="{% static 'img/notification.png' %}" alt="Menu" style="width: 35px; height: 35px; vertical-align: middle;">
+    <button
+      type="button"
+      class="notifications-btn"
+      onclick="toggleNotifications(event)"
+      title="Notificações"
+    >
+      <img
+        src="{% static 'img/notification.png' %}"
+        alt="Menu"
+        style="width: 35px; height: 35px; vertical-align: middle"
+      />
       {% if notificacoes_nao_lidas > 0 %}
-        <span class="notification-badge">{{ notificacoes_nao_lidas }}</span>
+      <span class="notification-badge">{{ notificacoes_nao_lidas }}</span>
       {% endif %}
     </button>
     <div id="notifications-dropdown" class="notifications-dropdown">
       <div class="notifications-header">
         <h4>Notificações</h4>
         {% if notificacoes_nao_lidas > 0 %}
-          <button onclick="marcarTodasComoLidas()" class="mark-all-read with-loading">Marcar todas como lidas</button>
+        <button
+          onclick="marcarTodasComoLidas()"
+          class="mark-all-read with-loading"
+        >
+          Marcar todas como lidas
+        </button>
         {% endif %}
       </div>
       <div class="notifications-list">
         {% for notificacao in notificacoes %}
-          <div class="notification-item unread" onclick="abrirModalNotificacao({{ notificacao.idnotificacao }}, '{{ notificacao.dsmensagem|escapejs }}', '{{ notificacao.dtcriacao|date:'d/m/Y' }}', '{{ notificacao.fltipo }}')" data-id="{{ notificacao.idnotificacao }}">
-            <div class="notification-icon">
-              {% if notificacao.fltipo == 'sucesso' %}
-                 🎉
-              {% elif notificacao.fltipo == 'aviso' %}
-                 ⚠️
-              {% elif notificacao.fltipo == 'erro' %}
-                 ❌
-              {% else %}
-                ℹ️
-              {% endif %}
+        <div
+          class="notification-item unread"
+          onclick="abrirModalNotificacao({{ notificacao.idnotificacao }}, '{{ notificacao.dsmensagem|escapejs }}', '{{ notificacao.dtcriacao|date:'d/m/Y' }}', '{{ notificacao.fltipo }}')"
+          data-id="{{ notificacao.idnotificacao }}"
+        >
+          <div class="notification-icon">
+            {% if notificacao.fltipo == 'sucesso' %} 🎉 {% elif
+            notificacao.fltipo == 'aviso' %} ⚠️ {% elif notificacao.fltipo ==
+            'erro' %} ❌ {% else %} ℹ️ {% endif %}
+          </div>
+          <div class="notification-content">
+            <div class="notification-message">
+              {{ notificacao.dsmensagem|truncatechars:50 }}
             </div>
-            <div class="notification-content">
-              <div class="notification-message">{{ notificacao.dsmensagem|truncatechars:50 }}</div>
-              <div class="notification-date">{{ notificacao.dtcriacao|date:'d/m/Y' }}</div>
+            <div class="notification-date">
+              {{ notificacao.dtcriacao|date:'d/m/Y' }}
             </div>
           </div>
+        </div>
         {% empty %}
-          <div class="no-notifications">Nenhuma notificação não lida</div>
+        <div class="no-notifications">Nenhuma notificação não lida</div>
         {% endfor %}
       </div>
     </div>
   </div>
 
   <div class="theme-switcher">
-    <button type="button" class="theme-btn" onclick="alternarTema()" title="Trocar Tema">
-      <img src="{% static 'img/theme.png' %}" alt="Menu" style="width: 35px; height: 35px; vertical-align: middle;">
+    <button
+      type="button"
+      class="theme-btn"
+      onclick="alternarTema()"
+      title="Trocar Tema"
+    >
+      <img
+        src="{% static 'img/theme.png' %}"
+        alt="Menu"
+        style="width: 35px; height: 35px; vertical-align: middle"
+      />
     </button>
   </div>
 
   <div class="user-menu-container">
-    <button class="user-menu-btn" onclick="toggleUserMenu()" title="Menu do usuário">
+    <button
+      class="user-menu-btn"
+      onclick="toggleUserMenu()"
+      title="Menu do usuário"
+    >
       <span class="avatar-header">
         <svg viewBox="0 0 100 100" width="32" height="32">
           <circle cx="50" cy="40" r="25" fill="#fff" />
@@ -68,12 +106,24 @@
           <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6" />
         </svg>
       </span>
-      <span style="font-size: 20px; margin-left: 4px">{{ usuario.nmusuario }}</span>
+      <span style="font-size: 20px; margin-left: 4px"
+        >{{ usuario.nmusuario }}</span
+      >
       <span style="font-size: 20px; margin-left: 2px">&#9662;</span>
     </button>
     <div id="user-dropdown" class="user-dropdown">
-      <a href="{% url 'usuarios:config_usuario' %}" style="font-size: 20px" class="with-loading">Configurações</a>
-      <a href="#" onclick="openRelatorioModal(); toggleUserMenu();" style="font-size: 20px">Relatórios</a>
+      <a
+        href="{% url 'usuarios:config_usuario' %}"
+        style="font-size: 20px"
+        class="with-loading"
+        >Configurações</a
+      >
+      <a
+        href="#"
+        onclick="openRelatorioModal(); toggleUserMenu();"
+        style="font-size: 20px"
+        >Relatórios</a
+      >
       <a href="{% url 'usuarios:logout' %}" style="font-size: 20px">Sair</a>
     </div>
   </div>
@@ -92,16 +142,12 @@
     </div>
   </div>
 </div>
-
-{% if messages %}
-  {% for message in messages %}
-    <div class="msg-flutuante {% if message.tags == 'error' %}
-        erro
-      {% else %}
-        sucesso
-      {% endif %}">
-      {{ message }}
-      <span class="fechar" onclick="fecharMsg(this)">×</span>
-    </div>
-  {% endfor %}
-{% endif %}
+<div id="theme-transition-overlay"></div>
+{% if messages %} {% for message in messages %}
+<div
+  class="msg-flutuante {% if message.tags == 'error' %} erro {% else %} sucesso {% endif %}"
+>
+  {{ message }}
+  <span class="fechar" onclick="fecharMsg(this)">×</span>
+</div>
+{% endfor %} {% endif %}
