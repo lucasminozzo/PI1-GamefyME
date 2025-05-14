@@ -2,10 +2,9 @@ import os
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import Usuario, TipoUsuario, Notificacao
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
 from services import login_service, atividades_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
@@ -19,6 +18,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from datetime import date
 from django.conf import settings
+from .forms import ConfigUsuarioForm
 
 
 def cadastro(request):
@@ -244,7 +244,6 @@ def nova_senha(request, uidb64, token):
     messages.error(request, 'Link inválido. Senha já foi alterada ou o link expirou.')
     return redirect('usuarios:login')
 
-
 @require_POST
 def marcar_notificacao_lida(request, notificacao_id):
     if not login_service.is_usuario_logado(request):
@@ -284,97 +283,24 @@ def criar_notificacao(usuario, mensagem, tipo='info'):
         fltipo=tipo
     )
     
-def config_usuario(request):
-    if not login_service.is_usuario_logado(request):
-        return redirect('usuarios:login')
-
+@require_POST
+def atualizar_config_usuario(request):
     usuario = login_service.get_usuario_logado(request)
-    pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
-    arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
-    notificacoes = Notificacao.objects.filter( ## Pega as 5 últimas notificações
-        idusuario=usuario,
-        flstatus=False
-    ).order_by('-dtcriacao')[:5]
-    notificacoes_nao_lidas = Notificacao.objects.filter( ## Pega o total de notificações não lidas
-        idusuario=usuario,
-        flstatus=False
-    ).count()
+    form = ConfigUsuarioForm(request.POST, instance=usuario)
 
-    if request.method == 'POST':
-        nome = request.POST.get('nmusuario')
-        email = request.POST.get('emailusuario')
-        dtnascimento = request.POST.get('dtnascimento')
-        try:
-            if not all([nome, email, dtnascimento]):
-                return render(request, 'config_usuario.html', {
-                    'erro': 'Preencha todos os campos.',
-                    'usuario': usuario,
-                    'notificacoes': notificacoes,
-                    'notificacoes_nao_lidas': notificacoes_nao_lidas,
-                    'exibir_voltar': True,
-                    'esconder_add': True,
-                    'streak_data': streak_data,
-                    'streak_atual': streak_atual,
-                    'today': date.today(),
-                    'avatares_disponiveis': arquivos,
-                })
-            if nome != usuario.nmusuario:
-                usuario.nmusuario = nome
-            if not (email == usuario.emailusuario):
-                usuario.emailusuario = email
-            if not (dtnascimento == usuario.dtnascimento):
-                usuario.dtnascimento = dtnascimento
-            usuario.save()
-            messages.success(request, 'Configurações atualizadas com sucesso!')
-            return redirect('usuarios:main')
-        except Exception as e:
-            messages.error(request, 'Erro ao atualizar configurações. Tente novamente.')
-            return render('config_usuario.html',{
-                'usuario': usuario,
-                'notificacoes': notificacoes,
-                'notificacoes_nao_lidas': notificacoes_nao_lidas,
-                'exibir_voltar': True,
-                'esconder_add': True,
-                'streak_data': streak_data,
-                'streak_atual': streak_atual,
-                'today': date.today(),
-                'avatares_disponiveis': arquivos,
-            })
-            ## TODO: implementar alteração de senha dentro de um modal
-        #     if request.method == 'POST':
-        # email = request.POST.get('email')
-        # try:
-        #     usuario = Usuario.objects.get(emailusuario=email)
-        #     if email == usuario.emailusuario:
-        #         id=usuario.idusuario
-        #         uidb64 = urlsafe_base64_encode(force_bytes(id)) ## Codifica o ID do usuário
-        #         token = default_token_generator.make_token(usuario) ## Cria um token para o usuário
-        #         url = reverse('usuarios:nova_senha', kwargs={'uidb64': uidb64, 'token': token}) ## URL para redefinir a senha
-        #         subject = "Esqueceu a senha - Gamefyme" ## Assunto do e-mail
-        #         message = "Clique no link abaixo para redefinir sua senha:\n\n" ## Mensagem do e-mail
-        #         message += f"{request.build_absolute_uri(url)}\n\n" ## Link para redefinir a senha
-        #         message += "Se você não solicitou essa alteração, ignore este e-mail." ## Mensagem do e-mail
-        #         send_mail(subject, message, EMAIL_HOST_USER, [email], fail_silently=True) ## Envia o e-mail
-        #         messages.success(request, 'Email enviado com sucesso! Verifique sua caixa de entrada.') ## Mensagem de sucesso caso o e-mail tenha sido enviado
-        #         return redirect('usuarios:login') ## Redireciona para a página de login
-        #     else:
-        #         return render(request, 'esqueceu.html', {'erro': 'Email incorreto.', 'email': email}) ## Mensagem de erro caso o e-mail esteja incorreto
-        # except Usuario.DoesNotExist:
-        #     return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email}) ## Mensagem de erro caso o usuário não exista
-    return render(request, 'config_usuario.html',{
-        'usuario': usuario,
-        'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'exibir_voltar': True,
-        'esconder_add': True,
-        'streak_data': streak_data,
-        'streak_atual': streak_atual,
-        'today': date.today(),
-        'avatares_disponiveis': arquivos,
-    })
-    
+    if form.is_valid():
+        usuario = form.save()
+        return JsonResponse({
+            'success': True,
+            'nmusuario': usuario.nmusuario,
+            'dtnascimento': usuario.dtnascimento,
+            'emailusuario': usuario.emailusuario,
+        })
+
+    return JsonResponse({
+        'success': False,
+        'errors': form.errors
+    }, status=400)
     
 @require_POST
 def atualizar_avatar(request):
