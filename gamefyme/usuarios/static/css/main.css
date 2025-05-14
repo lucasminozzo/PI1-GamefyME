@@ -233,28 +233,3 @@ header {
 .no-tasks-message p:first-child {
     margin-bottom: 10px;
 }
-
-.btnPDF {
-    background: var(--roxo-card3);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 16px 32px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.2s ease-in-out;
-}
-
-.btnPDF:hover {
-    background: var(--roxo-botao);
-    transform: translateY(-2px);
-}
-
-.btnPDF:focus {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}

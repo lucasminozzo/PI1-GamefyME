@@ -36,3 +36,15 @@
     </div>
   </div>
   
+<script>
+  function toggleFullscreenRelatorio() {
+    const iframe = document.getElementById('iframeRelatorio');
+    if (!document.fullscreenElement) {
+      iframe.requestFullscreen().catch(err => {
+        alert(`Erro ao entrar em tela cheia: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+</script> 
