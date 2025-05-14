@@ -318,5 +318,83 @@ function selecionarAvatar(nomeAvatar) {
         imgSelecionada.classList.remove('loading');
       }
     });
-  }
+}
   
+// Abre o modal de configurações
+function openConfigModal() {
+  document.getElementById('configModal').style.display = 'block';
+}
+
+// Fecha o modal de configurações
+function closeConfigModal() {
+  document.getElementById('configModal').style.display = 'none';
+}
+
+// Fecha o modal se clicar fora dele
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('configModal');
+  if (event.target === modal) {
+      modal.style.display = 'none';
+  }
+});
+
+// Envio do formulário de configurações via AJAX
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("formConfig");
+  if (!form) return;
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const url = form.getAttribute("action") || "/usuarios/atualizar-config/";
+    const formData = new FormData(form);
+    const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const botaoSalvar = form.querySelector("button[type='submit']");
+    botaoSalvar.disabled = true;
+    botaoSalvar.textContent = "Salvando...";
+    
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      botaoSalvar.disabled = false;
+      botaoSalvar.textContent = "Salvar Alterações";
+
+      if (response.ok && data.success) {
+        alert("Perfil atualizado com sucesso!");
+        closeConfigModal();
+
+        // Atualiza o nome no header
+        const nomeSpan = document.querySelector(".user-menu-btn span:nth-child(2)");
+        if (nomeSpan) nomeSpan.textContent = data.nmusuario;
+        // Atualiza o nome no card de perfil
+        const nomePerfil = document.querySelector(".profile-info h2");
+        if (nomePerfil) nomePerfil.textContent = data.nmusuario;
+        // Atualiza a data de aniversário no card de perfil
+        const dataPerfil = document.querySelector(".profile-info p");
+        const dataFormatada = new Date(data.dtnascimento).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+        if (dataPerfil) dataPerfil.textContent = dataFormatada;
+      } else {
+        // Mostra erros retornados pela view
+        const errors = data.errors || data.error;
+        console.error(errors);
+        alert("Erro ao salvar: " + JSON.stringify(errors));
+      }
+    } catch (error) {
+      botaoSalvar.disabled = false;
+      botaoSalvar.textContent = "Salvar Alterações";
+
+      console.error("Erro na requisição AJAX:", error);
+      alert("Erro inesperado ao salvar as configurações.");
+    }
+  });
+});
