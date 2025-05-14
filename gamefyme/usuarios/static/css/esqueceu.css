@@ -4,7 +4,6 @@
 }
 
 .nav-left a, .nav-right a {
-    text-decoration: none;
     color: #fff;
     background: var(--roxo-botao);
     padding: 8px 18px;

@@ -114,14 +114,15 @@ function abrirModalNotificacao(id, mensagem, data, tipo) {
   const modalDate = document.getElementById("modalDate");
   const modalIcon = document.getElementById("modalIcon");
 
-  let icon = "️ℹ️";
-  if (tipo === "sucesso") icon = "🎉";
-  else if (tipo === "aviso") icon = "⚠️";
-  else if (tipo === "erro") icon = "❌";
+  let iconPath = "/static/img/info.png";
 
-  modalIcon.textContent = icon;
-  modalMessage.textContent = mensagem;
-  modalDate.textContent = data;
+  if (tipo === "sucesso") iconPath = "/static/img/gift-box.png";
+  else if (tipo === "aviso") iconPath = "/static/img/warning.png";
+  else if (tipo === "erro") iconPath = "/static/img/caution.png";
+  
+  modalIcon.innerHTML = `<img src="${iconPath}" alt="${tipo}" style="width: 20px; height: 20px; vertical-align: middle;" />`;
+  modalMessage.innerText  = mensagem;
+  modalDate.innerText  = data;
   modal.style.display = "block";
 
   marcarComoLida(id);
@@ -217,7 +218,21 @@ function openRelatorioModal() {
   document.getElementById("relatorioModal").style.display = "block";
 }
 function closeRelatorioModal() {
+  const form = document.getElementById("formRelatorio");
+  const iframe = document.getElementById("iframeRelatorio");
+
+  form.reset();
+  iframe.src = "";
+  document.getElementById("btnGerarPDF").classList.remove("loading");
+  document.getElementById("btnGerarPDF").querySelector(".btn-text").style.display = "inline-block";
+  document.getElementById("btnGerarPDF").querySelector(".btn-spinner").style.display = "none";
+
   document.getElementById("relatorioModal").style.display = "none";
+}
+
+function limparRelatorio() {
+  document.getElementById("formRelatorio").reset();
+  document.getElementById("iframeRelatorio").src = "";
 }
 
 document.addEventListener("DOMContentLoaded", function () {

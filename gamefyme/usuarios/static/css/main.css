@@ -13,12 +13,6 @@ header {
     border: 0;
 }
 
-.user-menu-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
 .user-menu-btn {
     background: var(--roxo-botao);
     color: #fff;
@@ -60,18 +54,6 @@ header {
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
-}
-
-/* Seção de Perfil */
-.profile-section {
-    display: flex;
-    align-items: flex-start;
-    background: var(--roxo-card4);
-    border-radius: 20px;
-    padding: 32px;
-    margin-bottom: 32px;
-    position: relative;
-    gap: 32px;
 }
 
 .avatar-container {
@@ -148,24 +130,6 @@ header {
     flex-direction: column;
     gap: 12px;
     width: 200px;
-}
-
-.btn-perfil a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    font-weight: bold;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    background: var(--roxo-card3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in-out;
-    user-select: none;
-    white-space: nowrap;
 }
 
 .action-btn {

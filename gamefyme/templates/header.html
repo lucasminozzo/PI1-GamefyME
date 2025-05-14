@@ -1,30 +1,24 @@
 <header>
-  {% csrf_token %} {% load static %}
-  <div style="margin-right: auto">
+  {% csrf_token %}
+  {% load static %}
+  <div class="header-wrapper" style="margin-right: auto">
     <a
       href="{% url 'usuarios:main' %}"
-      class="btn-voltar-menu with-loading"
+      class="header-btn with-loading"
       title="Menu Principal"
-      style="
-        font-size: 24px;
-        color: #fff;
-        text-decoration: none;
-        padding: 8px 16px;
-        display: inline-block;
-      "
-    >
+      style="display: inline-block;" >
       <img
         src="{% static 'img/home.png' %}"
         alt="Menu"
-        style="width: 40px; height: 40px; vertical-align: middle"
+        style="width: 35px; height: 35px; vertical-align: middle"
       />
     </a>
   </div>
 
-  <div class="notifications-wrapper">
+  <div class="header-wrapper">
     <button
       type="button"
-      class="notifications-btn"
+      class="header-btn"
       onclick="toggleNotifications(event)"
       title="Notificações"
     >
@@ -57,9 +51,21 @@
           data-id="{{ notificacao.idnotificacao }}"
         >
           <div class="notification-icon">
-            {% if notificacao.fltipo == 'sucesso' %} 🎉 {% elif
-            notificacao.fltipo == 'aviso' %} ⚠️ {% elif notificacao.fltipo ==
-            'erro' %} ❌ {% else %} ℹ️ {% endif %}
+            {% if notificacao.fltipo == 'sucesso' %}
+              <span>
+                <img src="{% static 'img/gift-box.png' %}" alt="Sucesso" style="width: 25px; height: 25px; vertical-align: middle"/>
+              </span> 
+            {% elif notificacao.fltipo == 'aviso' %} 
+              <span>
+                <img src="{% static 'img/warning.png' %}" alt="Aviso" style="width: 15px; height: 15px; vertical-align: middle"/>
+              </span>
+            {% elif notificacao.fltipo == 'erro' %} 
+              <span>
+                <img src="{% static 'img/caution.png' %}" alt="Erro" style="width: 15px; height: 15px; vertical-align: middle"/>
+              </span>
+            {% else %}
+               i
+            {% endif %}
           </div>
           <div class="notification-content">
             <div class="notification-message">
@@ -77,16 +83,16 @@
     </div>
   </div>
 
-  <div class="theme-switcher">
+  <div class="theme-switcher header-wrapper">
     <button
       type="button"
-      class="theme-btn"
+      class="header-btn theme-btn"
       onclick="alternarTema()"
       title="Trocar Tema"
     >
       <img
         src="{% static 'img/theme.png' %}"
-        alt="Menu"
+        alt="Trocar tema"
         style="width: 35px; height: 35px; vertical-align: middle"
       />
     </button>
@@ -99,12 +105,11 @@
       title="Menu do usuário"
     >
       <span class="avatar-header">
-        <svg viewBox="0 0 100 100" width="32" height="32">
-          <circle cx="50" cy="40" r="25" fill="#fff" />
-          <circle cx="50" cy="40" r="15" fill="#bca8e6" />
-          <ellipse cx="50" cy="80" rx="30" ry="18" fill="#fff" />
-          <ellipse cx="50" cy="80" rx="22" ry="12" fill="#bca8e6" />
-        </svg>
+        <img
+          src="{% static 'img/person.png' %}"
+          alt="Perfil"
+          style="width: 35px; height: 35px; vertical-align: middle"
+        />
       </span>
       <span style="font-size: 20px; margin-left: 4px"
         >{{ usuario.nmusuario }}</span
@@ -137,17 +142,24 @@
     </div>
     <div class="modal-body">
       <div id="modalIcon" class="modal-icon"></div>
-      <p id="modalMessage"></p>
+      <p id="modalMessage" class="modal-message"></p>
       <div id="modalDate" class="modal-date"></div>
-    </div>
+    </div>    
   </div>
 </div>
 <div id="theme-transition-overlay"></div>
-{% if messages %} {% for message in messages %}
-<div
-  class="msg-flutuante {% if message.tags == 'error' %} erro {% else %} sucesso {% endif %}"
->
-  {{ message }}
-  <span class="fechar" onclick="fecharMsg(this)">×</span>
-</div>
-{% endfor %} {% endif %}
+{% if messages %} 
+  {% for message in messages %}
+  <div
+    class="msg-flutuante 
+      {% if message.tags == 'error' %}
+        erro 
+      {% else %}
+        sucesso 
+      {% endif %}"
+  >
+    {{ message }}
+    <span class="fechar" onclick="fecharMsg(this)">×</span>
+  </div>
+  {% endfor %} 
+{% endif %}

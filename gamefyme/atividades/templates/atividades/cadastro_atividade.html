@@ -74,10 +74,23 @@
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn-add with-loading">Add Tarefa <span>+</span></button>
-            <button type="reset" class="btn-clear">Limpar <span>🗑️</span></button>
+            <button type="submit" class="btn-add with-loading">
+                Add Tarefa 
+                <span>
+                    <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 35px; height: 35px; vertical-align: middle"/>
+                </span>
+            </button>
+            <button type="reset" class="btn-clear">
+                Limpar 
+                <span>
+                    <img src="{% static 'img/trash.png' %}" alt="Limpar" style="width: 35px; height: 35px; vertical-align: middle"/>
+                </span>
+            </button>
             <a href="{% url 'usuarios:main' %}" class="btn-cancel with-loading" style="display:flex;align-items:center;">
-                Cancelar <span>✖️</span>
+                Cancelar 
+                <span>
+                    <img src="{% static 'img/close.png' %}" alt="Cancelar" style="width: 35px; height: 35px; vertical-align: middle"/>
+                </span>
             </a>
         </div>
     </form>

@@ -109,17 +109,11 @@ input[type="number"] {
     text-decoration: none;
 }
 
-.btn-add { background: var(--roxo-card3); color: var(--verde-xp); }
-.btn-clear { background: var(--roxo-card3); color: var(--branco); }
-.btn-cancel { background: var(--roxo-card3); color: #ff4d4d; }
+.btn-add { background: var(--roxo-card4); color: var(--verde-xp); }
+.btn-clear { background: var(--roxo-card4); color: var(--branco); }
+.btn-cancel { background: var(--roxo-card4); color: #ff4d4d; }
 
 .btn-add:hover, .btn-clear:hover, .btn-cancel:hover { background: var(--roxo-gradiente-top) }
-
-.user-menu-container {
-    display: flex;
-    align-items: center;
-    position: relative; /* Adicionar para posicionar dropdown corretamente */
-}
 
 .user-menu-btn {
     background: var(--roxo-botao);

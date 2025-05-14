@@ -47,12 +47,12 @@
     </div>
     <div class="btn-perfil">
         {% if not esconder_add %}
-            <a href="{% url 'atividades:atividade' %}" class="btn-perfil add-task-btn with-loading" style="color: #00cc7a;">
+            <a href="{% url 'atividades:atividade' %}" class="btn-perfil add-task-btn with-loading">
                 Add Tarefa
             </a>
         {% endif %}
         {% if exibir_voltar %}
-            <a href="{% url 'usuarios:main' %}" id="btnVoltar" class="btn-perfil btn-finalizar with-loading" style="color: #ffe066;">
+            <a href="{% url 'usuarios:main' %}" id="btnVoltar" class="btn-perfil btn-finalizar with-loading">
                 Voltar
             </a>
         {% endif %}
