@@ -343,17 +343,14 @@ function selecionarAvatar(nomeAvatar) {
   });
 }
 
-// Abre o modal de configurações
 function openConfigModal() {
   document.getElementById('configModal').style.display = 'block';
 }
 
-// Fecha o modal de configurações
 function closeConfigModal() {
   document.getElementById('configModal').style.display = 'none';
 }
 
-// Fecha o modal se clicar fora dele
 window.addEventListener('click', function(event) {
   const modal = document.getElementById('configModal');
   if (event.target === modal) {
@@ -361,7 +358,6 @@ window.addEventListener('click', function(event) {
   }
 });
 
-// Envio do formulário de configurações via AJAX
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("formConfig");
   if (!form) return;

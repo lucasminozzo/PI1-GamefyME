@@ -428,11 +428,6 @@ a {
   background-color: var(--roxo-card3);
 }
 
-.btnPDF.limpar {
-  background-color: #999;
-}
-
-
 #notificationModal .modal-content {
   max-width: 900px;
   padding: 30px 30px;
@@ -712,11 +707,6 @@ input:checked + .slider:before {
   width: 100%;
   height: 100%;
   object-fit: contain;
-}
-
-.nivel-circle {
-  border-radius: 50%; /* faz o círculo */
-  background: var(--roxo-gradiente-top);
 }
 
 .modal-content {
