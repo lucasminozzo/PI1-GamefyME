@@ -1,55 +1,38 @@
 <div id="relatorioModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeRelatorioModal()">&times;</span>
-        <div class="modal-header">
-            <h3>Gerar Relatório</h3>
-        </div>
-        <div class="modal-body">
-            <form id="formRelatorio">
-                <div>
-                    <label for="data_inicio">Data início:</label>
-                    <input type="date" name="data_inicio" id="data_inicio" required >
-                </div>
-                <div>
-                    <label for="data_fim">Data fim:</label>
-                    <input type="date" name="data_fim" id="data_fim" required >
-                </div>
-                <div>
-                    <button type="submit" class="btnPDF" id="btnGerarPDF">
-                        <span class="btn-text">Gerar PDF</span>
-                        <span class="btn-spinner" style="display: none;">
-                            <i class="fas fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
-                </div>
-                <div>
-                    <button type="button" onclick="toggleFullscreenRelatorio()" class="btnPDF">
-                        Tela Cheia
-                    </button>
-                </div>
-                <div>
-                    <button type="button" class="btnPDF" onclick="limparRelatorio()">Limpar</button>
-                </div>
-            </form>
-            
-        </div>
-        
-        <div class="modal-body-frame">
-            <iframe id="iframeRelatorio" src=""></iframe>
-        </div>
-          
+      <span class="close-modal" onclick="closeRelatorioModal()">&times;</span>
+      <div class="modal-header">
+        <h3>Gerar Relatório</h3>
+      </div>
+      <div class="modal-body">
+        <form id="formRelatorio">
+          <div>
+            <label for="data_inicio">Data início:</label>
+            <input type="date" name="data_inicio" id="data_inicio" required>
+          </div>
+          <div>
+            <label for="data_fim">Data fim:</label>
+            <input type="date" name="data_fim" id="data_fim" required>
+          </div>
+          <div>
+            <button type="submit" class="btnPDF" id="btnGerarPDF">
+              <span class="btn-text">Gerar PDF</span>
+              <span class="btn-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
+          </div>
+          <div>
+            <button type="button" onclick="toggleFullscreenRelatorio()" class="btnPDF">Tela Cheia</button>
+          </div>
+          <div>
+            <button type="button" class="btnPDF limpar" onclick="limparRelatorio()">Limpar</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-body-frame">
+        <iframe id="iframeRelatorio" src=""></iframe>
+      </div>
     </div>
-</div>
-
-<script>
-    function toggleFullscreenRelatorio() {
-        const iframe = document.getElementById('iframeRelatorio');
-        if (!document.fullscreenElement) {
-            iframe.requestFullscreen().catch(err => {
-                alert(`Erro ao entrar em tela cheia: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-</script>
+  </div>
+  

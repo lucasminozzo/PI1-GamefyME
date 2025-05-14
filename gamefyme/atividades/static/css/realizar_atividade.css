@@ -13,27 +13,7 @@ header {
     border: 0;
 }
 
-.user-menu-btn {
-    background: var(--roxo-botao);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s ease-in-out;
-}
 
-.user-menu-btn:hover {
-    background: var(--roxo-gradiente-top);
-}
-
-.user-menu-btn:focus {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}
 
 .avatar-header {
     display: flex;

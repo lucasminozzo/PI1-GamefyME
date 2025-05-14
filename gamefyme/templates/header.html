@@ -100,7 +100,7 @@
 
   <div class="user-menu-container">
     <button
-      class="user-menu-btn"
+      class="user-menu-btn header-btn"
       onclick="toggleUserMenu()"
       title="Menu do usuário"
     >
@@ -143,10 +143,12 @@
       <div id="modalIcon" class="modal-icon"></div>
       <p id="modalMessage" class="modal-message"></p>
       <div id="modalDate" class="modal-date"></div>
-    </div>    
+    </div>
   </div>
 </div>
+
 <div id="theme-transition-overlay"></div>
+
 {% if messages %} 
   {% for message in messages %}
   <div
