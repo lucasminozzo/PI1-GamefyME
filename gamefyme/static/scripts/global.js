@@ -402,8 +402,27 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         const errors = data.errors || data.error;
         console.error(errors);
-        alert("Erro ao salvar: " + JSON.stringify(errors));
-      }
+              
+        let mensagem = "Erro ao salvar configurações.";
+        if (typeof errors === "object" && errors !== null) {
+          mensagem += "\n\n";
+          for (let campo in errors) {
+            const nomeCampoFormatado = campo
+              .replace("nmusuario", "Nome de usuário")
+              .replace("emailusuario", "Email")
+              .replace("dtnascimento", "Data de nascimento")
+              .replace("senha_atual", "Senha atual")
+              .replace("nova_senha", "Nova senha");
+              
+            const mensagensCampo = Array.isArray(errors[campo])
+              ? errors[campo].join(", ")
+              : errors[campo];
+          
+            mensagem += `• ${nomeCampoFormatado}: ${mensagensCampo}\n`;
+          }
+        }
+      alert(mensagem);
+    }
     } catch (error) {
       botaoSalvar.disabled = false;
       botaoSalvar.textContent = "Salvar Alterações";

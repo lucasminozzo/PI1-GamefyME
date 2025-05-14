@@ -19,6 +19,7 @@ from django.http import JsonResponse
 from datetime import date
 from django.conf import settings
 from .forms import ConfigUsuarioForm
+from django.contrib.auth import authenticate
 
 
 def cadastro(request):
@@ -289,7 +290,24 @@ def atualizar_config_usuario(request):
     form = ConfigUsuarioForm(request.POST, instance=usuario)
 
     if form.is_valid():
-        usuario = form.save()
+        # Primeiro atualiza os dados do formulário
+        form.save()
+
+        senha_atual = request.POST.get('senha_atual')
+        nova_senha = request.POST.get('nova_senha')
+
+        if senha_atual and nova_senha:
+            # Verifica se a senha atual está correta
+            usuario_autenticado = authenticate(request, emailusuario=usuario.emailusuario, password=senha_atual)
+            if usuario_autenticado:
+                usuario.set_password(nova_senha)
+                usuario.save()
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'errors': {'senha_atual': ['Senha atual incorreta.']}
+                }, status=400)
+
         return JsonResponse({
             'success': True,
             'nmusuario': usuario.nmusuario,
