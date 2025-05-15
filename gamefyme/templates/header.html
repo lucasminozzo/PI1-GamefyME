@@ -1,7 +1,7 @@
 <header>
   {% csrf_token %}
   {% load static %}
-  <div class="header-wrapper" style="margin-right: auto">
+  <div class="header-wrapper" style="margin-right: auto;">
     <a
       href="{% url 'usuarios:main' %}"
       class="header-btn with-loading"
@@ -13,9 +13,7 @@
         style="width: 35px; height: 35px; vertical-align: middle"
       />
     </a>
-  </div>
-
-  <div class="header-wrapper">
+    
     <button
       type="button"
       class="header-btn"
@@ -32,13 +30,15 @@
       {% endif %}
     </button>
     <div id="notifications-dropdown" class="notifications-dropdown">
-      <div class="notifications-header">
-        <h4>Notificações</h4>
+      <div class="notifications-header" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+          <h4 style="margin: 0;">Notificações</h4>
+          <a href="#" onclick="abrirModalTodasNotificacoes()" class="ver-todas-notificacoes">
+            Ver todas
+          </a>
+        </div>
         {% if notificacoes_nao_lidas > 0 %}
-        <button
-          onclick="marcarTodasComoLidas()"
-          class="mark-all-read with-loading"
-        >
+        <button onclick="marcarTodasComoLidas()" class="mark-all-read with-loading">
           Marcar todas como lidas
         </button>
         {% endif %}
@@ -81,21 +81,20 @@
         {% endfor %}
       </div>
     </div>
-  </div>
 
-  <div class="theme-switcher header-wrapper">
-    <button
-      type="button"
-      class="header-btn theme-btn"
-      onclick="alternarTema()"
-      title="Trocar Tema"
-    >
-      <img
-        src="{% static 'img/theme.png' %}"
-        alt="Trocar tema"
-        style="width: 35px; height: 35px; vertical-align: middle"
-      />
-    </button>
+      <button
+        type="button"
+        class="header-btn theme-btn"
+        onclick="alternarTema()"
+        title="Trocar Tema"
+      >
+        <img
+          src="{% static 'img/theme.png' %}"
+          alt="Trocar tema"
+          style="width: 35px; height: 35px; vertical-align: middle"
+        />
+      </button>
+
   </div>
 
   <div class="user-menu-container">
@@ -146,6 +145,17 @@
     </div>
   </div>
 </div>
+
+<div id="allNotificationsModal" class="modal">
+  <div class="modal-content" style="max-width: 900px; padding: 30px;">
+    <span class="close-modal" onclick="fecharModalTodasNotificacoes()">&times;</span>
+    <div class="modal-header">
+      <h3>Todas as Notificações</h3>
+    </div>
+    <div class="modal-body" id="allNotificationsBody" style="max-height: 60vh; overflow-y: auto;"></div>
+  </div>
+</div>
+
 
 <div id="theme-transition-overlay"></div>
 

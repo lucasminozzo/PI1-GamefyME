@@ -18,7 +18,6 @@ Nesta plataforma, a gamificação é o principal mecanismo de feedback, enquanto
 - **Front-end**
   - HTML e CSS
   - Django Template
-  - Possivelmente Vue js
 
 - **Back-end**
   - Python e Django

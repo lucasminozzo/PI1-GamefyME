@@ -1,0 +1,20 @@
+{% load static %}
+{% for notificacao in notificacoes %}
+<div class="notification-item {% if not notificacao.flstatus %}unread{% endif %}">
+  <div class="notification-icon">
+    {% if notificacao.fltipo == 'sucesso' %}
+    <img src="{% static 'img/gift-box.png' %}" style="width: 20px;" />
+    {% elif notificacao.fltipo == 'aviso' %}
+    <img src="{% static 'img/warning.png' %}" style="width: 20px;" />
+    {% elif notificacao.fltipo == 'erro' %}
+    <img src="{% static 'img/caution.png' %}" style="width: 20px;" />
+    {% endif %}
+  </div>
+  <div class="notification-content">
+    <p style="color: #fff;">{{ notificacao.dsmensagem }}</p>
+    <small style="color: var(--cinza-sub);">{{ notificacao.dtcriacao|date:"d/m/Y H:i" }}</small>
+  </div>
+</div>
+{% empty %}
+<p style="text-align: center; color: var(--cinza-sub);">Nenhuma notificação encontrada.</p>
+{% endfor %}
