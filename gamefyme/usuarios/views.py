@@ -156,6 +156,7 @@ def main(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
+    atividades_service.verificar_streak_no_login(usuario)
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
     streak_data = atividades_service.get_streak_data(usuario)

@@ -33,19 +33,21 @@ def calcular_streak_atual(usuario):
     Retorna quantos dias consecutivos (incluindo hoje) o usuário concluiu atividades.
     """
     hoje = timezone.localdate()
-    streak = 0
-    
-    while True:
-        dia = hoje - timedelta(days=streak)
-        houve = AtividadeConcluidas.objects.filter(
+    dias_seguidos = 0
+    for i in range(0, 7):
+        dia = hoje - timedelta(days=i)
+        concluiu = AtividadeConcluidas.objects.filter(
             idusuario=usuario.idusuario,
             dtconclusao__date=dia
         ).exists()
-        if not houve:
+        if not concluiu:
             break
-        streak += 1
+        dias_seguidos += 1
 
-    return streak
+    if dias_seguidos < 2:
+        return dias_seguidos
+    return 0
+
 
 def atualizar_streak(usuario):
     """
