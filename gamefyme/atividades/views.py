@@ -45,12 +45,9 @@ def criar_atividade(request):
     notificacoes = notificacao_service.listar_nao_lidas(usuario)
     notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
 
-    return render(request, 'atividades/cadastro_atividade.html', {
-        'form': form,
-        'usuario': usuario,
-        'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
-    })
+    messages.error(request, 'Erro ao criar atividade. Verifique os campos e tente novamente.')
+    return redirect('usuarios:main')
+
 
 @transaction.atomic
 def realizar_atividade(request, idatividade):
@@ -153,6 +150,7 @@ def realizar_atividade(request, idatividade):
         'streak_data': streak_data,
         'streak_atual': streak_atual,
         'today': date.today(),
+        'esconder_add': True
     })
 
 def editar_atividade(request, idatividade):
@@ -194,7 +192,7 @@ def editar_atividade(request, idatividade):
         'editar': True,
         'atividade': atividade,
         'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
     })
 
 def remover_atividade(request, idatividade):
