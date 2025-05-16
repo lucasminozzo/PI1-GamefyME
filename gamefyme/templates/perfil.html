@@ -1,10 +1,8 @@
 {% load static %}
 <div class="profile-section">
     <div class="avatar-container">
-        <div class="avatar">
-            <div class="avatar" onclick="abrirModalAvatar()">
-                <img src="{% static 'img/avatares/' %}{{ usuario.imagem_perfil }}" alt="Avatar" title="Clique para mudar sua foto de perfil" class="avatar-atual" style="cursor: pointer;" />
-              </div>
+        <div class="avatar" onclick="abrirModalAvatar()">
+            <img src="{% static 'img/avatares/' %}{{ usuario.imagem_perfil }}" alt="Avatar" title="Clique para mudar sua foto de perfil" class="avatar-atual" style="cursor: pointer;" />
         </div>
     </div>
     <div class="profile-info">
@@ -12,23 +10,27 @@
         <p class="user-date">{{ usuario.dtnascimento|date:"d/m/Y" }}</p>
         <div class="streak-container">
             <div class="streak-title">Dias consecutivos de atividades completas:</div>
+            <div class="streak-counter">
+                Você está com <strong>{{ streak_atual }}</strong> dia{{ streak_atual|pluralize }} de streak!
+            </div>
             <div class="weekdays">
-              
                 <div class="weekdays-div">
-                    {% for dia in streak_data %}
-                        <div class="weekday" title="{{ dia.data|date:'d/m/Y' }}">
-                            <div class="weekday-label">{{ dia.dia_semana }}</div>
-                            <div>
+                    {% with congelado_mostrado=False %}
+                        {% for dia in streak_data %}
+                            <div class="weekday" title="{{ dia.data|date:'d/m/Y' }}">
+                                <div class="weekday-label">{{ dia.dia_semana }}</div>
                                 <div class="weekday-icon">
-                                    {% if streak_atual > 0 and dia.concluiu %}
+                                    {% if dia.concluiu %}
                                         <img src="{% static 'img/fogo-ativo.png' %}" alt="Concluiu">
+                                    {% elif dia.quebrou %}
+                                        <img src="{% static 'img/fogo-congelado.png' %}" alt="Streak quebrado!" title="Streak quebrado!">
                                     {% else %}
                                         <img src="{% static 'img/fogo-inativo.png' %}" alt="Não concluiu">
                                     {% endif %}
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}                
+                    {% endwith %}
                 </div>
             </div>
             <div class="level">
@@ -59,19 +61,17 @@
 
 <div id="avatarModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
-      <span class="close-modal" onclick="fecharModalAvatar()">&times;</span>
-      <div class="modal-header">
-        <h3>Escolha seu Avatar</h3>
-      </div>
-      <div class="modal-body" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-        {% for img in avatares_disponiveis %}
-          <label style="cursor: pointer;">
-            <input type="radio" name="imagem_perfil" value="{{ img }}" style="display: none;">
-            <img src="{% static 'img/avatares/' %}{{ img }}" class="avatar-select" onclick="selecionarAvatar('{{ img }}')" />
-          </label>
-        {% endfor %}
-      </div>
+        <span class="close-modal" onclick="fecharModalAvatar()">&times;</span>
+        <div class="modal-header">
+            <h3>Escolha seu Avatar</h3>
+        </div>
+        <div class="modal-body" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+            {% for img in avatares_disponiveis %}
+                <label style="cursor: pointer;">
+                    <input type="radio" name="imagem_perfil" value="{{ img }}" style="display: none;">
+                    <img src="{% static 'img/avatares/' %}{{ img }}" class="avatar-select" onclick="selecionarAvatar('{{ img }}')" />
+                </label>
+            {% endfor %}
+        </div>
     </div>
 </div>
-  
-  

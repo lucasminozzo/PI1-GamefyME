@@ -157,11 +157,8 @@ def main(request):
         return redirect('usuarios:login')
 
     usuario = login_service.get_usuario_logado(request)
-    atividades_service.verificar_streak_no_login(usuario)
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
@@ -179,8 +176,8 @@ def main(request):
 
     return render(request, 'main.html', {
         'usuario': usuario,
-        'streak_data': streak_data,
-        'streak_atual': streak_atual,
+        'streak_data': usuario.streak_data,
+        'streak_atual': usuario.streak_atual,
         'atividades_recorrentes': atividades_recorrentes,
         'atividades_unicas': atividades_unicas,
         'notificacoes': notificacoes,

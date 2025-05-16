@@ -5,48 +5,32 @@ from atividades.models import Atividade, AtividadeConcluidas
 from datetime import timedelta
 from django.db.models import Q
 
-def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
-    exp_base = 50
-    multiplicadores_peso = {
-        'muito_facil': 1.0,
-        'facil': 2.0,
-        'medio': 3.0,
-        'dificil': 4.0,
-        'muito_dificil': 5.0
-    }
-    multiplicador_peso = multiplicadores_peso.get(peso, 1.0)
-
-    if tempo_estimado <= 30:
-        multiplicador_tempo = 1.0
-    elif tempo_estimado <= 60:
-        multiplicador_tempo = 1.5
-    elif tempo_estimado <= 120:
-        multiplicador_tempo = 2.0
-    else:
-        multiplicador_tempo = 2.5
-
-    experiencia = round(exp_base * multiplicador_peso * multiplicador_tempo)
-    return min(experiencia, 500)
-
 def calcular_streak_atual(usuario):
     """
-    Retorna quantos dias consecutivos (incluindo hoje) o usuário concluiu atividades.
+    Conta dias consecutivos (começando de hoje para trás) em que o usuário completou atividades.
+    Se faltar um dia no meio, o streak é interrompido.
     """
     hoje = timezone.localdate()
     dias_seguidos = 0
+
     for i in range(0, 7):
         dia = hoje - timedelta(days=i)
+
         concluiu = AtividadeConcluidas.objects.filter(
             idusuario=usuario.idusuario,
             dtconclusao__date=dia
         ).exists()
-        if not concluiu:
-            break
-        dias_seguidos += 1
 
-    if dias_seguidos < 2:
-        return dias_seguidos
-    return 0
+        if concluiu:
+            dias_seguidos += 1
+        else:
+            if i > 0:
+                break
+            else:
+                return 0
+
+    return dias_seguidos
+
 
 
 def atualizar_streak(usuario):
@@ -83,6 +67,7 @@ def atualizar_streak(usuario):
     usuario.streak_semanal = min(usuario.streak_semanal, 7)
     usuario.ultima_atividade = hoje
     usuario.save()
+    return usuario.streak_semanal
 
 def verificar_streak_no_login(usuario):
     """
@@ -123,11 +108,15 @@ def get_atividades_do_dia(request):
 def get_streak_data(usuario):
     """
     Monta os dados de conclusão para os 7 dias da semana atual.
+    Marca com 'quebrou' apenas o primeiro dia sem conclusão após sequência de dias concluídos.
     """
     hoje = timezone.localdate()
     domingo = hoje - timedelta(days=(hoje.weekday() + 1) % 7)
     dias_semana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
     streak_data = []
+
+    em_streak = True
+    congelado_mostrado = False
 
     for i in range(7):
         dia = domingo + timedelta(days=i)
@@ -135,10 +124,56 @@ def get_streak_data(usuario):
             idusuario=usuario.idusuario,
             dtconclusao__date=dia
         ).exists()
-        streak_data.append({
-            'dia_semana': dias_semana[i],
-            'data': dia,
-            'concluiu': concluiu
-        })
+
+        if concluiu:
+            em_streak = True
+            congelado_mostrado = False
+            streak_data.append({
+                'dia_semana': dias_semana[i],
+                'data': dia,
+                'concluiu': True,
+                'quebrou': False
+            })
+        else:
+            if em_streak and not congelado_mostrado:
+                # primeira quebra do streak
+                streak_data.append({
+                    'dia_semana': dias_semana[i],
+                    'data': dia,
+                    'concluiu': False,
+                    'quebrou': True
+                })
+                congelado_mostrado = True
+            else:
+                streak_data.append({
+                    'dia_semana': dias_semana[i],
+                    'data': dia,
+                    'concluiu': False,
+                    'quebrou': False
+                })
+            em_streak = False
 
     return streak_data
+
+def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
+    exp_base = 50
+    multiplicadores_peso = {
+        'muito_facil': 1.0,
+        'facil': 2.0,
+        'medio': 3.0,
+        'dificil': 4.0,
+        'muito_dificil': 5.0
+    }
+    multiplicador_peso = multiplicadores_peso.get(peso, 1.0)
+
+    if tempo_estimado <= 30:
+        multiplicador_tempo = 1.0
+    elif tempo_estimado <= 60:
+        multiplicador_tempo = 1.5
+    elif tempo_estimado <= 120:
+        multiplicador_tempo = 2.0
+    else:
+        multiplicador_tempo = 2.5
+
+    experiencia = round(exp_base * multiplicador_peso * multiplicador_tempo)
+    return min(experiencia, 500)

@@ -62,9 +62,6 @@ def realizar_atividade(request, idatividade):
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
 
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
-
     if request.method == 'POST':
         sid = transaction.savepoint()
         try:
@@ -147,8 +144,8 @@ def realizar_atividade(request, idatividade):
         'exibir_voltar': True,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'streak_data': streak_data,
-        'streak_atual': streak_atual,
+        'streak_data': usuario.streak_data,
+        'streak_atual': usuario.streak_atual,
         'today': date.today(),
         'esconder_add': True
     })
