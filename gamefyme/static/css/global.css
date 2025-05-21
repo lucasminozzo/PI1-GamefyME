@@ -280,7 +280,7 @@ a {
 
 .notification-message {
   margin-bottom: 4px;
-  font-size: 18px;
+  font-size: 22px;
   color: #fff;
 }
 
@@ -453,7 +453,7 @@ a {
 }
 
 #notificationModal .modal-message {
-  font-size: 20px;
+  font-size: 40px;
   color: #fff;
   margin-top: 12px;
   white-space: pre-line;

@@ -126,7 +126,7 @@ function abrirModalNotificacao(id, mensagem, data, tipo) {
   else if (tipo === "aviso") iconPath = "/static/img/warning.png";
   else if (tipo === "erro") iconPath = "/static/img/caution.png";
   
-  modalIcon.innerHTML = `<img src="${iconPath}" alt="${tipo}" style="width: 20px; height: 20px; vertical-align: middle;" />`;
+  modalIcon.innerHTML = `<img src="${iconPath}" alt="${tipo}" style="width: 50px; height: 50px; vertical-align: middle;" />`;
   modalMessage.innerText  = mensagem;
   modalDate.innerText  = data;
   modal.style.display = "block";
