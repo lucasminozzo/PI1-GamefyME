@@ -1,20 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import AtividadeForm
 from django.utils import timezone
-from services import login_service, atividades_service
+from services import login_service, atividades_service, notificacao_service
 from django.contrib import messages
 from django.db import IntegrityError
 from django.db import transaction
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 from usuarios.models import Notificacao
 from datetime import date, datetime
-
-def criar_notificacao(usuario, mensagem, tipo='info'):
-    return Notificacao.objects.create(
-        idusuario=usuario,
-        dsmensagem=mensagem,
-        fltipo=tipo
-    )
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
@@ -38,11 +31,8 @@ def criar_atividade(request):
 
                 atividade.save()
 
-                # Criar notificação para nova atividade
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'Nova atividade "{atividade.nmatividade}" criada! Boa sorte!',
-                    tipo='info'
+                notificacao_service.criar_notificacao(
+                    usuario, f'Nova atividade "{atividade.nmatividade}" criada! Boa sorte!', 'info'
                 )
 
                 messages.success(request, f'Atividade "{atividade.nmatividade}" criada com sucesso!')
@@ -52,22 +42,12 @@ def criar_atividade(request):
     else:
         form = AtividadeForm()
 
-    notificacoes = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).order_by('-dtcriacao')[:5]
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
 
-    notificacoes_nao_lidas = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).count()
+    messages.error(request, 'Erro ao criar atividade. Verifique os campos e tente novamente.')
+    return redirect('usuarios:main')
 
-    return render(request, 'atividades/cadastro_atividade.html', {
-        'form': form,
-        'usuario': usuario,
-        'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
-    })
 
 @transaction.atomic
 def realizar_atividade(request, idatividade):
@@ -81,9 +61,6 @@ def realizar_atividade(request, idatividade):
        (atividade.situacao == Atividade.Situacao.REALIZADA and atividade.recorrencia == Atividade.Recorrencia.UNICA):
         messages.error(request, "Esta atividade não pode ser alterada.")
         return redirect('usuarios:main')
-
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
 
     if request.method == 'POST':
         sid = transaction.savepoint()
@@ -134,16 +111,16 @@ def realizar_atividade(request, idatividade):
             if sessao_pomodoro:
                 sessao_pomodoro.save()
 
-            criar_notificacao(usuario, f'Parabéns! Você completou a atividade "{atividade.nmatividade}" e ganhou {exp_ganha} XP!', 'sucesso')
+            notificacao_service.criar_notificacao(usuario, f'Parabéns! Você completou a atividade "{atividade.nmatividade}" e ganhou {exp_ganha} XP!', 'sucesso')
 
             if novo_nivel > nivel_anterior:
-                criar_notificacao(usuario, f'🎉 Incrível! Você alcançou o nível {novo_nivel}!', 'sucesso')
+                notificacao_service.criar_notificacao(usuario, f'🎉 Incrível! Você alcançou o nível {novo_nivel}!', 'sucesso')
 
             if sessao_pomodoro and sessao_pomodoro.nrciclo > 0:
-                criar_notificacao(usuario, f'Ótimo trabalho! Você completou {sessao_pomodoro.nrciclo} ciclos Pomodoro na atividade "{atividade.nmatividade}"', 'sucesso')
+                notificacao_service.criar_notificacao(usuario, f'Ótimo trabalho! Você completou {sessao_pomodoro.nrciclo} ciclos Pomodoro na atividade "{atividade.nmatividade}"', 'sucesso')
 
             if streak_atual and streak_atual > 1:
-                criar_notificacao(usuario, f'🔥 Impressionante! Você manteve sua streak por {streak_atual} dias consecutivos!', 'sucesso')
+                notificacao_service.criar_notificacao(usuario, f'🔥 Impressionante! Você manteve sua streak por {streak_atual} dias consecutivos!', 'sucesso')
 
             transaction.savepoint_commit(sid)
 
@@ -158,12 +135,8 @@ def realizar_atividade(request, idatividade):
             transaction.savepoint_rollback(sid)
             messages.error(request, f"Erro ao salvar a atividade: {str(e)}")
 
-    notificacoes = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).order_by('-dtcriacao')[:5]
-
-    notificacoes_nao_lidas = notificacoes.count()
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
@@ -171,9 +144,10 @@ def realizar_atividade(request, idatividade):
         'exibir_voltar': True,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'streak_data': streak_data,
-        'streak_atual': streak_atual,
+        'streak_data': usuario.streak_data,
+        'streak_atual': usuario.streak_atual,
         'today': date.today(),
+        'esconder_add': True
     })
 
 def editar_atividade(request, idatividade):
@@ -195,11 +169,8 @@ def editar_atividade(request, idatividade):
                 )
                 atividade.save()
 
-                # Notificação para edição de atividade
-                criar_notificacao(
-                    usuario=usuario,
-                    mensagem=f'Atividade "{atividade.nmatividade}" foi atualizada com sucesso!',
-                    tipo='info'
+                notificacao_service.criar_notificacao(
+                    usuario, f'Atividade "{atividade.nmatividade}" foi atualizada com sucesso!', 'info'
                 )
 
                 messages.success(request, f'Atividade "{atividade.nmatividade}" atualizada com sucesso!')
@@ -209,15 +180,8 @@ def editar_atividade(request, idatividade):
     else:
         form = AtividadeForm(instance=atividade)
 
-    notificacoes = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).order_by('-dtcriacao')[:5]
-
-    notificacoes_nao_lidas = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).count()
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
 
     return render(request, 'atividades/editar_atividade.html', {
         'form': form,
@@ -225,7 +189,7 @@ def editar_atividade(request, idatividade):
         'editar': True,
         'atividade': atividade,
         'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
     })
 
 def remover_atividade(request, idatividade):
@@ -243,10 +207,8 @@ def remover_atividade(request, idatividade):
         atividade.situacao = Atividade.Situacao.CANCELADA
         atividade.save()
 
-        criar_notificacao(
-            usuario=usuario,
-            mensagem=f'Atividade "{atividade.nmatividade}" foi removida.',
-            tipo='aviso'
+        notificacao_service.criar_notificacao(
+            usuario, f'Atividade "{atividade.nmatividade}" foi removida.', 'aviso'
         )
 
         messages.success(request, "Atividade removida com sucesso!")

@@ -5,7 +5,7 @@ from .models import Usuario, TipoUsuario, Notificacao
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
-from services import login_service, atividades_service
+from services import login_service, atividades_service, notificacao_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from atividades.models import Atividade
@@ -19,8 +19,13 @@ from django.http import JsonResponse
 from datetime import date
 from django.conf import settings
 from .forms import ConfigUsuarioForm
+
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+
+from django.contrib.auth import authenticate
+from django.template.loader import render_to_string
+
 
 
 def cadastro(request):
@@ -152,8 +157,6 @@ def main(request):
     usuario = login_service.get_usuario_logado(request)
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
-    streak_data = atividades_service.get_streak_data(usuario)
-    streak_atual = atividades_service.calcular_streak_atual(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
@@ -166,16 +169,13 @@ def main(request):
         recorrencia=Atividade.Recorrencia.UNICA,
         dtatividaderealizada__isnull=True
     )
-    notificacoes = Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).order_by('-dtcriacao')[:5]
-    notificacoes_nao_lidas = notificacoes.count()
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
 
     return render(request, 'main.html', {
         'usuario': usuario,
-        'streak_data': streak_data,
-        'streak_atual': streak_atual,
+        'streak_data': usuario.streak_data,
+        'streak_atual': usuario.streak_atual,
         'atividades_recorrentes': atividades_recorrentes,
         'atividades_unicas': atividades_unicas,
         'notificacoes': notificacoes,
@@ -251,8 +251,7 @@ def marcar_notificacao_lida(request, notificacao_id):
             idnotificacao=notificacao_id,
             idusuario=usuario
         )
-        notificacao.flstatus = True
-        notificacao.save()
+        notificacao_service.marcar_como_lida(notificacao)
         return JsonResponse({'success': True})
     except Notificacao.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Notificação não encontrada'}, status=404)
@@ -263,20 +262,24 @@ def marcar_todas_lidas(request):
         return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
 
     usuario = login_service.get_usuario_logado(request)
-
-    Notificacao.objects.filter(
-        idusuario=usuario,
-        flstatus=False
-    ).update(flstatus=True)
+    notificacao_service.marcar_todas_como_lidas(usuario)
 
     return JsonResponse({'success': True})
 
-def criar_notificacao(usuario, mensagem, tipo='info'):
-    return Notificacao.objects.create(
-        idusuario=usuario,
-        dsmensagem=mensagem,
-        fltipo=tipo
+def ajax_todas_notificacoes(request):
+    if not login_service.is_usuario_logado(request):
+        return JsonResponse({'success': False}, status=403)
+
+    usuario = login_service.get_usuario_logado(request)
+    notificacoes = notificacao_service.listar_todas(usuario)
+
+    html = render_to_string(
+        '_notificacoes_lista.html',
+        {'notificacoes': notificacoes},
+        request=request
     )
+    return JsonResponse({'success': True, 'html': html})
+
     
 @require_POST
 def atualizar_config_usuario(request):

@@ -11,17 +11,23 @@ function toggleUserMenu() {
   menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-window.onclick = function (event) {
-  if (
-    !event.target.matches(".user-menu-btn") &&
-    !event.target.closest(".user-menu-container")
-  ) {
-    var dropdowns = document.getElementsByClassName("user-dropdown");
-    for (var i = 0; i < dropdowns.length; i++) {
-      dropdowns[i].style.display = "none";
+window.addEventListener('click', function (event) {
+  const modais = document.querySelectorAll('.modal');
+  const dropdowns = document.querySelectorAll('.user-dropdown, .notifications-dropdown');
+
+  dropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target) && !event.target.closest('.user-menu-btn, .header-btn')) {
+      dropdown.style.display = 'none';
     }
-  }
-};
+  });
+
+  modais.forEach(modal => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
+
 
 function fecharMsg(elemento) {
   var msg = elemento.closest(".msg-flutuante");
@@ -149,7 +155,14 @@ function marcarComoLida(notificacaoId) {
         );
         if (notificacao) {
           notificacao.remove();
+        
+          const restantes = document.querySelectorAll(".notification-item.unread");
+          if (restantes.length === 0) {
+            const lista = document.querySelector(".notifications-list");
+            lista.innerHTML = '<div class="no-notifications">Nenhuma notificação não lida</div>';
+          }
         }
+        
         atualizarContadorNotificacoes();
       }
     })
@@ -169,13 +182,21 @@ function marcarTodasComoLidas() {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        document
-          .querySelectorAll(".notification-item.unread")
-          .forEach((item) => {
-            item.remove();
-          });
+        document.querySelectorAll(".notification-item.unread").forEach((item) => {
+          item.remove();
+        });
+
         const badge = document.querySelector(".notification-badge");
         if (badge) badge.remove();
+
+        const lista = document.querySelector(".notifications-list");
+        lista.innerHTML = '<div class="no-notifications">Nenhuma notificação não lida</div>';
+
+        const marcarTodasBtn = document.querySelector('.mark-all-read');
+        if (marcarTodasBtn) {
+          marcarTodasBtn.remove();
+        }
+
         atualizarContadorNotificacoes();
       }
     })
@@ -183,6 +204,28 @@ function marcarTodasComoLidas() {
       hideLoading();
     });
 }
+
+
+function abrirModalTodasNotificacoes() {
+  const modal = document.getElementById("allNotificationsModal");
+  const body = document.getElementById("allNotificationsBody");
+
+  showLoading();
+  fetch('/usuarios/ajax/notificacoes/')
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        body.innerHTML = data.html;
+        modal.style.display = 'block';
+      }
+    })
+    .finally(() => hideLoading());
+}
+
+function fecharModalTodasNotificacoes() {
+  document.getElementById("allNotificationsModal").style.display = "none";
+}
+
 
 function atualizarContadorNotificacoes() {
   const badge = document.querySelector(".notification-badge");
@@ -432,3 +475,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+function openCadastroAtividadeModal() {
+  document.getElementById("cadastroAtividadeModal").style.display = "block";
+}
+
+function closeCadastroAtividadeModal() {
+  document.getElementById("formCadastroAtividade").reset();
+  document.getElementById("cadastroAtividadeModal").style.display = "none";
+}

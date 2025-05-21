@@ -1,0 +1,110 @@
+{% load static %}
+<div id="cadastroAtividadeModal" class="modal">
+  <div class="modal-content" style="max-width: 1200px; height: 90vh; display: flex; flex-direction: column;">
+    <span class="close-modal" onclick="closeCadastroAtividadeModal()">&times;</span>
+    <div class="modal-header">
+      <h3>Adicionar Atividade</h3>
+    </div>
+    <div class="modal-body">
+      <form id="formCadastroAtividade" action="{% url 'atividades:atividade' %}" method="post" class="form-container" style="display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px 48px;">
+          <div>
+            <input type="hidden" id="idusuario" name="idusuario" value="{{ usuario.idusuario }}">
+            <div class="form-group">
+              <label for="nmatividade">Atividade</label>
+              <input type="text" id="nmatividade" name="nmatividade" maxlength="100" required>
+            </div>
+            <div class="form-group">
+              <label for="dsatividade">Descrição</label>
+              <textarea id="dsatividade" name="dsatividade" maxlength="200"></textarea>
+              <div style="text-align: right; color: #fff; font-size: 1rem;">Max 200</div>
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label for="recorrencia">Recorrência</label>
+              <select id="recorrencia" name="recorrencia" required>
+                <option value="">Selecione uma opção</option>
+                <option value="unica">Única</option>
+                <option value="recorrente">Recorrente</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tpestimado">Tempo estimado</label>
+              <div class="input-minutos-wrapper" style="position: relative;">
+                <input type="number" id="tpestimado" name="tpestimado" min="1" max="240" required placeholder="Ex: 20" class="input-full" style="padding-right: 80px;" oninput="validarTempo(this)" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <span class="minutos-label" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;">minutos</span>
+              </div>
+              <small class="tempo-feedback" id="tempo-feedback">Máximo 240 minutos (4 horas)</small>
+            </div>
+            <div class="form-group">
+              <label for="peso">Peso da atividade</label>
+              <select id="peso" name="peso" required>
+                <option value="">Selecione uma opção</option>
+                <option value="muito_facil">Muito fácil</option>
+                <option value="facil">Fácil</option>
+                <option value="medio">Médio</option>
+                <option value="dificil">Difícil</option>
+                <option value="muito_dificil">Muito difícil</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" style="display: flex; justify-content: center; gap: 32px; margin-top: 32px;">
+          <button type="submit" class="btn-add with-loading">
+            Add Tarefa
+            <span>
+              <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width: 35px; height: 35px; vertical-align: middle"/>
+            </span>
+          </button>
+          <button type="reset" class="btn-clear">
+            Limpar
+            <span>
+              <img src="{% static 'img/trash.png' %}" alt="Limpar" style="width: 35px; height: 35px; vertical-align: middle"/>
+            </span>
+          </button>
+          <button type="button" class="btn-cancel" onclick="closeCadastroAtividadeModal()">
+            Cancelar
+            <span>
+              <img src="{% static 'img/close.png' %}" alt="Cancelar" style="width: 35px; height: 35px; vertical-align: middle"/>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+function validarTempo(input) {
+  const feedback = document.getElementById('tempo-feedback');
+  const valor = input.value === "" ? null : parseInt(input.value);
+
+  input.value = input.value.replace(/[^0-9]/g, '');
+
+  if (input.value === "") {
+      input.classList.remove('invalido');
+      feedback.classList.remove('erro');
+      feedback.textContent = 'Máximo 240 minutos (4 horas)';
+      return;
+  }
+
+  if (valor < 1) {
+      input.classList.add('invalido');
+      feedback.classList.add('erro');
+      feedback.textContent = 'Mínimo 1 minuto';
+      return;
+  }
+
+  if (valor > 240) {
+      input.classList.add('invalido');
+      feedback.classList.add('erro');
+      feedback.textContent = 'Máximo 240 minutos (4 horas)';
+      return;
+  }
+
+  input.classList.remove('invalido');
+  feedback.classList.remove('erro');
+  feedback.textContent = `${valor} minutos`;
+}
+</script>
