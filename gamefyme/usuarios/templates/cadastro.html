@@ -47,10 +47,11 @@
                 {% endif %}
             
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="********" required>
+                <small>Sua senha deve ter pelo menos 6 caracteres, com uma letra maiúscula e um caractere especial.</small>
+                <input type="password" id="senha" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$" name="senha" placeholder="********" required>
             
                 <label for="confsenha">Confirmar senha</label>
-                <input type="password" id="confsenha" name="confsenha" placeholder="********" required>
+                <input type="password" id="confsenha" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$"  name="confsenha" placeholder="********" required>
             
                 <label for="dtnascimento">Data de nascimento</label>
                 <input type="date" id="dtnascimento" name="dtnascimento" required>

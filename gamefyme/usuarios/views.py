@@ -19,14 +19,19 @@ from django.http import JsonResponse
 from datetime import date
 from django.conf import settings
 from .forms import ConfigUsuarioForm
+
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+
 from django.contrib.auth import authenticate
 from django.template.loader import render_to_string
+
 
 
 def cadastro(request):
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')
-    
+
     if request.method == 'POST':
         nome = request.POST.get('nmusuario')
         email = request.POST.get('emailusuario')
@@ -39,6 +44,7 @@ def cadastro(request):
             'emailusuario': email,
             'dtnascimento': dt_nascimento
         }
+
         if not all([nome, email, senha, confsenha, dt_nascimento]):
             contexto['erro'] = 'Preencha todos os campos.'
             return render(request, 'cadastro.html', contexto)
@@ -47,14 +53,20 @@ def cadastro(request):
             contexto['erro'] = 'Senhas não coincidem.'
             return render(request, 'cadastro.html', contexto)
 
+        try:
+            # Validação personalizada de senha
+            validate_password(senha)
+
+        except DjangoValidationError as e:
+            contexto['erro'] = 'Senha inválida: ' + ' '.join(e.messages)
+            return render(request, 'cadastro.html', contexto)
+
         if Usuario.objects.filter(emailusuario=email).exists():
-            return render(request, 'cadastro.html', {
+            contexto.update({
                 'erro': 'Já existe um usuário com esse e-mail cadastrado.',
                 'erro_email': True,
-                'nmusuario': nome,
-                'emailusuario': email,
-                'dtnascimento': dt_nascimento
             })
+            return render(request, 'cadastro.html', contexto)
 
         try:
             with transaction.atomic():
@@ -70,33 +82,19 @@ def cadastro(request):
                 )
                 usuario.save()
 
-                try:
-                    messages.success(request, 'Usuário cadastrado com sucesso! Faça login para continuar.')
-                    return redirect('usuarios:login')
-                except Exception as e:
-                    transaction.set_rollback(True)
-                    return render(request, 'cadastro.html', {
-                        'erro': 'Erro ao finalizar cadastro. Tente novamente.',
-                        'nmusuario': nome,
-                        'emailusuario': email,
-                        'dtnascimento': dt_nascimento
-                    })
+                messages.success(request, 'Usuário cadastrado com sucesso! Faça login para continuar.')
+                return redirect('usuarios:login')
 
         except IntegrityError:
-            return render(request, 'cadastro.html', {
-                'erro': 'Já existe um usuário com esse e-mail cadastrado.',
+            contexto.update({
+                'erro': 'Erro de integridade ao salvar. Verifique os dados e tente novamente.',
                 'erro_email': True,
-                'nmusuario': nome,
-                'emailusuario': email,
-                'dtnascimento': dt_nascimento
             })
-        except Exception as e:
-            return render(request, 'cadastro.html', {
-                'erro': 'Erro ao realizar cadastro. Tente novamente.',
-                'nmusuario': nome,
-                'emailusuario': email,
-                'dtnascimento': dt_nascimento
-            })
+        except Exception:
+            contexto['erro'] = 'Erro ao realizar cadastro. Tente novamente.'
+
+        return render(request, 'cadastro.html', contexto)
+
     email = request.GET.get('emailusuario', '')
     return render(request, 'cadastro.html', {'emailusuario': email})
 
@@ -292,19 +290,24 @@ def atualizar_config_usuario(request):
         # Primeiro atualiza os dados do formulário
         form.save()
 
-        senha_atual = request.POST.get('senha_atual')
         nova_senha = request.POST.get('nova_senha')
-
-        if senha_atual and nova_senha:
-            # Verifica se a senha atual está correta
-            usuario_autenticado = authenticate(request, emailusuario=usuario.emailusuario, password=senha_atual)
-            if usuario_autenticado:
-                usuario.set_password(nova_senha)
-                usuario.save()
-            else:
+        senha_atual = request.POST.get('senha_atual')
+        
+        if nova_senha:
+            if not usuario.check_password(senha_atual):
                 return JsonResponse({
                     'success': False,
-                    'errors': {'senha_atual': ['Senha atual incorreta.']}
+                    'errors': {'senha_atual': ["Senha atual incorreta."]}
+                }, status=400)
+        
+            try:
+                validate_password(nova_senha, user=usuario)
+                usuario.password = make_password(nova_senha)
+                usuario.save()
+            except DjangoValidationError as e:
+                return JsonResponse({
+                    'success': False,
+                    'errors': {'nova_senha': e.messages}
                 }, status=400)
 
         return JsonResponse({

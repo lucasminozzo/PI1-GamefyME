@@ -39,11 +39,16 @@
                 <input type="password" id="senha_atual" name="senha_atual" placeholder="********">
               
                 <label for="nova_senha" style="margin-top: 10px;">Nova senha</label>
+                <small>Sua senha deve ter pelo menos 6 caracteres, com uma letra maiúscula e um caractere especial.</small>
                 <input type="password" id="nova_senha" name="nova_senha" placeholder="********">
             </div>      
           
             <div class="form-actions">
               <button type="submit" class="action-btn">Salvar Alterações</button>
+            </div>
+            <div>
+              TODO: Adicionar opção de deletar conta
+              {% comment %} <a href="{% url 'usuarios:deletar_usuario' %}" class="delete-account">Deletar conta</a> {% endcomment %}
             </div>
         </form>          
       </div>
