@@ -1286,3 +1286,100 @@ input-minutos-wrapper input[type="number"].invalido {
   border-color: #00ff99;
 }
 
+.usuarios-container {
+  margin: 40px auto;
+  padding: 32px;
+  background: var(--roxo-card);
+  border: 4px solid var(--verde-xp);
+  border-radius: 16px;
+  box-shadow: inset 0 0 15px var(--verde-xp);
+  max-width: 1000px;
+  width: 95%;
+}
+
+
+.usuarios-titulo {
+  color: var(--amarelo-moeda);
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.usuarios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.usuario-card {
+  background: var(--roxo-card3);
+  border: 2px solid var(--roxo-card2);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px var(--roxo-card2);
+}
+
+.usuario-card h3 {
+  color: var(--verde-xp);
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.usuario-card p {
+  color: var(--branco);
+}
+
+.usuarios-vazio {
+  text-align: center;
+  color: var(--cinza-sub);
+  font-size: 20px;
+}
+
+.usuarios-voltar {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.voltar-menu-btn {
+  width: 200px;
+  margin: 0 auto;
+  color: var(--branco);
+}
+
+.usuarios-busca {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+#busca-usuarios {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--roxo-card2);
+  font-size: 20px;
+  width: 100%;
+  max-width: 400px;
+  background: #fafafa;
+  color: #222;
+}
+
+.usuario-card-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.btn-alterar-tipo {
+  padding: 6px 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--roxo-card2);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-alterar-tipo:hover {
+  background: var(--roxo-card4);
+}

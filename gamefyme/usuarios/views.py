@@ -336,3 +336,17 @@ def atualizar_avatar(request):
     usuario.imagem_perfil = novo_avatar
     usuario.save()
     return JsonResponse({'success': True, 'imagem_perfil': novo_avatar})
+
+def listar_usuarios(request):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    if usuario.tipousuario != 'administrador':
+        return redirect('usuarios:main')
+
+    todos_usuarios = Usuario.objects.all().order_by('nmusuario')
+    return render(request, 'listar_usuarios.html', {
+        'usuario': usuario,
+        'usuarios': todos_usuarios
+    })

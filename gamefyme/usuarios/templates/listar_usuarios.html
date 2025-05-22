@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Usuários do Sistema</title>
+  <link rel="stylesheet" href="{% static 'css/global.css' %}" />
+  <script src="{% static 'scripts/global.js' %}"></script>
+  <script src="{% static 'scripts/listar_usuarios.js' %}"></script>
+</head>
+<body>
+  {% include 'header.html' %}
+  {% include 'loading.html' %}
+
+  <div class="app-container">
+    <div class="usuarios-container">
+      <h2 class="usuarios-titulo">Usuários Cadastrados</h2>
+      <div class="usuarios-busca">
+        <input type="text" id="busca-usuarios" placeholder="Buscar por nome...">
+      </div>
+      <div class="usuarios-lista" id="lista-usuarios">
+        {% for u in usuarios %}
+          <div class="usuario-card" data-nome="{{ u.nmusuario|lower }}">
+            <h3>{{ u.nmusuario }}</h3>
+            <p><strong>Email:</strong> {{ u.emailusuario }}</p>
+            <p><strong>Nascimento:</strong> {{ u.dtnascimento|date:"d/m/Y" }}</p>
+            <p><strong>Tipo:</strong> {{ u.get_tipousuario_display }}</p>
+          </div>
+        {% empty %}
+          <p class="usuarios-vazio">Nenhum usuário cadastrado.</p>
+        {% endfor %}
+      </div>
+
+
+      <div class="usuarios-voltar">
+        <a href="{% url 'usuarios:main' %}" class="btn-perfil voltar-menu-btn with-loading">
+          Voltar ao Menu
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

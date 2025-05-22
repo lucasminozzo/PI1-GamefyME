@@ -45,9 +45,9 @@
     </div>
     <div class="btn-perfil">
         {% if not esconder_add %}
-            <a href="{% url 'atividades:atividade' %}" class="btn-perfil add-task-btn with-loading">
+            <a href="#" onclick="openCadastroAtividadeModal()" class="btn-perfil add-task-btn with-loading">
                 Add Tarefa
-            </a>
+            </a>   
         {% endif %}
         {% if exibir_voltar %}
             <a href="{% url 'usuarios:main' %}" id="btnVoltar" class="btn-perfil btn-finalizar with-loading">

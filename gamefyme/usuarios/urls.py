@@ -14,4 +14,5 @@ urlpatterns = [
     path('ajax/notificacoes/', views.ajax_todas_notificacoes, name='ajax_todas_notificacoes'),
     path('atualizar-config/', views.atualizar_config_usuario, name='atualizar_config_usuario'),
     path('atualizar_avatar/', views.atualizar_avatar, name='atualizar_avatar'),
+    path('listar_usuarios/', views.listar_usuarios, name='listar_usuarios'),
 ]

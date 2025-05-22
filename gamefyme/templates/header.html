@@ -127,6 +127,16 @@
         style="font-size: 20px"
         >Relatórios</a
       >
+      {% if usuario.tipousuario == 'administrador' %}
+        <a
+          href="{% url 'usuarios:listar_usuarios' %}"
+          onclick="toggleUserMenu();"
+          style="font-size: 20px"
+          >
+          Ver Usuários
+        </a>
+      {% endif %}
+
       <a href="{% url 'usuarios:logout' %}" style="font-size: 20px">Sair</a>
     </div>
   </div>
