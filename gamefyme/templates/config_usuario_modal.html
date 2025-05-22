@@ -1,4 +1,5 @@
 <div id="configModal" class="modal">
+  {% load static %}
     <div class="modal-content">
       <span class="close-modal" onclick="closeConfigModal()">&times;</span>
       <div class="modal-header">
@@ -36,11 +37,22 @@
               
             <div id="camposSenha" class="form-field" style="display: none;">
                 <label for="senha_atual">Senha atual</label>
-                <input type="password" id="senha_atual" name="senha_atual" placeholder="********">
+                <div class="campo-senha">
+                  <input type="password" id="senha_atual" name="senha_atual" placeholder="********">
+                  <span class="toggle-senha">
+                    <img src="{% static 'img/eye-close.png' %}" alt="Ver senha" />
+                  </span>
+                </div>
+                
               
                 <label for="nova_senha" style="margin-top: 10px;">Nova senha</label>
                 <small>Sua senha deve ter pelo menos 6 caracteres, com uma letra maiúscula e um caractere especial.</small>
-                <input type="password" id="nova_senha" name="nova_senha" placeholder="********">
+                <div class="campo-senha">
+                  <input type="password" id="nova_senha" name="nova_senha" placeholder="********">
+                  <span class="toggle-senha">
+                    <img src="{% static 'img/eye-close.png' %}" alt="Ver senha" />
+                  </span>
+                </div>                
             </div>      
           
             <div class="form-actions">
@@ -60,5 +72,22 @@
       const mostrar = document.getElementById('toggleSenha').checked;
       document.getElementById('camposSenha').style.display = mostrar ? 'block' : 'none';
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".toggle-senha").forEach(function (el) {
+        el.addEventListener("click", function () {
+          const input = el.previousElementSibling;
+          const img = el.querySelector("img");
+    
+          if (input.type === "password") {
+            input.type = "text";
+            img.src = "{% static 'img/eye-open.png' %}";
+          } else {
+            input.type = "password";
+            img.src = "{% static 'img/eye-close.png' %}";
+          }
+        });
+      });
+    });
     </script>
     

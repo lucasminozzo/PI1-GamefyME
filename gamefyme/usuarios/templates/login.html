@@ -47,7 +47,12 @@
                     <input type="email" id="email" name="email" placeholder="Digite seu email" required>
 
                     <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    <div class="campo-senha">
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                        <span class="toggle-senha">
+                          <img src="{% static 'img/eye-close.png' %}" alt="Ver senha" />
+                        </span>
+                    </div>
 
                     <button type="submit" class="with-loading">Login</button>
                 </form>
@@ -55,5 +60,24 @@
             </div>
         </div>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          document.querySelectorAll(".toggle-senha").forEach(function (el) {
+            el.addEventListener("click", function () {
+              const input = el.previousElementSibling;
+              const img = el.querySelector("img");
+        
+              if (input.type === "password") {
+                input.type = "text";
+                img.src = "{% static 'img/eye-open.png' %}";
+              } else {
+                input.type = "password";
+                img.src = "{% static 'img/eye-close.png' %}";
+              }
+            });
+          });
+        });
+        </script>
+        
 </body>
 </html>

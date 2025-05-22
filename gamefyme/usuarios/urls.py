@@ -15,4 +15,7 @@ urlpatterns = [
     path('atualizar-config/', views.atualizar_config_usuario, name='atualizar_config_usuario'),
     path('atualizar_avatar/', views.atualizar_avatar, name='atualizar_avatar'),
     path('listar_usuarios/', views.listar_usuarios, name='listar_usuarios'),
+    path('alterar_tipo/<int:idusuario>/', views.alterar_tipo_usuario, name='alterar_tipo_usuario'),
+    path('alternar_situacao/<int:idusuario>/', views.alternar_situacao_usuario, name='alternar_situacao_usuario'),
+
 ]

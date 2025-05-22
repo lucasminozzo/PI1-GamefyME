@@ -8,6 +8,7 @@ from django.db import transaction
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 from usuarios.models import Notificacao
 from datetime import date, datetime
+from django.template.loader import render_to_string
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
@@ -41,10 +42,7 @@ def criar_atividade(request):
                 messages.error(request, f'Já existe uma atividade chamada "{form.cleaned_data["nmatividade"]}". Por favor, escolha um nome diferente.')
     else:
         form = AtividadeForm()
-
-    notificacoes = notificacao_service.listar_nao_lidas(usuario)
-    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
-
+        
     messages.error(request, 'Erro ao criar atividade. Verifique os campos e tente novamente.')
     return redirect('usuarios:main')
 
@@ -137,6 +135,8 @@ def realizar_atividade(request, idatividade):
 
     notificacoes = notificacao_service.listar_nao_lidas(usuario)
     notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
+    todas_notificacoes = notificacao_service.listar_todas(usuario)
+    html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
@@ -144,6 +144,7 @@ def realizar_atividade(request, idatividade):
         'exibir_voltar': True,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'html_todas_notificacoes': html_todas,
         'streak_data': usuario.streak_data,
         'streak_atual': usuario.streak_atual,
         'today': date.today(),
@@ -182,6 +183,8 @@ def editar_atividade(request, idatividade):
 
     notificacoes = notificacao_service.listar_nao_lidas(usuario)
     notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
+    todas_notificacoes = notificacao_service.listar_todas(usuario)
+    html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
     return render(request, 'atividades/editar_atividade.html', {
         'form': form,
@@ -190,6 +193,7 @@ def editar_atividade(request, idatividade):
         'atividade': atividade,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'html_todas_notificacoes': html_todas,
     })
 
 def remover_atividade(request, idatividade):

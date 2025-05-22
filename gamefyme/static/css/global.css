@@ -1383,3 +1383,30 @@ input-minutos-wrapper input[type="number"].invalido {
 .btn-alterar-tipo:hover {
   background: var(--roxo-card4);
 }
+
+.campo-senha {
+  position: relative;
+}
+
+.campo-senha input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-senha {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.toggle-senha img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+}
+
+.toggle-senha img:hover {
+  opacity: 1;
+}

@@ -35,7 +35,7 @@
           <h4 style="margin: 0;">Notificações</h4>
           <a href="#" onclick="abrirModalTodasNotificacoes()" class="ver-todas-notificacoes">
             Ver todas
-          </a>
+          </a>                           
         </div>
         {% if notificacoes_nao_lidas > 0 %}
         <button onclick="marcarTodasComoLidas()" class="mark-all-read with-loading">
@@ -64,7 +64,9 @@
                 <img src="{% static 'img/caution.png' %}" alt="Erro" style="width: 50px; height: 50px; vertical-align: middle"/>
               </span>
             {% else %}
-               i
+              <span>
+                <img src="{% static 'img/info.png' %}" alt="Erro" style="width: 50px; height: 50px; vertical-align: middle"/>
+              </span>
             {% endif %}
           </div>
           <div class="notification-content">
@@ -81,7 +83,7 @@
         {% endfor %}
       </div>
     </div>
-
+      
       <button
         type="button"
         class="header-btn theme-btn"
@@ -162,7 +164,9 @@
     <div class="modal-header">
       <h3>Todas as Notificações</h3>
     </div>
-    <div class="modal-body" id="allNotificationsBody" style="max-height: 60vh; overflow-y: auto;"></div>
+    <div class="modal-body" id="allNotificationsBody" style="max-height: 60vh; overflow-y: auto;">
+      {{ html_todas_notificacoes|safe }}
+    </div>
   </div>
 </div>
 
@@ -184,3 +188,13 @@
   </div>
   {% endfor %} 
 {% endif %}
+
+<script>
+  function abrirModalTodasNotificacoes() {
+    document.getElementById("allNotificationsModal").style.display = "block";
+  }
+
+  function fecharModalTodasNotificacoes() {
+    document.getElementById("allNotificationsModal").style.display = "none";
+  }
+</script>

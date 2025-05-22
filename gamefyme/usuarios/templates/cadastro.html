@@ -48,10 +48,22 @@
             
                 <label for="senha">Senha</label>
                 <small>Sua senha deve ter pelo menos 6 caracteres, com uma letra maiúscula e um caractere especial.</small>
-                <input type="password" id="senha" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$" name="senha" placeholder="********" required>
+                <div class="campo-senha">
+                    <input type="password" id="senha" name="senha" placeholder="********" required
+                           pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$">
+                    <span class="toggle-senha" onclick="toggleSenha('senha', this)">
+                      <img src="{% static 'img/eye-close.png' %}" alt="Ver" />
+                    </span>
+                </div>  
             
                 <label for="confsenha">Confirmar senha</label>
-                <input type="password" id="confsenha" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$"  name="confsenha" placeholder="********" required>
+                <div class="campo-senha">
+                    <input type="password" id="confsenha" name="confsenha" placeholder="********" required
+                           pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$">
+                    <span class="toggle-senha" onclick="toggleSenha('confsenha', this)">
+                      <img src="{% static 'img/eye-close.png' %}" alt="Ver" />
+                    </span>
+                </div>  
             
                 <label for="dtnascimento">Data de nascimento</label>
                 <input type="date" id="dtnascimento" name="dtnascimento" required>
@@ -64,5 +76,20 @@
             </a>
         </div>
     </main>
+    <script>
+        function toggleSenha(idCampo, el) {
+          const campo = document.getElementById(idCampo);
+          const icone = el.querySelector('img');
+        
+          if (campo.type === "password") {
+            campo.type = "text";
+            icone.src = "{% static 'img/eye-open.png' %}";
+          } else {
+            campo.type = "password";
+            icone.src = "{% static 'img/eye-close.png' %}";
+          }
+        }
+    </script>
+        
 </body>
 </html>

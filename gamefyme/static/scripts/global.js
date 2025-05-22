@@ -38,8 +38,16 @@ function fecharMsg(elemento) {
     }, 400);
   }
 }
-
+let cacheTodasNotificacoes = "";
+fetch('/usuarios/ajax/notificacoes/')
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      cacheTodasNotificacoes = data.html;
+    }
+  });
 document.addEventListener("DOMContentLoaded", function () {
+
   document.addEventListener("click", function (event) {
     const userMenu = document.getElementById("user-dropdown");
     const notificationsDropdown = document.getElementById(
@@ -140,7 +148,6 @@ function fecharModalNotificacao() {
 }
 
 function marcarComoLida(notificacaoId) {
-  showLoading();
   fetch(`/usuarios/marcar_notificacao_lida/${notificacaoId}/`, {
     method: "POST",
     headers: {
@@ -204,28 +211,6 @@ function marcarTodasComoLidas() {
       hideLoading();
     });
 }
-
-
-function abrirModalTodasNotificacoes() {
-  const modal = document.getElementById("allNotificationsModal");
-  const body = document.getElementById("allNotificationsBody");
-
-  showLoading();
-  fetch('/usuarios/ajax/notificacoes/')
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        body.innerHTML = data.html;
-        modal.style.display = 'block';
-      }
-    })
-    .finally(() => hideLoading());
-}
-
-function fecharModalTodasNotificacoes() {
-  document.getElementById("allNotificationsModal").style.display = "none";
-}
-
 
 function atualizarContadorNotificacoes() {
   const badge = document.querySelector(".notification-badge");

@@ -5,9 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Usuários do Sistema</title>
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
   <link rel="stylesheet" href="{% static 'css/global.css' %}" />
   <script src="{% static 'scripts/global.js' %}"></script>
-  <script src="{% static 'scripts/listar_usuarios.js' %}"></script>
 </head>
 <body>
   {% include 'header.html' %}
@@ -21,12 +21,36 @@
       </div>
       <div class="usuarios-lista" id="lista-usuarios">
         {% for u in usuarios %}
-          <div class="usuario-card" data-nome="{{ u.nmusuario|lower }}">
+        <div class="usuario-card" data-nome="{{ u.nmusuario|lower }}">
+          <div class="usuario-card-topo">
             <h3>{{ u.nmusuario }}</h3>
-            <p><strong>Email:</strong> {{ u.emailusuario }}</p>
-            <p><strong>Nascimento:</strong> {{ u.dtnascimento|date:"d/m/Y" }}</p>
-            <p><strong>Tipo:</strong> {{ u.get_tipousuario_display }}</p>
+            <div style="display: flex; gap: 8px;">
+              <form method="POST" action="{% url 'usuarios:alterar_tipo_usuario' u.idusuario %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-alterar-tipo">
+                  Tornar {% if u.tipousuario == 'administrador' %}Comum{% else %}Administrador{% endif %}
+                </button>
+              </form>
+              <form method="POST" action="{% url 'usuarios:alternar_situacao_usuario' u.idusuario %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-alterar-tipo">
+                  {% if u.flsituacao %}Desativar{% else %}Ativar{% endif %}
+                </button>
+              </form>
+            </div>
           </div>
+          <div style="margin: 16px 0;">
+            <strong>Avatar:</strong><br />
+            <img src="{% static 'img/avatares/' %}{{ u.imagem_perfil }}" alt="Avatar de {{ u.nmusuario }}" style="width: 90px; height: 90px; border-radius: 50%; box-shadow: 0 0 8px #0005;" />
+          </div>          
+          <p><strong>Email:</strong> {{ u.emailusuario }}</p>
+          <p><strong>Nascimento:</strong> {{ u.dtnascimento|date:"d/m/Y" }}</p>
+          <p><strong>Tipo:</strong> {{ u.get_tipousuario_display }}</p>
+          <p><strong>Situação:</strong> {% if u.flsituacao %}Ativo{% else %}Inativo{% endif %}</p>
+          <p><strong>Nível:</strong> {{ u.nivelusuario }}</p>
+          <p><strong>Experiência:</strong> {{ u.expusuario }} / 1000</p>
+          <p><strong>Última atividade:</strong> {{ u.ultima_atividade|date:"d/m/Y" }}</p>
+        </div>
         {% empty %}
           <p class="usuarios-vazio">Nenhum usuário cadastrado.</p>
         {% endfor %}

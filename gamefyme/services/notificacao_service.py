@@ -1,4 +1,7 @@
-from usuarios.models import Notificacao
+from django.utils import timezone
+from django.core.mail import send_mail
+from usuarios.models import Usuario, Notificacao, TipoUsuario
+from gamefyme.settings import EMAIL_HOST_USER
 
 def criar_notificacao(usuario, mensagem, tipo='info'):
     return Notificacao.objects.create(
@@ -28,3 +31,24 @@ def marcar_como_lida(notificacao):
 
 def marcar_todas_como_lidas(usuario):
     Notificacao.objects.filter(idusuario=usuario, flstatus=False).update(flstatus=True)
+
+def enviar_lembretes_diarios():
+    hoje = timezone.now().date()
+    usuarios = Usuario.objects.filter(flsituacao=True)
+
+    for user in usuarios:
+        fez_atividade = user.atividade_set.filter(dtatividaderealizada=hoje).exists()
+
+        if not fez_atividade:
+            Notificacao.objects.create(
+                idusuario=user,
+                dsmensagem="Não se esqueça de registrar seus hábitos hoje!",
+                fltipo=Notificacao.Tipo.AVISO
+            )
+            send_mail(
+                "GamefyME: lembrete diário",
+                f"Olá {user.nmusuario}, não se esqueça de registrar seus hábitos hoje!",
+                EMAIL_HOST_USER,
+                [user.emailusuario],
+                fail_silently=True
+            )

@@ -1,5 +1,5 @@
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import Usuario, TipoUsuario, Notificacao
 from django.contrib.auth.hashers import make_password, check_password
@@ -19,6 +19,7 @@ from django.http import JsonResponse
 from datetime import date
 from django.conf import settings
 from .forms import ConfigUsuarioForm
+
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -171,6 +172,8 @@ def main(request):
     )
     notificacoes = notificacao_service.listar_nao_lidas(usuario)
     notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
+    todas_notificacoes = notificacao_service.listar_todas(usuario)
+    html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
     return render(request, 'main.html', {
         'usuario': usuario,
@@ -180,6 +183,7 @@ def main(request):
         'atividades_unicas': atividades_unicas,
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'html_todas_notificacoes': html_todas,
         'today': date.today(),
         'avatares_disponiveis': arquivos,
     })
@@ -344,9 +348,47 @@ def listar_usuarios(request):
     usuario = login_service.get_usuario_logado(request)
     if usuario.tipousuario != 'administrador':
         return redirect('usuarios:main')
+    
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
+    todas_notificacoes = notificacao_service.listar_todas(usuario)
+    html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
-    todos_usuarios = Usuario.objects.all().order_by('nmusuario')
+    usuarios = Usuario.objects.exclude(idusuario=usuario.idusuario).order_by('nmusuario')
     return render(request, 'listar_usuarios.html', {
         'usuario': usuario,
-        'usuarios': todos_usuarios
+        'usuarios': usuarios,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'html_todas_notificacoes': html_todas,
     })
+
+
+@require_POST
+def alterar_tipo_usuario(request, idusuario):
+    usuario_logado = login_service.get_usuario_logado(request)
+
+    if usuario_logado.tipousuario != 'administrador' or usuario_logado.idusuario == idusuario:
+        return redirect('usuarios:listar_usuarios')
+
+    alvo = get_object_or_404(Usuario, pk=idusuario)
+    alvo.tipousuario = 'comum' if alvo.tipousuario == 'administrador' else 'administrador'
+    alvo.save()
+    messages.success(request, f"Tipo de usuário de {alvo.nmusuario} atualizado para {alvo.get_tipousuario_display()}.")
+    return redirect('usuarios:listar_usuarios')
+
+@require_POST
+def alternar_situacao_usuario(request, idusuario):
+    usuario_logado = login_service.get_usuario_logado(request)
+
+    if usuario_logado.tipousuario != 'administrador' or usuario_logado.idusuario == idusuario:
+        return redirect('usuarios:listar_usuarios')
+
+    alvo = get_object_or_404(Usuario, pk=idusuario)
+    alvo.flsituacao = not alvo.flsituacao
+    alvo.is_active = alvo.flsituacao
+    alvo.save()
+
+    status = "ativado" if alvo.flsituacao else "desativado"
+    messages.success(request, f"Usuário {alvo.nmusuario} foi {status}.")
+    return redirect('usuarios:listar_usuarios')
