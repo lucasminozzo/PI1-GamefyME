@@ -1411,26 +1411,26 @@ input-minutos-wrapper input[type="number"].invalido {
   opacity: 1;
 }
 .action-btn {
-  background: var(--roxo-card3);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 16px 32px;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s ease-in-out;
+    background: var(--roxo-card3);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 32px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease-in-out;
 }
 
 .action-btn:hover {
-  background: var(--roxo-botao);
-  transform: translateY(-2px);
+    background: var(--roxo-botao);
+    transform: translateY(-2px);
 }
 
 .action-btn:focus {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
 }

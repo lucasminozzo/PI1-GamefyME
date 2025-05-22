@@ -89,3 +89,27 @@ main {
     from { opacity: 0; transform: translateY(20px);}
     to { opacity: 1; transform: translateY(0);}
 }
+
+@media (max-width: 768px) {
+    main {
+      flex-direction: column;
+      padding: 0 5vw;
+    }
+  
+    .row {
+      flex-direction: column;
+      margin: 20px 0;
+      padding: 0 5vw;
+    }
+  
+    .content-left h1,
+    .content-center h1 {
+      font-size: 36px;
+    }
+  
+    .content-left p,
+    .content-center p {
+      font-size: 18px;
+    }
+  }
+  
