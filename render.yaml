@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: gamefyme
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn gamefyme.wsgi
+
+  - type: cron
+    name: lembrete-diario
+    env: python
+    buildCommand: pip install -r requirements.txt
+    schedule: "0 21 * * *"
+    startCommand: python manage.py enviarlembretes
