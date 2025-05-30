@@ -11,7 +11,10 @@
         <h2 class="nmusuario">{{ usuario.nmusuario }}</h2>
         <p class="user-date">{{ usuario.dtnascimento|date:"d/m/Y" }}</p>
         <div class="streak-container">
-            <div class="streak-title">Dias consecutivos de atividades completas:</div>
+            <div class="streak-title">
+                Dias consecutivos de atividades completas: <strong>{{ streak_atual }}</strong>
+            </div>
+              
             <div class="weekdays">
               
                 <div class="weekdays-div">
@@ -20,7 +23,9 @@
                             <div class="weekday-label">{{ dia.dia_semana }}</div>
                             <div>
                                 <div class="weekday-icon">
-                                    {% if streak_atual > 0 and dia.concluiu %}
+                                    {% if dia.quebrou %}
+                                        <img src="{% static 'img/fogo-congelado.png' %}" alt="Quebrou o streak">
+                                    {% elif dia.concluiu %}
                                         <img src="{% static 'img/fogo-ativo.png' %}" alt="Concluiu">
                                     {% else %}
                                         <img src="{% static 'img/fogo-inativo.png' %}" alt="Não concluiu">

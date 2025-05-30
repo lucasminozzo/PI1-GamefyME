@@ -27,13 +27,13 @@
             <div style="display: flex; gap: 8px;">
               <form method="POST" action="{% url 'usuarios:alterar_tipo_usuario' u.idusuario %}">
                 {% csrf_token %}
-                <button type="submit" class="btn-alterar-tipo">
+                <button type="submit" class="btn-alterar-tipo with-loading">
                   Tornar {% if u.tipousuario == 'administrador' %}Comum{% else %}Administrador{% endif %}
                 </button>
               </form>
               <form method="POST" action="{% url 'usuarios:alternar_situacao_usuario' u.idusuario %}">
                 {% csrf_token %}
-                <button type="submit" class="btn-alterar-tipo">
+                <button type="submit" class="btn-alterar-tipo with-loading">
                   {% if u.flsituacao %}Desativar{% else %}Ativar{% endif %}
                 </button>
               </form>

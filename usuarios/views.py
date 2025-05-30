@@ -111,7 +111,6 @@ def login(request):
             if check_password(senha, usuario.password):
                 request.session['usuario_id'] = usuario.idusuario
                 request.session['usuario_nome'] = usuario.nmusuario
-                atividades_service.verificar_streak_no_login(usuario)
                 usuario.last_login = timezone.now()
                 usuario.save()
                 return redirect('usuarios:main')
@@ -362,7 +361,6 @@ def listar_usuarios(request):
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'html_todas_notificacoes': html_todas,
     })
-
 
 @require_POST
 def alterar_tipo_usuario(request, idusuario):
