@@ -20,11 +20,9 @@ from datetime import date
 from django.conf import settings
 from .forms import ConfigUsuarioForm
 
-
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 
-from django.contrib.auth import authenticate
 from django.template.loader import render_to_string
 
 
@@ -108,6 +106,8 @@ def login(request):
         senha = request.POST.get('senha')
         try:
             usuario = Usuario.objects.get(emailusuario=email)
+            if (usuario.is_active == False):
+                return render(request, 'login.html', {'erro': 'Usuário inativo. Solicite uma nova senha.'})
             if check_password(senha, usuario.password):
                 request.session['usuario_id'] = usuario.idusuario
                 request.session['usuario_nome'] = usuario.nmusuario
@@ -223,6 +223,8 @@ def nova_senha(request, uidb64, token):
             try:
                 usuario = Usuario.objects.get(emailusuario=user.emailusuario) 
                 usuario.password = make_password(senha)
+                if usuario.is_active == False:
+                    usuario.is_active = True
                 usuario.save()
                 messages.success(request, 'Senha alterada com sucesso! Faça login para continuar.')
                 return redirect('usuarios:login')
@@ -283,8 +285,7 @@ def ajax_todas_notificacoes(request):
         request=request
     )
     return JsonResponse({'success': True, 'html': html})
-
-    
+ 
 @require_POST
 def atualizar_config_usuario(request):
     usuario = login_service.get_usuario_logado(request)
@@ -325,6 +326,7 @@ def atualizar_config_usuario(request):
         'success': False,
         'errors': form.errors
     }, status=400)
+    
     
 @require_POST
 def atualizar_avatar(request):
@@ -392,3 +394,14 @@ def alternar_situacao_usuario(request, idusuario):
     status = "ativado" if alvo.flsituacao else "desativado"
     messages.success(request, f"Usuário {alvo.nmusuario} foi {status}.")
     return redirect('usuarios:listar_usuarios')
+
+def deletar_usuario(request):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    usuario.is_active = False
+    usuario.save()
+    request.session.flush()
+    messages.success(request, 'Usuário deletado com sucesso.')
+    return redirect('usuarios:login')
