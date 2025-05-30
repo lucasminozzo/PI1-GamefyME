@@ -9,6 +9,3 @@ def index(request):
 
 def sobre(request):
     return render(request, 'core/sobre.html')
-    
-def gamificacao(request):
-    return render(request, 'core/gamificacao.html')

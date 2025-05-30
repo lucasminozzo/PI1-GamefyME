@@ -7,7 +7,6 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/sobre.css' %}">
-    <script src="{% static 'scripts/global.js' %}"></script>
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
 </head>
 <body>
@@ -17,24 +16,33 @@
         </div>
         <div class="nav-right">
             <a href="{% url 'core:sobre' %}">Sobre o sistema</a>
-            <a href="{% url 'core:gamificacao' %}">Gamificação</a>
         </div>
     </header>
     <main>
-        <div class="content-center">
+        <div class="content-center" style="margin-bottom: 40px;">
             <h1>GamefyME</h1>
-            <p>Sua plataforma de atividades mais cativante e amigável</p>
+            <p>Organize tarefas. Use Pomodoro. Evolua com XP.</p>
         </div>
+
         <div class="row">
             <div class="content-left">
-                <h1>Sobre o sistema</h1>
-                <p>
-                    Bem-vindo à GamefyME! Nossa plataforma utiliza gamificação e a técnica Pomodoro para transformar sua rotina em uma experiência divertida e produtiva. Aqui, você pode registrar atividades, acompanhar seu progresso, conquistar prêmios virtuais e evoluir seus hábitos de forma motivadora.<br><br>
-                    Explore as funcionalidades, desafie-se e alcance seus objetivos com mais engajamento!
-                </p>
+                <h2>O que é o GamefyME?</h2>
+                <p>É uma plataforma que une <strong>produtividade</strong> e <strong>diversão</strong>. Você realiza tarefas com o <strong>Método Pomodoro</strong> e ganha <strong>XP, níveis e conquistas</strong>.</p>
+                
+                <h2>O que é Pomodoro?</h2>
+                <p>É uma técnica que divide seu tempo em ciclos de <strong>25 minutos de foco</strong> com pausas curtas. Isso melhora o foco e reduz a exaustão mental.</p>
+                
+                <h2>O que você pode fazer:</h2>
+                <ul>
+                    <li>Registrar tarefas com dificuldade e tempo.</li>
+                    <li>Se quiser, você pode executar usando ciclos Pomodoro.</li>
+                    <li>Ganhar XP, subir de nível e manter streaks.</li>
+                    <li>Desbloquear avatares e ver relatórios do seu progresso.</li>
+                </ul>
             </div>
+
             <div class="content-right">
-                <img src="{% static 'img/Modelo.png' %}" alt="Ilustração sobre o sistema" >
+                <img src="{% static 'img/Modelo.png' %}" alt="Ilustração do sistema">
             </div>
         </div>
     </main>

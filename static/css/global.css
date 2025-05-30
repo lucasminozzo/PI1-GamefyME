@@ -27,6 +27,11 @@
   font-size: 25px;
 }
 
+main, .form-container, .profile-section, .content-wrapper {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+
 body {
   background: linear-gradient(
     to bottom,

@@ -39,7 +39,7 @@ main {
     gap: 40px;
     width: 100%;
     max-width: 1200px;
-    margin: 40px 100px;
+    margin: 40px 50px;
 }
 .content-center {
     animation: fadeIn 1s ease-out 0.3s backwards;
@@ -64,8 +64,8 @@ main {
     margin-bottom: 18px;
 }
 
-.content-left p {
-    font-size: 30px;
+.content-left p, strong, h2, li {
+    font-size: 35px;
     color: #fff;
     line-height: 1.5;
 }
@@ -83,7 +83,6 @@ main {
     height: auto;
     border-radius: 8px;
 }
-
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px);}
