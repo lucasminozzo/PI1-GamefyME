@@ -9,4 +9,5 @@ urlpatterns = [
     path('usuarios/', include(('usuarios.urls', 'usuarios'), namespace='usuarios')),
     path('atividades/', include(('atividades.urls', 'atividades'), namespace='atividades')),
     path('relatorios/', include('relatorios.urls')),
+    path('desafios/', include(('desafios.urls', 'desafios'), namespace='desafios')),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

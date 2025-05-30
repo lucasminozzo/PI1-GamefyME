@@ -123,12 +123,20 @@
        onclick="openConfigModal(); toggleUserMenu();" 
        style="font-size: 20px"
        >Configurações</a>
-      <a
-        href="#"
-        onclick="openRelatorioModal(); toggleUserMenu();"
-        style="font-size: 20px"
-        >Relatórios</a
-      >
+       <a
+       href="#"
+       onclick="openRelatorioModal(); toggleUserMenu();"
+       style="font-size: 20px">
+        Relatórios
+      </a>
+     
+     <a
+       href="{% url 'desafios:listar' %}"
+       onclick="toggleUserMenu();"
+       style="font-size: 20px">
+        Ver Desafios
+      </a>
+     
       {% if usuario.tipousuario == 'administrador' %}
         <a
           href="{% url 'usuarios:listar_usuarios' %}"
