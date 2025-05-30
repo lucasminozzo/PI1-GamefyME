@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnLogin = document.getElementById("btnLogin");
   
     if (loginForm && btnLogin) {
-        debugger
       loginForm.addEventListener("submit", function (e) {
         const email = loginForm.querySelector("#email").value.trim();
         const senha = loginForm.querySelector("#senha").value.trim();
