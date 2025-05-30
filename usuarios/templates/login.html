@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
-    <script src="{% static 'scripts/global.js' %}"></script>
+    <script src="{% static 'scripts/login.js' %}"></script>
 </head>
 <body>
     <header>
@@ -54,7 +54,7 @@
                         </span>
                     </div>
 
-                    <button type="submit" class="with-loading">Login</button>
+                    <button type="submit" id="btnLogin">Login</button>
                 </form>
                 <a href="{% url 'usuarios:esqueceu' %}" class="forgot-password">Esqueceu a senha?</a>
             </div>

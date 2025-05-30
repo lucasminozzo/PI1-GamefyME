@@ -109,8 +109,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   document.querySelectorAll(".with-loading").forEach(function (el) {
-    el.addEventListener("click", function () {
-      showLoading();
+    el.addEventListener("click", function (e) {
+      const form = el.closest("form");
+  
+      if (form) {
+        const inputs = form.querySelectorAll("input[required], textarea[required], select[required]");
+        let valid = true;
+  
+        inputs.forEach(function (input) {
+          if (!input.value.trim()) {
+            valid = false;
+          }
+        });
+  
+        if (!valid) {
+          e.preventDefault(); // impede o envio
+          return; // não mostra loading
+        }
+      }
+  
+      showLoading(); // só mostra se todos os required estiverem preenchidos
     });
   });
 });

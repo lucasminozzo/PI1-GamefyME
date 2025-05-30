@@ -56,12 +56,6 @@
     </div>
 </div>
 
-{% if usuario.tipousuario == 'administrador' %}
-  <div style="text-align: right; margin-bottom: 20px;">
-    <button class="action-btn" onclick="abrirModalCadastroDesafio()">Novo Desafio</button>
-  </div>
-{% endif %}
-
 {% if form %}
 <!-- Modal Cadastro Desafio -->
 <div id="modalCadastroDesafio" class="modal">
