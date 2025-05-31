@@ -25,8 +25,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 
 from django.template.loader import render_to_string
 
-
-
 def cadastro(request):
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')

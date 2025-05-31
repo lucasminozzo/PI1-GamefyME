@@ -16,6 +16,15 @@
     {% include 'loading.html'%}
     {% include 'relatorios_modal.html'%}
     {% include 'cadastro_atividade_modal.html' %}
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     {% block content %}
 <div class="form-container">
@@ -57,9 +66,8 @@
 </div>
 
 {% if form %}
-<!-- Modal Cadastro Desafio -->
 <div id="modalCadastroDesafio" class="modal">
-  <div class="modal-content" style="max-width: 1200px; height: auto; display: flex; flex-direction: column;">
+  <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;">
     <span class="close-modal" onclick="fecharModalCadastroDesafio()">&times;</span>
     <div class="modal-header">
       <h3>Novo Desafio</h3>
@@ -84,7 +92,6 @@
               <option value="diario">Diário</option>
               <option value="semanal">Semanal</option>
               <option value="mensal">Mensal</option>
-              <option value="unico">Único</option>
             </select>
           </div>
       
@@ -125,6 +132,7 @@
               <option value="streak_diario">Streak de atividades diárias</option>
               <option value="melhora_pomodoro_media">Aumento de média de pomodoros</option>
               <option value="percentual_concluido">Percentual de atividades concluídas</option>
+              <option value="desafios_concluidos">Quantidade de desafios concluídos</option>
             </select>
           </div>
       
@@ -140,18 +148,30 @@
 
 
 <script>
-    function abrirModalCadastroDesafio() {
-      document.getElementById('modalCadastroDesafio').style.display = 'block';
+  document.addEventListener('mousedown', function (e) {
+    const modal = document.getElementById('modalCadastroDesafio');
+    const content = modal.querySelector('.modal-content');
+
+    if (modal.style.display === 'block' && !content.contains(e.target)) {
+      document.addEventListener('mouseup', fecharSeSoltarFora, { once: true });
     }
-    function fecharModalCadastroDesafio() {
-      document.getElementById('modalCadastroDesafio').style.display = 'none';
-    }
-    window.onclick = function(event) {
-      const modal = document.getElementById('modalCadastroDesafio');
-      if (event.target === modal) {
+
+    function fecharSeSoltarFora(ev) {
+      if (!content.contains(ev.target)) {
         fecharModalCadastroDesafio();
       }
     }
+  });
+
+  function abrirModalCadastroDesafio() {
+    document.getElementById('modalCadastroDesafio').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModalCadastroDesafio() {
+    document.getElementById('modalCadastroDesafio').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
 </script>
 
 {% endblock %}
