@@ -133,7 +133,8 @@
      <a
        href="{% url 'desafios:listar' %}"
        onclick="toggleUserMenu();"
-       style="font-size: 20px">
+       style="font-size: 20px"
+       class="with-loading">
         Ver Desafios
       </a>
      
@@ -142,7 +143,7 @@
           href="{% url 'usuarios:listar_usuarios' %}"
           onclick="toggleUserMenu();"
           style="font-size: 20px"
-          >
+          class="with-loading">
           Ver Usuários
         </a>
       {% endif %}

@@ -2,6 +2,7 @@
   {% load static %}
     <div class="modal-content">
       <span class="close-modal" onclick="closeConfigModal()">&times;</span>
+      <div id="container-msg-modal"></div>
       <div class="modal-header">
         <h3>Configurações de Usuário</h3>
       </div>
@@ -56,7 +57,7 @@
             </div>      
           
             <div class="form-actions">
-              <button type="submit" class="action-btn">Salvar Alterações</button>
+              <button type="submit" class="action-btn with-loading">Salvar Alterações</button>
             </div>
         </form>    
       </div>
@@ -70,6 +71,9 @@
     function deletarUsuario() {
       if (confirm("Tem certeza que deseja desativar sua conta?")) {
         window.location.href = "{% url 'usuarios:deletar_usuario' %}";
+      }
+      else {
+        return false; // Impede o envio do formulário se o usuário cancelar
       }
     }
 
