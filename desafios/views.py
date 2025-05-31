@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Desafio, UsuarioDesafio
 from services import login_service, atividades_service, notificacao_service
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
+from django.contrib import messages
+
 
 def listar_desafios(request):
     usuario = login_service.get_usuario_logado(request)
@@ -48,13 +50,11 @@ def listar_desafios(request):
 
 @require_POST
 def cadastrar_desafio(request):
-    usuario = login_service.get_usuario_logado(request)
-    if usuario.tipousuario != 'administrador':
-        return redirect('usuarios:main')
-
     form = DesafioForm(request.POST)
     if form.is_valid():
         form.save()
-        notificacao_service.criar_notificacao(usuario, 'Desafio cadastrado com sucesso!', 'sucesso')
-
-    return redirect('desafios:listar')
+        messages.success(request, 'Desafio cadastrado com sucesso!')
+        return redirect('desafios:listar')
+    else:
+        messages.error(request, 'Erro ao cadastrar desafio. Verifique os dados e tente novamente.')
+        return redirect('desafios:listar')
