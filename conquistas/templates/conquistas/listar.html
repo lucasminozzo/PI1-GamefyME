@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GamefyME - Conquistas</title>
+  {% load static %}
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/global.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  <script src="{% static 'scripts/global.js' %}"></script>
+</head>
+<body>
+  {% include 'header.html'%}
+
+  {% include 'loading.html' %}
+
+  <div class="form-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <h2 style="color: var(--amarelo-moeda); margin-right: 10px;">Todas as Conquistas</h2>
+      <select id="filtro-conquistas" onchange="filtrarConquistas()" style="padding: 6px; border-radius: 6px;">
+        <option value="todas">Todas</option>
+        <option value="desbloqueadas">Desbloqueadas</option>
+        <option value="bloqueadas">Bloqueadas</option>
+      </select>
+      {% if usuario.tipousuario == 'administrador' %}
+        <button class="action-btn" onclick="abrirModalCadastroConquista()">Nova Conquista</button>
+      {% endif %}
+    </div>
+
+    {% if conquistas %}
+    <div class="usuarios-lista">
+      {% for conquista in conquistas %}
+      <div class="usuario-card conquista-item" data-status="{% if conquista.idconquista in desbloqueadas %}desbloqueadas{% else %}bloqueadas{% endif %}">
+        <div class="usuario-card-topo">
+          <h3>{{ conquista.nmconquista }}</h3>
+          {% if conquista.idconquista in desbloqueadas %}
+          <span style="color: var(--verde-xp); font-weight: bold;">Desbloqueada</span>
+          {% else %}
+          <span style="color: #ccc; font-style: italic;">Bloqueada</span>
+          {% endif %}
+        </div>
+        <p>{{ conquista.dsconquista }}</p>
+        <p><strong>Recompensa:</strong> {{ conquista.expconquista }} XP</p>
+        {% if conquista.nmimagem %}
+        <img src="{% static 'img/conquistas/' %}{{ conquista.nmimagem }}" alt="Imagem conquista" style="max-height:80px; margin-top:10px;">
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--cinza-sub);">Nenhuma conquista cadastrada ainda.</p>
+    {% endif %}
+
+    <div class="usuarios-voltar">
+      <a href="{% url 'usuarios:main' %}" class="btn-perfil voltar-menu-btn with-loading">Voltar</a>
+    </div>
+  </div>
+
+  {% if form %}
+  <div id="modalCadastroConquista" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;">
+      <span class="close-modal" onclick="fecharModalCadastroConquista()">&times;</span>
+      <div class="modal-header">
+        <h3>Nova Conquista</h3>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'conquistas:cadastrar' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="nmconquista">Nome da Conquista</label>
+            {{ form.nmconquista }}
+          </div>
+          <div class="form-group">
+            <label for="dsconquista">Descrição</label>
+            {{ form.dsconquista }}
+          </div>
+          <div class="form-group">
+            <label for="nmimagem">Nome do Arquivo de Imagem</label>
+            {{ form.nmimagem }}
+          </div>
+          <div class="form-group">
+            <label for="expconquista">XP da Conquista</label>
+            {{ form.expconquista }}
+          </div>
+          <div class="form-actions" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 16px;">
+            <button type="submit" class="btn-add">Salvar</button>
+            <button type="button" class="btn-cancel" onclick="fecharModalCadastroConquista()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    function abrirModalCadastroConquista() {
+      document.getElementById('modalCadastroConquista').style.display = 'block';
+    }
+    function fecharModalCadastroConquista() {
+      document.getElementById('modalCadastroConquista').style.display = 'none';
+    }
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalCadastroConquista');
+      if (event.target === modal) {
+        fecharModalCadastroConquista();
+      }
+    }
+
+    function filtrarConquistas() {
+      const filtro = document.getElementById('filtro-conquistas').value;
+      const conquistas = document.querySelectorAll('.conquista-item');
+      conquistas.forEach(c => {
+        const status = c.dataset.status;
+        if (filtro === 'todas' || filtro === status) {
+          c.style.display = 'block';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

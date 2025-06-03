@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Desafio, UsuarioDesafio
-from services import login_service, desafios_service, notificacao_service
+from services import login_service, desafios_service, notificacao_service, conquistas_service
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
@@ -45,6 +45,8 @@ def listar_desafios(request):
         elif d.tipo == 'unico':
             concluidos.append(d.iddesafio)
 
+    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
+    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
 
     form = DesafioForm() if usuario.tipousuario == 'administrador' else None
     desafios_service.verificar_desafios(usuario)
@@ -56,6 +58,9 @@ def listar_desafios(request):
         'desafios': desafios,
         'concluidos': concluidos,
         'form': form,
+        'conquistas': conquistas_proximas,
+        'desafios': desafios_ativos,
+        'concluidos': concluidos,
     })
     
 

@@ -212,3 +212,24 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
 
 
     return False
+
+
+def listar_desafios_ativos_nao_concluidos(usuario):
+    hoje = timezone.localdate()
+    concluidos_ids = []
+
+    for ud in UsuarioDesafio.objects.filter(idusuario=usuario, flsituacao=True):
+        dtpremiacao = ud.dtpremiacao.date() if hasattr(ud.dtpremiacao, 'date') else ud.dtpremiacao
+        d = ud.iddesafio
+
+        if d.tipo == 'diario' and dtpremiacao == hoje:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'semanal' and dtpremiacao.isocalendar()[1] == hoje.isocalendar()[1] and dtpremiacao.year == hoje.year:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'unico':
+            concluidos_ids.append(d.iddesafio)
+
+    desafios_ativos = [d for d in Desafio.objects.all() if d.is_ativo()]
+    return desafios_ativos, concluidos_ids

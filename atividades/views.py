@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import AtividadeForm
 from django.utils import timezone
-from services import login_service, atividades_service, notificacao_service, desafios_service
+from services import login_service, atividades_service, notificacao_service, desafios_service, conquistas_service
 from django.contrib import messages
 from django.db import IntegrityError
 from django.db import transaction
@@ -139,6 +139,9 @@ def realizar_atividade(request, idatividade):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
     desafios_service.verificar_desafios(usuario)
+    
+    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
+    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
@@ -150,7 +153,11 @@ def realizar_atividade(request, idatividade):
         'streak_data': usuario.streak_data,
         'streak_atual': usuario.streak_atual,
         'today': date.today(),
-        'esconder_add': True
+        'esconder_add': True,
+        'conquistas': conquistas_proximas,
+        'desafios': desafios_ativos,
+        'concluidos': concluidos,
+
     })
 
 def editar_atividade(request, idatividade):

@@ -57,12 +57,12 @@
             </div>      
           
             <div class="form-actions">
-              <button type="submit" class="action-btn with-loading">Salvar Alterações</button>
+              <button type="submit" class="action-btn">Salvar Alterações</button>
             </div>
         </form>    
       </div>
       <div class="botao-desativar">
-        <button onclick= "deletarUsuario()" class="action-btn with-loading" id="desativar">Desativar conta</a>
+        <button onclick= "deletarUsuario()" class="action-btn" id="desativar">Desativar conta</a>
       </div>      
     </div>
   </div>
@@ -79,24 +79,25 @@
 
     function toggleCamposSenha() {
       const mostrar = document.getElementById('toggleSenha').checked;
-      document.getElementById('camposSenha').style.display = mostrar ? 'block' : 'none';
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".toggle-senha").forEach(function (el) {
-        el.addEventListener("click", function () {
-          const input = el.previousElementSibling;
-          const img = el.querySelector("img");
+      const campos = document.getElementById('camposSenha');
+      campos.style.display = mostrar ? 'block' : 'none';
     
-          if (input.type === "password") {
-            input.type = "text";
-            img.src = "{% static 'img/eye-open.png' %}";
-          } else {
-            input.type = "password";
-            img.src = "{% static 'img/eye-close.png' %}";
-          }
+      if (mostrar) {
+        campos.querySelectorAll(".toggle-senha").forEach(function (el) {
+          el.addEventListener("click", function () {
+            const input = el.closest(".campo-senha").querySelector("input");
+            const img = el.querySelector("img");
+    
+            if (input.type === "password") {
+              input.type = "text";
+              img.src = "{% static 'img/eye-open.png' %}";
+            } else {
+              input.type = "password";
+              img.src = "{% static 'img/eye-close.png' %}";
+            }
+          });
         });
-      });
-    });
+      }
+    }    
     </script>
     
