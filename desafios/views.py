@@ -20,7 +20,9 @@ def listar_desafios(request):
 
     concluidos = []
     for d in desafios:
-        ud = concluidos_qs.filter(iddesafio=d).first()
+        ud = concluidos_qs.filter(iddesafio=d).order_by('-dtpremiacao').first()
+        d.dtinicio_html = d.dtinicio.strftime('%Y-%m-%dT%H:%M') if d.dtinicio else ''
+        d.dtfim_html = d.dtfim.strftime('%Y-%m-%dT%H:%M') if d.dtfim else ''
         if not ud or not ud.dtpremiacao:
             continue
 
@@ -56,5 +58,24 @@ def cadastrar_desafio(request):
     if form.is_valid():
         form.save()
         notificacao_service.criar_notificacao(usuario, 'Desafio cadastrado com sucesso!', 'sucesso')
+
+    return redirect('desafios:listar')
+
+
+@require_POST
+def editar(request):
+    usuario = login_service.get_usuario_logado(request)
+    if usuario.tipousuario != 'administrador':
+        return redirect('usuarios:main')
+
+    iddesafio = request.POST.get('iddesafio')
+    try:
+        desafio = Desafio.objects.get(pk=iddesafio)
+        form = DesafioForm(request.POST, instance=desafio)
+        if form.is_valid():
+            form.save()
+            notificacao_service.criar_notificacao(usuario, 'Desafio editado com sucesso!', 'sucesso')
+    except Desafio.DoesNotExist:
+        notificacao_service.criar_notificacao(usuario, 'Desafio não encontrado.', 'erro')
 
     return redirect('desafios:listar')

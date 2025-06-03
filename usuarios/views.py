@@ -5,7 +5,7 @@ from .models import Usuario, TipoUsuario, Notificacao
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
-from services import login_service, atividades_service, notificacao_service
+from services import login_service, atividades_service, notificacao_service, desafios_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from atividades.models import Atividade
@@ -157,6 +157,7 @@ def main(request):
     usuario = login_service.get_usuario_logado(request)
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
+    desafios_service.verificar_desafios(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,

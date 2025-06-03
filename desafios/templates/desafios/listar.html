@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <script src="{% static 'scripts/global.js' %}"></script>
+    <script src="{% static 'scripts/desafios.js' %}"></script>
 </head>
 <body>
     {% include 'header.html'%}
@@ -20,9 +21,15 @@
     {% block content %}
 <div class="form-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h2 style="color: var(--amarelo-moeda);">
-            Desafios Ativos
-        </h2>
+      <h2 style="color: var(--amarelo-moeda); margin-right: 10px;">
+          Desafios Ativos
+      </h2>
+      <select id="filtro-status" onchange="filtrarDesafios()" style="padding: 6px; border-radius: 6px;">
+          <option value="todos">Todos</option>
+          <option value="concluidos">Concluídos</option>
+          <option value="nao-concluidos">Não Concluídos</option>
+      </select>
+    
         {% if usuario.tipousuario == 'administrador' %}
             <button class="action-btn" onclick="abrirModalCadastroDesafio()">Novo Desafio</button>
         {% endif %}
@@ -30,22 +37,45 @@
     
     {% if desafios %}
         <div class="usuarios-lista">
-            {% for desafio in desafios %}
-                <div class="usuario-card">
-                    <div class="usuario-card-topo">
+          {% regroup desafios by tipo as desafios_por_tipo %}
+
+          {% for grupo in desafios_por_tipo %}
+              <h3 style="margin-top: 30px; color: var(--azul-padrao); text-transform: capitalize;">
+                  {{ grupo.grouper }}
+              </h3>
+              {% for desafio in grupo.list %}
+                  <div class="usuario-card desafio-item" data-status="{% if desafio.iddesafio in concluidos %}concluidos{% else %}nao-concluidos{% endif %}">
+                      <div class="usuario-card-topo">
+                        {% if usuario.tipousuario == 'administrador' %}
+                          <button class="btn-editar-desafio" style="border-radius: 5px; padding: 6px 14px; font-size: 25px;"
+                            onclick="abrirModalEditarDesafio(
+                              {{ desafio.iddesafio }},
+                              '{{ desafio.nmdesafio|escapejs }}',
+                              '{{ desafio.dsdesafio|escapejs }}',
+                              '{{ desafio.tipo }}',
+                              '{{ desafio.dtinicio_html }}',
+                              '{{ desafio.dtfim_html }}',
+                              {{ desafio.expdesafio }},
+                              '{{ desafio.tipo_logica }}',
+                              {{ desafio.parametro|default:0 }}
+                            )">
+                              Editar
+                          </button>
+                        {% endif %}
                         <h3>{{ desafio.nmdesafio }}</h3>
                         {% if desafio.iddesafio in concluidos %}
                             <span style="color: var(--verde-xp); font-weight: bold;">✅ Concluído</span>
                         {% else %}
                             <span style="color: var(--cinza-sub); font-style: italic;">Em andamento</span>
                         {% endif %}
-                    </div>
-                    <p><strong>Tipo:</strong> {{ desafio.get_tipo_display }}</p>
-                    <p><strong>Período:</strong> {{ desafio.dtinicio|date:"d/m/Y" }} até {{ desafio.dtfim|date:"d/m/Y" }}</p>
-                    <p><strong>Descrição:</strong> {{ desafio.dsdesafio }}</p>
-                    <p><strong>Recompensa:</strong> +{{ desafio.expdesafio }} XP</p>
-                </div>
-            {% endfor %}
+                      </div>
+                      <p><strong>Tipo:</strong> {{ desafio.get_tipo_display }}</p>
+                      <p><strong>Período:</strong> {{ desafio.dtinicio|date:"d/m/Y" }} até {{ desafio.dtfim|date:"d/m/Y" }}</p>
+                      <p><strong>Descrição:</strong> {{ desafio.dsdesafio }}</p>
+                      <p><strong>Recompensa:</strong> +{{ desafio.expdesafio }} XP</p>
+                  </div>
+              {% endfor %}
+          {% endfor %}
         </div>
     {% else %}
         <p style="text-align: center; color: var(--cinza-sub);">Nenhum desafio ativo no momento.</p>
@@ -57,7 +87,6 @@
 </div>
 
 {% if form %}
-<!-- Modal Cadastro Desafio -->
 <div id="modalCadastroDesafio" class="modal">
   <div class="modal-content" style="max-width: 1200px; height: auto; display: flex; flex-direction: column;">
     <span class="close-modal" onclick="fecharModalCadastroDesafio()">&times;</span>
@@ -137,22 +166,85 @@
   </div>
 </div>
 {% endif %}
+<div id="modalEditarDesafio" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 1200px;">
+    <span class="close-modal" onclick="fecharModalEditarDesafio()">&times;</span>
+    <div class="modal-header">
+      <h3>Editar Desafio</h3>
+    </div>
+    <div class="modal-body">
+      <form id="formEditarDesafio" method="post" action="{% url 'desafios:editar' %}">
+        {% csrf_token %}
+        <input type="hidden" name="iddesafio" id="editar_iddesafio">
 
+        <div class="form-group">
+          <label for="editar_nmdesafio">Nome</label>
+          <input type="text" id="editar_nmdesafio" name="nmdesafio" required>
+        </div>
 
-<script>
-    function abrirModalCadastroDesafio() {
-      document.getElementById('modalCadastroDesafio').style.display = 'block';
-    }
-    function fecharModalCadastroDesafio() {
-      document.getElementById('modalCadastroDesafio').style.display = 'none';
-    }
-    window.onclick = function(event) {
-      const modal = document.getElementById('modalCadastroDesafio');
-      if (event.target === modal) {
-        fecharModalCadastroDesafio();
-      }
-    }
-</script>
+        <div class="form-group">
+          <label for="editar_dsdesafio">Descrição</label>
+          <textarea id="editar_dsdesafio" name="dsdesafio" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editar_tipo">Tipo</label>
+          <select name="tipo" id="editar_tipo" required>
+            <option value="diario">Diário</option>
+            <option value="semanal">Semanal</option>
+            <option value="mensal">Mensal</option>
+            <option value="unico">Único</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editar_dtinicio">Data Início</label>
+          <input type="datetime-local" id="editar_dtinicio" name="dtinicio">
+        </div>
+
+        <div class="form-group">
+          <label for="editar_dtfim">Data Fim</label>
+          <input type="datetime-local" id="editar_dtfim" name="dtfim">
+        </div>
+
+        <div class="form-group">
+          <label for="editar_expdesafio">XP</label>
+          <input type="number" id="editar_expdesafio" name="expdesafio" required min="0">
+        </div>
+
+        <div class="form-group">
+          <label for="editar_parametro">Parâmetro</label>
+          <input type="number" id="editar_parametro" name="parametro" min="1">
+        </div>
+
+        <div class="form-group">
+          <label for="editar_tipo_logica">Lógica</label>
+          <select id="editar_tipo_logica" name="tipo_logica" required>
+            <option value="pomodoro">Pomodoros realizados</option>
+            <option value="todas_atividades">Nenhuma atividade pendente</option>
+            <option value="atividades_criadas">Quantidade de atividades criadas</option>
+            <option value="min_dificeis">Concluir atividades difíceis</option>
+            <option value="min_atividades_por_peso">Concluir atividades médias ou fáceis</option>
+            <option value="todas_muito_faceis">Sem atividades muito fáceis</option>
+            <option value="streak_pomodoro_dias">Streak de dias com pomodoro</option>
+            <option value="recorrentes_concluidas">Dias com recorrentes concluídas</option>
+            <option value="atividades_concluidas">Atividades concluídas no período</option>
+            <option value="tempo_total_pomodoro">Tempo total de pomodoro</option>
+            <option value="streak_diario">Streak de atividades diárias</option>
+            <option value="melhora_pomodoro_media">Aumento de média de pomodoros</option>
+            <option value="percentual_concluido">Percentual de atividades concluídas</option>
+            <option value="desafios_concluidos">Quantidade de desafios concluídos</option>
+          </select>
+        </div>
+
+        <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 16px;">
+          <button type="submit" class="btn-add">Salvar</button>
+          <button type="button" class="btn-cancel" onclick="fecharModalEditarDesafio()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 </body>

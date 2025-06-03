@@ -15,8 +15,23 @@ def verificar_desafios(usuario):
 
     for desafio in desafios:
         # já premiado
-        if UsuarioDesafio.objects.filter(idusuario=usuario, iddesafio=desafio).exists():
-            continue
+        premiacao_existente = UsuarioDesafio.objects.filter(
+            idusuario=usuario,
+            iddesafio=desafio
+        ).order_by('-dtpremiacao').first()
+
+        if premiacao_existente:
+            dtpremiacao = premiacao_existente.dtpremiacao
+            if isinstance(dtpremiacao, datetime):
+                dtpremiacao = dtpremiacao.date()
+
+            if desafio.tipo == 'diario' and dtpremiacao == hoje:
+                continue
+            elif desafio.tipo == 'semanal' and dtpremiacao.isocalendar()[1] == hoje.isocalendar()[1] and dtpremiacao.year == hoje.year:
+                continue
+            elif desafio.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
+                continue
+
 
         tipo = desafio.tipo
         valido = False
@@ -190,5 +205,12 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             if total == 0:
                 return False
             return (concluidas / total * 100) >= p
+        case 'desafios_concluidos':
+            concluidos = UsuarioDesafio.objects.filter(
+                idusuario=usuario,
+                dtpremiacao__range=(inicio_dt, fim_dt)
+            ).count()
+            return concluidos >= p
+
 
     return False

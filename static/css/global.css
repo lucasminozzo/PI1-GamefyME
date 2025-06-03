@@ -305,6 +305,7 @@ a {
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 1001;
   animation: fadeIn 0.3s ease-out;
+  overflow: auto;
 }
 
 .modal-content {
@@ -317,6 +318,7 @@ a {
   max-width: 500px;
   border: 2px solid var(--roxo-card2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
 }
 
 .close-modal {

@@ -64,5 +64,21 @@
       </div>
     </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("busca-usuarios");
+      const cards = document.querySelectorAll(".usuario-card");
+  
+      input.addEventListener("input", function () {
+        const filtro = this.value.toLowerCase();
+  
+        cards.forEach((card) => {
+          const nome = card.dataset.nome;
+          card.style.display = nome.includes(filtro) ? "" : "none";
+        });
+      });
+    });
+  </script>
+  
 </body>
 </html>
