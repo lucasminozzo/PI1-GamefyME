@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Desafio, UsuarioDesafio
-from services import login_service, atividades_service, notificacao_service
+from services import login_service, desafios_service, notificacao_service
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
+from django.contrib import messages
+
 
 def listar_desafios(request):
     usuario = login_service.get_usuario_logado(request)
@@ -26,18 +28,26 @@ def listar_desafios(request):
         if not ud or not ud.dtpremiacao:
             continue
 
-        dtpremiacao = ud.dtpremiacao.date() if hasattr(ud.dtpremiacao, 'date') else ud.dtpremiacao
-        if d.tipo == 'diario' and dtpremiacao == hoje:
-            concluidos.append(d.iddesafio)
-        elif d.tipo == 'semanal' and dtpremiacao.isocalendar()[1] == hoje.isocalendar()[1] and dtpremiacao.year == hoje.year:
-            concluidos.append(d.iddesafio)
-        elif d.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
-            concluidos.append(d.iddesafio)
+        dtpremiacao = getattr(ud.dtpremiacao, 'date', lambda: ud.dtpremiacao)()
+
+        if d.tipo == 'diario':
+            if dtpremiacao == hoje:
+                concluidos.append(d.iddesafio)
+
+        elif d.tipo == 'semanal':
+            if dtpremiacao.isocalendar()[:2] == hoje.isocalendar()[:2]:
+                concluidos.append(d.iddesafio)
+
+        elif d.tipo == 'mensal':
+            if dtpremiacao.year == hoje.year and dtpremiacao.month == hoje.month:
+                concluidos.append(d.iddesafio)
+
         elif d.tipo == 'unico':
             concluidos.append(d.iddesafio)
 
-    form = DesafioForm() if usuario.tipousuario == 'administrador' else None
 
+    form = DesafioForm() if usuario.tipousuario == 'administrador' else None
+    desafios_service.verificar_desafios(usuario)
     return render(request, 'desafios/listar.html', {
         'usuario': usuario,
         'notificacoes': notificacoes,
@@ -47,13 +57,10 @@ def listar_desafios(request):
         'concluidos': concluidos,
         'form': form,
     })
+    
 
 @require_POST
 def cadastrar_desafio(request):
-    usuario = login_service.get_usuario_logado(request)
-    if usuario.tipousuario != 'administrador':
-        return redirect('usuarios:main')
-
     form = DesafioForm(request.POST)
     if form.is_valid():
         form.save()

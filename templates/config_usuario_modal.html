@@ -2,6 +2,7 @@
   {% load static %}
     <div class="modal-content">
       <span class="close-modal" onclick="closeConfigModal()">&times;</span>
+      <div id="container-msg-modal"></div>
       <div class="modal-header">
         <h3>Configurações de Usuário</h3>
       </div>
@@ -56,18 +57,26 @@
             </div>      
           
             <div class="form-actions">
-              <button type="submit" class="action-btn">Salvar Alterações</button>
+              <button type="submit" class="action-btn with-loading">Salvar Alterações</button>
             </div>
-            <div>
-              TODO: Adicionar opção de deletar conta
-              {% comment %} <a href="{% url 'usuarios:deletar_usuario' %}" class="delete-account">Deletar conta</a> {% endcomment %}
-            </div>
-        </form>          
+        </form>    
       </div>
+      <div class="botao-desativar">
+        <button onclick= "deletarUsuario()" class="action-btn with-loading" id="desativar">Desativar conta</a>
+      </div>      
     </div>
   </div>
   
   <script>
+    function deletarUsuario() {
+      if (confirm("Tem certeza que deseja desativar sua conta?")) {
+        window.location.href = "{% url 'usuarios:deletar_usuario' %}";
+      }
+      else {
+        return false; // Impede o envio do formulário se o usuário cancelar
+      }
+    }
+
     function toggleCamposSenha() {
       const mostrar = document.getElementById('toggleSenha').checked;
       document.getElementById('camposSenha').style.display = mostrar ? 'block' : 'none';

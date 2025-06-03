@@ -17,6 +17,15 @@
     {% include 'loading.html'%}
     {% include 'relatorios_modal.html'%}
     {% include 'cadastro_atividade_modal.html' %}
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     {% block content %}
 <div class="form-container">
@@ -88,7 +97,7 @@
 
 {% if form %}
 <div id="modalCadastroDesafio" class="modal">
-  <div class="modal-content" style="max-width: 1200px; height: auto; display: flex; flex-direction: column;">
+  <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;">
     <span class="close-modal" onclick="fecharModalCadastroDesafio()">&times;</span>
     <div class="modal-header">
       <h3>Novo Desafio</h3>
@@ -113,7 +122,6 @@
               <option value="diario">Diário</option>
               <option value="semanal">Semanal</option>
               <option value="mensal">Mensal</option>
-              <option value="unico">Único</option>
             </select>
           </div>
       
@@ -154,6 +162,7 @@
               <option value="streak_diario">Streak de atividades diárias</option>
               <option value="melhora_pomodoro_media">Aumento de média de pomodoros</option>
               <option value="percentual_concluido">Percentual de atividades concluídas</option>
+              <option value="desafios_concluidos">Quantidade de desafios concluídos</option>
             </select>
           </div>
       
@@ -166,85 +175,22 @@
   </div>
 </div>
 {% endif %}
-<div id="modalEditarDesafio" class="modal" style="display:none;">
-  <div class="modal-content" style="max-width: 1200px;">
-    <span class="close-modal" onclick="fecharModalEditarDesafio()">&times;</span>
-    <div class="modal-header">
-      <h3>Editar Desafio</h3>
-    </div>
-    <div class="modal-body">
-      <form id="formEditarDesafio" method="post" action="{% url 'desafios:editar' %}">
-        {% csrf_token %}
-        <input type="hidden" name="iddesafio" id="editar_iddesafio">
 
-        <div class="form-group">
-          <label for="editar_nmdesafio">Nome</label>
-          <input type="text" id="editar_nmdesafio" name="nmdesafio" required>
-        </div>
 
-        <div class="form-group">
-          <label for="editar_dsdesafio">Descrição</label>
-          <textarea id="editar_dsdesafio" name="dsdesafio" rows="3" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="editar_tipo">Tipo</label>
-          <select name="tipo" id="editar_tipo" required>
-            <option value="diario">Diário</option>
-            <option value="semanal">Semanal</option>
-            <option value="mensal">Mensal</option>
-            <option value="unico">Único</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="editar_dtinicio">Data Início</label>
-          <input type="datetime-local" id="editar_dtinicio" name="dtinicio">
-        </div>
-
-        <div class="form-group">
-          <label for="editar_dtfim">Data Fim</label>
-          <input type="datetime-local" id="editar_dtfim" name="dtfim">
-        </div>
-
-        <div class="form-group">
-          <label for="editar_expdesafio">XP</label>
-          <input type="number" id="editar_expdesafio" name="expdesafio" required min="0">
-        </div>
-
-        <div class="form-group">
-          <label for="editar_parametro">Parâmetro</label>
-          <input type="number" id="editar_parametro" name="parametro" min="1">
-        </div>
-
-        <div class="form-group">
-          <label for="editar_tipo_logica">Lógica</label>
-          <select id="editar_tipo_logica" name="tipo_logica" required>
-            <option value="pomodoro">Pomodoros realizados</option>
-            <option value="todas_atividades">Nenhuma atividade pendente</option>
-            <option value="atividades_criadas">Quantidade de atividades criadas</option>
-            <option value="min_dificeis">Concluir atividades difíceis</option>
-            <option value="min_atividades_por_peso">Concluir atividades médias ou fáceis</option>
-            <option value="todas_muito_faceis">Sem atividades muito fáceis</option>
-            <option value="streak_pomodoro_dias">Streak de dias com pomodoro</option>
-            <option value="recorrentes_concluidas">Dias com recorrentes concluídas</option>
-            <option value="atividades_concluidas">Atividades concluídas no período</option>
-            <option value="tempo_total_pomodoro">Tempo total de pomodoro</option>
-            <option value="streak_diario">Streak de atividades diárias</option>
-            <option value="melhora_pomodoro_media">Aumento de média de pomodoros</option>
-            <option value="percentual_concluido">Percentual de atividades concluídas</option>
-            <option value="desafios_concluidos">Quantidade de desafios concluídos</option>
-          </select>
-        </div>
-
-        <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 16px;">
-          <button type="submit" class="btn-add">Salvar</button>
-          <button type="button" class="btn-cancel" onclick="fecharModalEditarDesafio()">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<script>
+    function abrirModalCadastroDesafio() {
+      document.getElementById('modalCadastroDesafio').style.display = 'block';
+    }
+    function fecharModalCadastroDesafio() {
+      document.getElementById('modalCadastroDesafio').style.display = 'none';
+    }
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalCadastroDesafio');
+      if (event.target === modal) {
+        fecharModalCadastroDesafio();
+      }
+    }
+</script>
 
 {% endblock %}
 </body>

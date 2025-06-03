@@ -5,8 +5,6 @@ from atividades.models import SessaoPomodoro
 from services import notificacao_service
 from datetime import datetime, timedelta
 
-
-
 def verificar_desafios(usuario):
     agora = timezone.now()
     hoje = timezone.localdate()
@@ -205,12 +203,22 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             if total == 0:
                 return False
             return (concluidas / total * 100) >= p
+<<<<<<< HEAD
         case 'desafios_concluidos':
             concluidos = UsuarioDesafio.objects.filter(
                 idusuario=usuario,
                 dtpremiacao__range=(inicio_dt, fim_dt)
             ).count()
             return concluidos >= p
+=======
+        
+        case 'desafios_concluidos':
+            return UsuarioDesafio.objects.filter(
+                idusuario=usuario,
+                flsituacao=True,
+                dtpremiacao__range=(inicio_dt, fim_dt)
+            ).count() >= p
+>>>>>>> 61675a0c980346cb1db2bd0fce61ef1dedd2a453
 
 
     return False

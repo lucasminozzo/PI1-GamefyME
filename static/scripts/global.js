@@ -418,7 +418,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const botaoSalvar = form.querySelector("button[type='submit']");
     botaoSalvar.disabled = true;
     botaoSalvar.textContent = "Salvando...";
-
+    const container = document.getElementById('container-msg-modal');
+    container.innerHTML = ''; // limpa mensagens antigas
 
     try {
       const response = await fetch(url, {
@@ -428,14 +429,14 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: formData,
       });
-
+      
       const data = await response.json();
 
       botaoSalvar.disabled = false;
       botaoSalvar.textContent = "Salvar Alterações";
 
       if (response.ok && data.success) {
-        alert("Perfil atualizado com sucesso!");
+        exibirMensagemFlutuante('success', 'Perfil atualizado com sucesso!');
         closeConfigModal();
 
         const nomeSpan = document.querySelector(".user-menu-btn span:nth-child(2)");
@@ -449,7 +450,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const errors = data.errors || data.error;
         console.error(errors);
               
-        let mensagem = "Erro ao salvar configurações.";
+        mensagem = "Erro ao salvar configurações:  ";
         if (typeof errors === "object" && errors !== null) {
           mensagem += "\n\n";
           for (let campo in errors) {
@@ -464,20 +465,56 @@ document.addEventListener("DOMContentLoaded", function () {
               ? errors[campo].join(", ")
               : errors[campo];
           
-            mensagem += `• ${nomeCampoFormatado}: ${mensagensCampo}\n`;
+            mensagem += `${mensagensCampo}`;
           }
         }
-      alert(mensagem);
+        const msg = criarMensagemFlutuante(mensagem);
+        container.appendChild(msg);
     }
     } catch (error) {
       botaoSalvar.disabled = false;
       botaoSalvar.textContent = "Salvar Alterações";
 
       console.error("Erro na requisição AJAX:", error);
-      alert("Erro inesperado ao salvar as configurações.");
+      criarMensagemFlutuante("Erro inesperado ao salvar as configurações.");
+      container.innerHTML = ''; // limpa mensagens antigas
     }
   });
 });
+
+function exibirMensagemFlutuante(tipo = sucesso,mensagem) {
+  const div = document.createElement('div');
+  div.className = `msg-flutuante ${tipo === 'error' || tipo === 'erro' ? 'erro' : 'sucesso'}`;
+  div.innerHTML = `
+    ${mensagem}
+    <span class="fechar" onclick="fecharMsg(this)">×</span>
+  `;
+
+  // Insere logo após o header
+  const header = document.getElementById('header');
+  header.insertAdjacentElement('afterend', div);
+
+  setTimeout(() => {
+    div.remove();
+  }, 3000);
+}
+function fecharMsg(elemento) {
+  elemento.parentElement.remove();
+}
+
+function criarMensagemFlutuante(mensagem, tipo = 'erro') { // Cria a mensagem flutuante para colocar dentro do modal de configurações
+  const div = document.createElement('div');
+  div.className = `msg-flutuante ${tipo}`;
+  div.innerHTML = `
+    ${mensagem}
+    <span class="fechar" onclick="this.parentElement.remove()">×</span>
+  `;
+  setTimeout(() => {
+    div.remove();
+  }, 5000);
+  return div;
+}
+
 
 function openCadastroAtividadeModal() {
   document.getElementById("cadastroAtividadeModal").style.display = "block";
