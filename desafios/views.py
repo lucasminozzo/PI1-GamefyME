@@ -55,17 +55,16 @@ def listar_desafios(request):
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'html_todas_notificacoes': html_todas,
-        'desafios': desafios,
+        'desafios': desafios_ativos,
         'concluidos': concluidos,
         'form': form,
         'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
     })
     
 
 @require_POST
 def cadastrar_desafio(request):
+    usuario = login_service.get_usuario_logado(request)
     form = DesafioForm(request.POST)
     if form.is_valid():
         form.save()
