@@ -63,6 +63,7 @@ def listar_desafios(request):
             'conquistas': conquistas_proximas,
         },
     )
+
     
 
 @require_POST
