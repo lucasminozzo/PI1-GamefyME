@@ -1,8 +1,6 @@
 from conquistas.models import Conquista, UsuarioConquista
 from atividades.models import AtividadeConcluidas, SessaoPomodoro
-from django.utils import timezone
 from services import notificacao_service
-from datetime import timedelta
 
 def verificar_conquistas(usuario):
     for c in Conquista.objects.all():
@@ -21,7 +19,6 @@ def verificar_conquistas(usuario):
             )
 
 def _atingiu_criterio(usuario, conquista):
-    hoje = timezone.localdate()
     match conquista.criterio:
         case "qtd_atividades":
             return AtividadeConcluidas.objects.filter(usuario=usuario).count() >= conquista.parametro

@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from usuarios.models import Usuario
 from services import atividades_service
 

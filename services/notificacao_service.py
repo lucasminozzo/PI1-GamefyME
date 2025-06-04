@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.core.mail import send_mail
-from usuarios.models import Usuario, Notificacao, TipoUsuario
+from usuarios.models import Usuario, Notificacao
 from gamefyme.settings import EMAIL_HOST_USER
 
 def criar_notificacao(usuario, mensagem, tipo='info'):

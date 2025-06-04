@@ -6,8 +6,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.db import transaction
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
-from usuarios.models import Notificacao
-from datetime import date, datetime
+from datetime import date
 from django.template.loader import render_to_string
 
 def criar_atividade(request):
