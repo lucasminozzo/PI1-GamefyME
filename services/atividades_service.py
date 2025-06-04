@@ -46,8 +46,15 @@ def get_streak_data(usuario):
     esperando_quebra = True
     congelado_mostrado = False
 
-    for i in range(7):
-        dia = segunda + timedelta(days=i)
+    datas_semana = [segunda + timedelta(days=i) for i in range(7)]
+    concluidas = set(
+        AtividadeConcluidas.objects.filter(
+            idusuario=usuario.idusuario,
+            dtconclusao__date__range=(segunda, segunda + timedelta(days=6))
+        ).values_list('dtconclusao__date', flat=True)
+    )
+
+    for i, dia in enumerate(datas_semana):
 
         # Dias futuros são ignorados para quebra
         if dia > hoje:
@@ -59,10 +66,7 @@ def get_streak_data(usuario):
             })
             continue
 
-        concluiu = AtividadeConcluidas.objects.filter(
-            idusuario=usuario.idusuario,
-            dtconclusao__date=dia
-        ).exists()
+        concluiu = dia in concluidas
 
         if concluiu:
             if esperando_quebra:
