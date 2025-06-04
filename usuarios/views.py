@@ -5,7 +5,7 @@ from .models import Usuario, TipoUsuario, Notificacao
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError, transaction
 from django.contrib import messages
-from services import login_service, atividades_service, notificacao_service, desafios_service, conquistas_service
+from services import login_service, notificacao_service, desafios_service, conquistas_service
 from django.core.mail import send_mail
 from gamefyme.settings import EMAIL_HOST_USER
 from atividades.models import Atividade

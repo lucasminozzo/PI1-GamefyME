@@ -5,7 +5,6 @@ from services import login_service, desafios_service, notificacao_service, conqu
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
-from django.contrib import messages
 
 
 def listar_desafios(request):
@@ -46,20 +45,25 @@ def listar_desafios(request):
             concluidos.append(d.iddesafio)
 
     conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
+    _, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
 
     form = DesafioForm() if usuario.tipousuario == 'administrador' else None
     desafios_service.verificar_desafios(usuario)
-    return render(request, 'desafios/listar.html', {
-        'usuario': usuario,
-        'notificacoes': notificacoes,
-        'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'html_todas_notificacoes': html_todas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
-        'form': form,
-        'conquistas': conquistas_proximas,
-    })
+    return render(
+        request,
+        'desafios/listar.html',
+        {
+            'usuario': usuario,
+            'notificacoes': notificacoes,
+            'notificacoes_nao_lidas': notificacoes_nao_lidas,
+            'html_todas_notificacoes': html_todas,
+            'desafios': desafios,
+            'concluidos': concluidos,
+            'form': form,
+            'conquistas': conquistas_proximas,
+        },
+    )
+
     
 
 @require_POST
@@ -68,7 +72,11 @@ def cadastrar_desafio(request):
     form = DesafioForm(request.POST)
     if form.is_valid():
         form.save()
-        notificacao_service.criar_notificacao(usuario, 'Desafio cadastrado com sucesso!', 'sucesso')
+        notificacao_service.criar_notificacao(
+            usuario,
+            'Desafio cadastrado com sucesso!',
+            'sucesso'
+        )
 
     return redirect('desafios:listar')
 

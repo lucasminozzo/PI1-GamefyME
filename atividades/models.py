@@ -1,8 +1,5 @@
 from django.db import models
-from django.conf import settings
 from usuarios.models import Usuario
-from django.utils import timezone
-from datetime import datetime
 
 class Atividade(models.Model):
     idatividade = models.AutoField(primary_key=True)

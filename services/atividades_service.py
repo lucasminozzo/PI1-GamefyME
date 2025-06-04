@@ -1,9 +1,6 @@
-from django.shortcuts import render
 from django.utils import timezone
-from usuarios.models import Usuario
-from atividades.models import Atividade, AtividadeConcluidas
+from atividades.models import AtividadeConcluidas
 from datetime import timedelta
-from django.db.models import Q
 
 def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
     exp_base = 50

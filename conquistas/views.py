@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Conquista, UsuarioConquista
-from services import login_service, notificacao_service, conquistas_service, desafios_service
+from services import login_service, notificacao_service, desafios_service
 from .forms import ConquistaForm
 from django.views.decorators.http import require_POST
-from django.utils import timezone
 
 def listar_conquistas(request):
     usuario = login_service.get_usuario_logado(request)
@@ -12,7 +11,7 @@ def listar_conquistas(request):
     desbloqueadas_ids = [uc.idconquista.idconquista for uc in desbloqueadas]
     form = ConquistaForm() if usuario.tipousuario == 'administrador' else None
     
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
+    # Lista desafios relacionados ao usuário
     desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
 
     return render(request, 'conquistas/listar.html', {
@@ -31,5 +30,9 @@ def cadastrar_conquista(request):
     form = ConquistaForm(request.POST)
     if form.is_valid():
         form.save()
-        notificacao_service.criar_notificacao(usuario, 'Conquista cadastrada com sucesso!', 'sucesso')
+        notificacao_service.criar_notificacao(
+            usuario,
+            'Conquista cadastrada com sucesso!',
+            'sucesso'
+        )
     return redirect('conquistas:listar')
