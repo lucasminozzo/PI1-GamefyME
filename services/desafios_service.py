@@ -10,11 +10,8 @@ def verificar_desafios(usuario):
     agora = timezone.now()
     hoje = timezone.localdate()
 
-    desafios = Desafio.objects.filter(
-        Q(tipo=TipoDesafio.UNICO, dtinicio__lte=agora, dtfim__gte=agora) |
-        ~Q(tipo=TipoDesafio.UNICO)
-    )
-
+    desafios = [d for d in Desafio.objects.all() if d.is_ativo()]
+    
     for desafio in desafios:
         # já premiado
         premiacao_existente = UsuarioDesafio.objects.filter(
@@ -52,7 +49,7 @@ def verificar_desafios(usuario):
 
         valido = desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt)
 
-        # Aqui você pode aplicar regras específicas por `desafio.iddesafio` se desejar mais precisão
+        # Aqui você pode aplicar regras específicas por desafio.iddesafio se desejar mais precisão
 
         if valido:
             UsuarioDesafio.objects.create(
@@ -123,23 +120,29 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).exists()
 
         case 'streak_pomodoro_dias':
-            contagem = {}
-            for s in SessaoPomodoro.objects.filter(
-                idusuario=usuario,
-                inicio__range=(inicio_dt, fim_dt)
-            ):
-                dia = s.inicio.date()
-                contagem[dia] = contagem.get(dia, 0) + 1
-            dias_validos = sum(1 for v in contagem.values() if v >= 3)
+            dias_validos = 0
+            for i in range(7):
+                dia = inicio_dt + timedelta(days=i)
+                qtd = SessaoPomodoro.objects.filter(
+                    idusuario=usuario,
+                    inicio__date=dia.date()
+                ).count()
+                if qtd >= 3:
+                    dias_validos += 1
             return dias_validos >= p
 
         case 'recorrentes_concluidas':
-            dias = AtividadeConcluidas.objects.filter(
-                idusuario=usuario,
-                dtconclusao__range=(inicio_dt, fim_dt),
-                idatividade__recorrencia='recorrente'
-            ).values_list('dtconclusao__date', flat=True).distinct()
-            return len(dias) >= p
+            dias_validos = 0
+            for i in range(7):
+                dia = inicio_dt + timedelta(days=i)
+                atividades = AtividadeConcluidas.objects.filter(
+                    idusuario=usuario,
+                    dtconclusao__date=dia.date(),
+                    idatividade__recorrencia='recorrente'
+                ).exists()
+                if atividades:
+                    dias_validos += 1
+            return dias_validos >= p
 
         case 'atividades_concluidas':
             return AtividadeConcluidas.objects.filter(
@@ -148,24 +151,29 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'tempo_total_pomodoro':
-            dur_expr = ExpressionWrapper(F('fim') - F('inicio'), output_field=DurationField())
-            total = SessaoPomodoro.objects.filter(
+            sessoes = SessaoPomodoro.objects.filter(
+
                 idusuario=usuario,
                 inicio__range=(inicio_dt, fim_dt),
                 fim__isnull=False
-            ).annotate(dur=dur_expr).aggregate(total=Sum('dur'))['total']
-            total_min = total.total_seconds() / 60 if total else 0
+            )
+            total_min = sum([(s.fim - s.inicio).total_seconds() / 60 for s in sessoes])
             return total_min >= p
 
         case 'streak_diario':
             hoje = timezone.now().date()
-            datas = set(
-                AtividadeConcluidas.objects.filter(
+            dias_validos = 0
+            for i in range(p):
+                dia = hoje - timedelta(days=i)
+                atividades = AtividadeConcluidas.objects.filter(
                     idusuario=usuario,
-                    dtconclusao__date__range=(hoje - timedelta(days=p-1), hoje)
-                ).values_list('dtconclusao__date', flat=True)
-            )
-            return all((hoje - timedelta(days=i)) in datas for i in range(p))
+                    dtconclusao__date=dia
+                ).exists()
+                if atividades:
+                    dias_validos += 1
+                else:
+                    break
+            return dias_validos == p
 
         case 'melhora_pomodoro_media':
             # Simplificado: se neste mês usou mais sessões que no anterior
@@ -212,7 +220,7 @@ def listar_desafios_ativos_nao_concluidos(usuario):
     hoje = timezone.localdate()
     concluidos_ids = []
 
-    for ud in UsuarioDesafio.objects.filter(idusuario=usuario, flsituacao=True).select_related('iddesafio'):
+    for ud in UsuarioDesafio.objects.filter(idusuario=usuario, flsituacao=True):
         dtpremiacao = ud.dtpremiacao.date() if hasattr(ud.dtpremiacao, 'date') else ud.dtpremiacao
         d = ud.iddesafio
 
@@ -225,9 +233,6 @@ def listar_desafios_ativos_nao_concluidos(usuario):
         elif d.tipo == 'unico':
             concluidos_ids.append(d.iddesafio)
 
-    agora = timezone.now()
-    desafios_ativos = Desafio.objects.filter(
-        Q(tipo=TipoDesafio.UNICO, dtinicio__lte=agora, dtfim__gte=agora) |
-        ~Q(tipo=TipoDesafio.UNICO)
-    )
+    desafios_ativos = [d for d in Desafio.objects.all() if d.is_ativo()]
+    
     return desafios_ativos, concluidos_ids

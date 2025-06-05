@@ -2,7 +2,11 @@ from django.utils import timezone
 from atividades.models import AtividadeConcluidas
 from datetime import timedelta
 
-def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
+def calcular_experiencia(peso: str, tempo_estimado: int) -> int: ##     RN 05 - RF 03 - A experiência que o usuário receberá após cada atividade 
+                                                                 ## não poderá ultrapassar de 500 e tem um mínimo de 50.
+                                                                 ## Caso o cálculo feito ultrapasse esse valor máximo, o sistema retornará o limite de 500.
+
+
     exp_base = 50
     multiplicadores_peso = {
         'muito_facil': 1.0,
