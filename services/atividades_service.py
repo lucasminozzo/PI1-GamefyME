@@ -30,7 +30,7 @@ def get_streak_data(usuario):
     Exibe a semana atual de segunda a domingo.
     Marca:
     - fogo-ativo: dias com atividade e streak ainda válido
-    - fogo-congelado: primeira falha (até hoje)
+    - fogo-congelado: primeira falha (até hoje), se houver atividade anterior
     - fogo-inativo: dias sem atividade fora do streak
     - dias futuros: ignorados como quebra
     """
@@ -43,15 +43,14 @@ def get_streak_data(usuario):
     esperando_quebra = True
     congelado_mostrado = False
 
-    datas_semana = [segunda + timedelta(days=i) for i in range(7)]
-    concluidas = set(
-        AtividadeConcluidas.objects.filter(
-            idusuario=usuario.idusuario,
-            dtconclusao__date__range=(segunda, segunda + timedelta(days=6))
-        ).values_list('dtconclusao__date', flat=True)
-    )
+    # verifica se há alguma atividade concluída na semana até hoje
+    tem_atividade_na_semana = AtividadeConcluidas.objects.filter(
+        idusuario=usuario.idusuario,
+        dtconclusao__date__range=(segunda, hoje)
+    ).exists()
 
-    for i, dia in enumerate(datas_semana):
+    for i in range(7):
+        dia = segunda + timedelta(days=i)
 
         # Dias futuros são ignorados para quebra
         if dia > hoje:
@@ -63,7 +62,10 @@ def get_streak_data(usuario):
             })
             continue
 
-        concluiu = dia in concluidas
+        concluiu = AtividadeConcluidas.objects.filter(
+            idusuario=usuario.idusuario,
+            dtconclusao__date=dia
+        ).exists()
 
         if concluiu:
             if esperando_quebra:
@@ -79,7 +81,7 @@ def get_streak_data(usuario):
                 'quebrou': False
             })
         else:
-            if esperando_quebra and not congelado_mostrado:
+            if esperando_quebra and not congelado_mostrado and tem_atividade_na_semana:
                 congelado_mostrado = True
                 esperando_quebra = False
                 streak_data.append({
@@ -88,7 +90,7 @@ def get_streak_data(usuario):
                     'concluiu': False,
                     'quebrou': True
                 })
-            elif esperando_quebra:
+            elif esperando_quebra and tem_atividade_na_semana:
                 esperando_quebra = False
                 streak_data.append({
                     'dia_semana': dias_semana[i],
