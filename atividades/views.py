@@ -38,15 +38,15 @@ def criar_atividade(request):
 
                 messages.success(request, f'Atividade "{atividade.nmatividade}" criada com sucesso!')
                 return redirect('usuarios:main')
-            except IntegrityError:
-                messages.error(request, f'Já existe uma atividade chamada "{form.cleaned_data["nmatividade"]}". Por favor, escolha um nome diferente.')
+            except IntegrityError: ## RNF 03 - Não permitir atividades duplicadas
+                messages.error(request, f'Já existe uma atividade chamada "{form.cleaned_data["nmatividade"]}". Por favor, escolha um nome diferente.') 
     else:
         form = AtividadeForm()
         
     messages.error(request, 'Erro ao criar atividade. Verifique os campos e tente novamente.')
     return redirect('usuarios:main')
 
-
+## RF 08 - Realização de Atividades com Temporizador Pomodoro
 @transaction.atomic
 def realizar_atividade(request, idatividade):
     if not login_service.is_usuario_logado(request):
@@ -57,7 +57,7 @@ def realizar_atividade(request, idatividade):
 
     if atividade.situacao in [Atividade.Situacao.CANCELADA] or \
        (atividade.situacao == Atividade.Situacao.REALIZADA and atividade.recorrencia == Atividade.Recorrencia.UNICA):
-        messages.error(request, "Esta atividade não pode ser alterada.")
+        messages.error(request, "Esta atividade não pode ser alterada.") ## RN 04 - RF 03 - Atividades não podem ser excluídas após serem finalizadas.
         return redirect('usuarios:main')
 
     if request.method == 'POST':

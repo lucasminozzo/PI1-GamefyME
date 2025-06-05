@@ -49,7 +49,7 @@ def verificar_desafios(usuario):
 
         valido = desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt)
 
-        # Aqui você pode aplicar regras específicas por `desafio.iddesafio` se desejar mais precisão
+        # Aqui você pode aplicar regras específicas por desafio.iddesafio se desejar mais precisão
 
         if valido:
             UsuarioDesafio.objects.create(
@@ -235,4 +235,5 @@ def listar_desafios_ativos_nao_concluidos(usuario):
 
     desafios_ativos = [d for d in Desafio.objects.all() if d.is_ativo()]
     
+
     return desafios_ativos, concluidos_ids

@@ -3,6 +3,8 @@ from django.core.mail import send_mail
 from usuarios.models import Usuario, Notificacao
 from gamefyme.settings import EMAIL_HOST_USER
 
+## RF 06 - Manter Notificação
+
 def criar_notificacao(usuario, mensagem, tipo='info'):
     return Notificacao.objects.create(
         idusuario=usuario,

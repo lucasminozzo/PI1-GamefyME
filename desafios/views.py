@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
 
-
+## RF 04 - Manter desafios
 def listar_desafios(request):
     usuario = login_service.get_usuario_logado(request)
     hoje = timezone.localdate()

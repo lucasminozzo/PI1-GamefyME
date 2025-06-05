@@ -2,6 +2,9 @@ import re
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+
+## Validator para requisitos de senha  RF 01 - RN 6 -  A senha deve ter no mínimo 6 caracteres,
+##                                                     pelo menos uma letra maiúscula e um caractere especial.
 class RequisitosSenhaValidator:
     def validate(self, password, user=None):
         if len(password) < 6:
