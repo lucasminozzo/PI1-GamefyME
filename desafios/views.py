@@ -49,9 +49,7 @@ def listar_desafios(request):
 
     form = DesafioForm() if usuario.tipousuario == 'administrador' else None
     desafios_service.verificar_desafios(usuario)
-    return render(
-        request,
-        'desafios/listar.html',
+    return render(request,'desafios/listar.html',
         {
             'usuario': usuario,
             'notificacoes': notificacoes,
