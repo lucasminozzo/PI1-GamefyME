@@ -11,9 +11,8 @@ def verificar_desafios(usuario):
     hoje = timezone.localdate()
 
     desafios = [d for d in Desafio.objects.all() if d.is_ativo()]
-    
+
     for desafio in desafios:
-        # já premiado
         premiacao_existente = UsuarioDesafio.objects.filter(
             idusuario=usuario,
             iddesafio=desafio
@@ -30,12 +29,12 @@ def verificar_desafios(usuario):
                 continue
             elif desafio.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
                 continue
-
+            elif desafio.tipo == 'unico':
+                continue
 
         tipo = desafio.tipo
         valido = False
 
-        # intervalo de verificação
         if tipo == 'diario':
             inicio = hoje
         elif tipo == 'semanal':
@@ -43,13 +42,10 @@ def verificar_desafios(usuario):
         else:
             inicio = hoje.replace(day=1)
 
-        # normaliza datas
         inicio_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.min.time()))
         fim_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.max.time()))
 
         valido = desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt)
-
-        # Aqui você pode aplicar regras específicas por desafio.iddesafio se desejar mais precisão
 
         if valido:
             UsuarioDesafio.objects.create(
@@ -112,12 +108,15 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'todas_muito_faceis':
-            return not Atividade.objects.filter(
+            atividades_no_periodo = Atividade.objects.filter(
                 idusuario=usuario,
                 dtatividade__range=(inicio_dt, fim_dt),
-                peso='muito_facil',
                 situacao='ativa'
-            ).exists()
+            )
+            if not atividades_no_periodo.exists():
+                return False
+            return not atividades_no_periodo.filter(peso='muito_facil').exists()
+
 
         case 'streak_pomodoro_dias':
             dias_validos = 0

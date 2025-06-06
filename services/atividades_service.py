@@ -6,7 +6,6 @@ def calcular_experiencia(peso: str, tempo_estimado: int) -> int: ##     RN 05 - 
                                                                  ## não poderá ultrapassar de 500 e tem um mínimo de 50.
                                                                  ## Caso o cálculo feito ultrapasse esse valor máximo, o sistema retornará o limite de 500.
 
-
     exp_base = 50
     multiplicadores_peso = {
         'muito_facil': 1.0,
@@ -30,34 +29,36 @@ def calcular_experiencia(peso: str, tempo_estimado: int) -> int: ##     RN 05 - 
     return min(experiencia, 500)
 
 def get_streak_data(usuario):
-    """
-    Exibe a semana atual de segunda a domingo.
-    Marca:
-    - fogo-ativo: dias com atividade e streak ainda válido
-    - fogo-congelado: primeira falha (até hoje)
-    - fogo-inativo: dias sem atividade fora do streak
-    - dias futuros: ignorados como quebra
-    """
     hoje = timezone.localdate()
     segunda = hoje - timedelta(days=hoje.weekday())
     dias_semana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom']
     streak_data = []
 
+    datas_semana = [segunda + timedelta(days=i) for i in range(7)]
+
+    concluidas_qs = AtividadeConcluidas.objects.filter(
+        idusuario=usuario.idusuario,
+        dtconclusao__date__range=(segunda, segunda + timedelta(days=6))
+    )
+
+    concluidas = set(concluidas_qs.values_list('dtconclusao__date', flat=True))
+
+    # Se o usuário não tem nenhuma atividade concluída na semana
+    if not concluidas:
+        for i, dia in enumerate(datas_semana):
+            streak_data.append({
+                'dia_semana': dias_semana[i],
+                'data': dia,
+                'concluiu': False,
+                'quebrou': False
+            })
+        return streak_data, 0
+
     dias_seguidos = 0
     esperando_quebra = True
     congelado_mostrado = False
 
-    datas_semana = [segunda + timedelta(days=i) for i in range(7)]
-    concluidas = set(
-        AtividadeConcluidas.objects.filter(
-            idusuario=usuario.idusuario,
-            dtconclusao__date__range=(segunda, segunda + timedelta(days=6))
-        ).values_list('dtconclusao__date', flat=True)
-    )
-
     for i, dia in enumerate(datas_semana):
-
-        # Dias futuros são ignorados para quebra
         if dia > hoje:
             streak_data.append({
                 'dia_semana': dias_semana[i],
@@ -108,5 +109,4 @@ def get_streak_data(usuario):
                     'quebrou': False
                 })
 
-    usuario.streak_atual = dias_seguidos
-    return streak_data
+    return streak_data, dias_seguidos

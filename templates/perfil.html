@@ -16,14 +16,13 @@
             </div>
               
             <div class="weekdays">
-              
                 <div class="weekdays-div">
                     {% for dia in streak_data %}
                         <div class="weekday" title="{{ dia.data|date:'d/m/Y' }}">
                             <div class="weekday-label">{{ dia.dia_semana }}</div>
                             <div>
                                 <div class="weekday-icon">
-                                    {% if dia.quebrou %}
+                                    {% if dia.quebrou and streak_atual > 0 %}
                                         <img src="{% static 'img/fogo-congelado.png' %}" alt="Quebrou o streak">
                                     {% elif dia.concluiu %}
                                         <img src="{% static 'img/fogo-ativo.png' %}" alt="Concluiu">
