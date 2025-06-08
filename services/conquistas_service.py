@@ -36,11 +36,11 @@ def listar_conquistas_proximas(usuario):
 
     conquistas_proximas = [
         {
-            'nome': c.nome,
-            'exp': c.recompensa_xp,
+            'nome': c.nmconquista,
+            'exp': c.expconquista,
             'concluida': False
         }
-        for c in conquistas if c.id not in conquistas_usuario
+        for c in conquistas if c.idconquista not in conquistas_usuario
     ]
     return conquistas_proximas
 
