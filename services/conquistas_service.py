@@ -9,12 +9,12 @@ def verificar_conquistas(usuario):
 
         if _atingiu_criterio(usuario, c):
             UsuarioConquista.objects.create(usuario=usuario, conquista=c)
-            usuario.expusuario += c.expconquista
+            usuario.expusuario += c.recompensa_xp
             usuario.save()
 
             notificacao_service.criar_notificacao(
                 usuario,
-                f'🏅 Parabéns! Você desbloqueou a conquista "{c.nmconquista}" e ganhou {c.expconquista} XP!'
+                f'🏅 Parabéns! Você desbloqueou a conquista "{c.nome}" e ganhou {c.recompensa_xp} XP!',
                 'sucesso'
             )
 
@@ -29,19 +29,5 @@ def _atingiu_criterio(usuario, conquista):
             get_streak_data(usuario)
             return usuario.streak_atual >= conquista.parametro
     return False
-
-def listar_conquistas_proximas(usuario):
-    conquistas = Conquista.objects.all()
-    conquistas_usuario = UsuarioConquista.objects.filter(idusuario=usuario).values_list('idconquista_id', flat=True)
-
-    conquistas_proximas = [
-        {
-           'nome': c.nmconquista,
-            'exp': c.expconquista,
-            'concluida': False
-        }
-        for c in conquistas if c.idconquista not in conquistas_usuario
-    ]
-    return conquistas_proximas
 
 

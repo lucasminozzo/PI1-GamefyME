@@ -8,6 +8,9 @@ from django.db import transaction
 from .models import Atividade, SessaoPomodoro, AtividadeConcluidas
 from datetime import date
 from django.template.loader import render_to_string
+from django.db.models import Sum
+
+from atividades import models
 
 def criar_atividade(request):
     if not login_service.is_usuario_logado(request):
@@ -138,9 +141,7 @@ def realizar_atividade(request, idatividade):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
     desafios_service.verificar_desafios(usuario)
-    
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
+
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
@@ -153,10 +154,6 @@ def realizar_atividade(request, idatividade):
         'streak_atual': usuario.streak_atual,
         'today': date.today(),
         'esconder_add': True,
-        'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
-
     })
 
 def editar_atividade(request, idatividade):
@@ -228,3 +225,32 @@ def remover_atividade(request, idatividade):
         messages.error(request, f"Erro ao remover a atividade: {str(e)}")
 
     return redirect('usuarios:main')
+
+def listar_atividades(request):
+    if not login_service.is_usuario_logado(request):
+        return redirect('usuarios:login')
+
+    usuario = login_service.get_usuario_logado(request)
+    atividades = Atividade.objects.filter(idusuario=usuario).order_by('-dtatividade')
+    notificacoes = notificacao_service.listar_nao_lidas(usuario)
+    notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
+    html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': notificacoes}, request=request)
+    atividades_com_ciclos = []
+    for atividade in atividades:
+        total_ciclos = SessaoPomodoro.objects.filter(idusuario=usuario, idatividade=atividade).aggregate(
+            total=Sum('nrciclo')
+        )['total'] or 0
+        atividades_com_ciclos.append({
+            'atividade': atividade,
+            'total_ciclos': total_ciclos
+        })
+
+
+    return render(request, 'atividades/listar_atividades.html', {
+        'usuario': usuario,
+        'atividades_com_ciclos': atividades_com_ciclos,
+        'notificacoes': notificacoes,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'html_todas_notificacoes': html_todas
+    })
+

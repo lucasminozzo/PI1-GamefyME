@@ -44,9 +44,6 @@ def listar_desafios(request):
         elif d.tipo == 'unico':
             concluidos.append(d.iddesafio)
 
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    _, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-
     form = DesafioForm() if usuario.tipousuario == 'administrador' else None
     desafios_service.verificar_desafios(usuario)
     return render(request,'desafios/listar.html',
@@ -58,7 +55,6 @@ def listar_desafios(request):
             'desafios': desafios,
             'concluidos': concluidos,
             'form': form,
-            'conquistas': conquistas_proximas,
         },
     )
 

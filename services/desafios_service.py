@@ -6,6 +6,13 @@ from atividades.models import SessaoPomodoro
 from services import notificacao_service
 from datetime import datetime, timedelta
 
+from django.utils import timezone
+from datetime import datetime, timedelta
+from desafios.models import Desafio, UsuarioDesafio
+from atividades.models import Atividade, AtividadeConcluidas, SessaoPomodoro
+from services import notificacao_service
+
+
 def verificar_desafios(usuario):
     agora = timezone.now()
     hoje = timezone.localdate()
@@ -19,9 +26,7 @@ def verificar_desafios(usuario):
         ).order_by('-dtpremiacao').first()
 
         if premiacao_existente:
-            dtpremiacao = premiacao_existente.dtpremiacao
-            if isinstance(dtpremiacao, datetime):
-                dtpremiacao = dtpremiacao.date()
+            dtpremiacao = premiacao_existente.dtpremiacao.date() if hasattr(premiacao_existente.dtpremiacao, 'date') else premiacao_existente.dtpremiacao
 
             if desafio.tipo == 'diario' and dtpremiacao == hoje:
                 continue
@@ -32,22 +37,26 @@ def verificar_desafios(usuario):
             elif desafio.tipo == 'unico':
                 continue
 
-        tipo = desafio.tipo
-        valido = False
-
-        if tipo == 'diario':
+        # Define o intervalo do desafio conforme tipo
+        if desafio.tipo == 'diario':
             inicio = hoje
-        elif tipo == 'semanal':
-            inicio = hoje - timedelta(days=hoje.weekday())
-        else:
+            fim = hoje
+        elif desafio.tipo == 'semanal':
+            inicio = hoje - timedelta(days=hoje.weekday())  # Segunda
+            fim = inicio + timedelta(days=6)  # Domingo
+        elif desafio.tipo == 'mensal':
             inicio = hoje.replace(day=1)
+            proximo_mes = (inicio.replace(day=28) + timedelta(days=4)).replace(day=1)
+            fim = proximo_mes - timedelta(days=1)
+        else:
+            # Para 'unico' ou outros tipos
+            inicio = desafio.dtinicio.date()
+            fim = desafio.dtfim.date()
 
-        inicio_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.min.time()))
-        fim_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.max.time()))
+        inicio_dt = timezone.make_aware(datetime.combine(inicio, datetime.min.time()))
+        fim_dt = timezone.make_aware(datetime.combine(fim, datetime.max.time()))
 
-        valido = desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt)
-
-        if valido:
+        if desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             UsuarioDesafio.objects.create(
                 idusuario=usuario,
                 iddesafio=desafio,
