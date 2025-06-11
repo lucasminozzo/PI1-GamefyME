@@ -30,18 +30,4 @@ def _atingiu_criterio(usuario, conquista):
             return usuario.streak_atual >= conquista.parametro
     return False
 
-def listar_conquistas_proximas(usuario):
-    conquistas = Conquista.objects.all()
-    conquistas_usuario = UsuarioConquista.objects.filter(idusuario=usuario).values_list('idconquista_id', flat=True)
-
-    conquistas_proximas = [
-        {
-            'nome': c.nmconquista,
-            'exp': c.expconquista,
-            'concluida': False
-        }
-        for c in conquistas if c.idconquista not in conquistas_usuario
-    ]
-    return conquistas_proximas
-
 

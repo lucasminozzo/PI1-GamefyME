@@ -29,36 +29,26 @@ def calcular_experiencia(peso: str, tempo_estimado: int) -> int: ##     RN 05 - 
     return min(experiencia, 500)
 
 def get_streak_data(usuario):
+    """
+    Exibe a semana atual de segunda a domingo.
+    Marca:
+    - fogo-ativo: dias com atividade e streak ainda válido
+    - fogo-congelado: primeira falha (após começar)
+    - fogo-inativo: dias sem atividade fora do streak
+    - dias futuros: ignorados
+    """
     hoje = timezone.localdate()
     segunda = hoje - timedelta(days=hoje.weekday())
     dias_semana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom']
     streak_data = []
 
-    datas_semana = [segunda + timedelta(days=i) for i in range(7)]
-
-    concluidas_qs = AtividadeConcluidas.objects.filter(
-        idusuario=usuario.idusuario,
-        dtconclusao__date__range=(segunda, segunda + timedelta(days=6))
-    )
-
-    concluidas = set(concluidas_qs.values_list('dtconclusao__date', flat=True))
-
-    # Se o usuário não tem nenhuma atividade concluída na semana
-    if not concluidas:
-        for i, dia in enumerate(datas_semana):
-            streak_data.append({
-                'dia_semana': dias_semana[i],
-                'data': dia,
-                'concluiu': False,
-                'quebrou': False
-            })
-        return streak_data, 0
-
     dias_seguidos = 0
-    esperando_quebra = True
     congelado_mostrado = False
+    encontrou_primeira_atividade = False
 
-    for i, dia in enumerate(datas_semana):
+    for i in range(7):
+        dia = segunda + timedelta(days=i)
+
         if dia > hoje:
             streak_data.append({
                 'dia_semana': dias_semana[i],
@@ -68,15 +58,14 @@ def get_streak_data(usuario):
             })
             continue
 
-        concluiu = dia in concluidas
+        concluiu = AtividadeConcluidas.objects.filter(
+            idusuario=usuario.idusuario,
+            dtconclusao__date=dia
+        ).exists()
 
         if concluiu:
-            if esperando_quebra:
-                dias_seguidos += 1
-            else:
-                dias_seguidos = 1
-                esperando_quebra = True
-
+            encontrou_primeira_atividade = True
+            dias_seguidos += 1
             streak_data.append({
                 'dia_semana': dias_semana[i],
                 'data': dia,
@@ -84,17 +73,8 @@ def get_streak_data(usuario):
                 'quebrou': False
             })
         else:
-            if esperando_quebra and not congelado_mostrado:
+            if encontrou_primeira_atividade and not congelado_mostrado:
                 congelado_mostrado = True
-                esperando_quebra = False
-                streak_data.append({
-                    'dia_semana': dias_semana[i],
-                    'data': dia,
-                    'concluiu': False,
-                    'quebrou': True
-                })
-            elif esperando_quebra:
-                esperando_quebra = False
                 streak_data.append({
                     'dia_semana': dias_semana[i],
                     'data': dia,
@@ -109,4 +89,5 @@ def get_streak_data(usuario):
                     'quebrou': False
                 })
 
-    return streak_data, dias_seguidos
+    usuario.streak_atual = dias_seguidos
+    return streak_data

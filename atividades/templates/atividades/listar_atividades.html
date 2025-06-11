@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamefyME - Edição de Atividade</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cadastro_atividade.css' %}">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" >
+    <script src="{% static 'scripts/global.js' %}"></script>
+    <script src="{% static 'scripts/cadastro_atividade.js' %}"></script>
+</head>
+<body>
+    {% include 'header.html'%}
+    {% include 'loading.html'%}
+    {% include 'relatorios_modal.html'%}
+    {% block content %}
+
+    <div class="usuarios-container">
+      <h2 class="usuarios-titulo">Minhas Atividades</h2>
+    
+      <div class="usuarios-lista">
+        {% for item in atividades_com_ciclos %}
+        {% with a=item.atividade %}
+          <div class="usuario-card">
+            <div class="usuario-card-topo">
+              <h3>{{ a.nmatividade }}</h3>
+              <span class="status-label {% if a.situacao == 'cancelada' %}cancelada{% elif a.situacao == 'ativa' %}ativa{% else %}realizada{% endif %}">
+                {{ a.get_situacao_display }}
+              </span>
+            </div>
+            <p><strong>Recorrência:</strong> {{ a.get_recorrencia_display }}</p>
+            <p><strong>XP:</strong> {{ a.expatividade }}</p>
+            <p><strong>Data de criação:</strong> {{ a.dtatividade|date:"d/m/Y H:i" }}</p>
+            {% if a.dtatividaderealizada %}
+              <p><strong>Data de conclusão:</strong> {{ a.dtatividaderealizada|date:"d/m/Y H:i" }}</p>
+            {% endif %}
+            <p><strong>Ciclos Pomodoro utilizados:</strong> {{ item.total_ciclos }}</p>
+          </div>
+        {% endwith %}
+      {% empty %}
+        <div class="usuarios-vazio">Nenhuma atividade encontrada.</div>
+      {% endfor %}
+      </div>
+    
+      <div class="usuarios-voltar">
+        <a href="{% url 'usuarios:main' %}" class="action-btn voltar-menu-btn">Voltar ao menu</a>
+      </div>
+    </div>
+    {% endblock %}
+    
+</body>
+</html>

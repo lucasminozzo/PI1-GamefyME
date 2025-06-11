@@ -83,54 +83,7 @@
         {% endfor %}
       </div>
     </div>
-    <div id="desafios-dropdown" class="notifications-dropdown">
-      <div class="notifications-header"><h4>Desafios</h4></div>
-      <div class="notifications-list">
-        {% for d in desafios|slice:":5" %}
-          {% if d.iddesafio not in concluidos %}
-          <div class="notification-item unread"
-              onclick="abrirModalDesafio('{{ d.nmdesafio|escapejs }}', '{{ d.dsdesafio|escapejs }}', {{ d.expdesafio }})">     
-              <div class="notification-icon"><img src="{% static 'img/games.png' %}" style="width: 50px; height: 50px;" /></div>
-              <div class="notification-content">
-                <div class="notification-message">{{ d.nmdesafio }}</div>
-                <div class="notification-date">XP: {{ d.expdesafio }}</div>
-              </div>
-            </div>
-          {% endif %}
-        {% empty %}
-          <div class="no-notifications">Nenhum desafio disponível</div>
-        {% endfor %}
-      </div>
-    </div>
     
-    <div id="conquistas-dropdown" class="notifications-dropdown">
-      <div class="notifications-header"><h4>Conquistas</h4></div>
-      <div class="notifications-list">
-        {% for c in conquistas|slice:":5" %}
-          {% if not c.concluida %}
-          <div class="notification-item unread"
-            onclick="abrirModalConquista('{{ c.nome|escapejs }}', '{{ c.descricao|escapejs }}', {{ c.exp }})">     
-              <div class="notification-icon"><img src="{% static 'img/crown.png' %}" style="width: 50px; height: 50px;" /></div>
-              <div class="notification-content">
-                <div class="notification-message">{{ c.nome }}</div>
-                <div class="notification-date">XP: {{ c.exp }}</div>
-              </div>
-            </div>
-          {% endif %}
-        {% empty %}
-          <div class="no-notifications">Nenhuma conquista próxima</div>
-        {% endfor %}
-      </div>
-    </div>
-    
-    <button type="button" class="header-btn" onclick="toggleDropdown(event, 'desafios-dropdown')" title="Desafios">
-      <img src="{% static 'img/games.png' %}" alt="Desafios" style="width: 35px; height: 35px; vertical-align: middle" />
-    </button>
-
-    <button type="button" class="header-btn" onclick="toggleDropdown(event, 'conquistas-dropdown')" title="Conquistas">
-      <img src="{% static 'img/crown.png' %}" alt="Conquistas" style="width: 35px; height: 35px; vertical-align: middle" />
-    </button>
-
       <button
         type="button"
         class="header-btn theme-btn"
@@ -190,6 +143,10 @@
       style="font-size: 20px"
       class="with-loading">
       Ver Conquistas
+    </a>
+
+    <a href="{% url 'atividades:listar_atividades' %}" onclick="toggleUserMenu();" class="with-loading" style="font-size: 20px">
+      Ver Atividades
     </a>
      
       {% if usuario.tipousuario == 'administrador' %}

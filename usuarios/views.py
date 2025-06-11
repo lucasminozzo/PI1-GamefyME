@@ -174,9 +174,6 @@ def main(request):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-    
     return render(request, 'main.html', {
         'usuario': usuario,
         'streak_data': usuario.streak_data,
@@ -188,9 +185,6 @@ def main(request):
         'html_todas_notificacoes': html_todas,
         'today': date.today(),
         'avatares_disponiveis': arquivos,
-        'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
     })
 
     
@@ -362,9 +356,6 @@ def listar_usuarios(request):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
     
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-    
     usuarios = Usuario.objects.exclude(idusuario=usuario.idusuario).order_by('nmusuario')
     return render(request, 'listar_usuarios.html', {
         'usuario': usuario,
@@ -372,9 +363,6 @@ def listar_usuarios(request):
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'html_todas_notificacoes': html_todas,
-        'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
     })
 
 @require_POST
