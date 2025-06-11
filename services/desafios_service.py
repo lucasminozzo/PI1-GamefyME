@@ -20,8 +20,9 @@ def verificar_desafios(usuario):
 
         if premiacao_existente:
             dtpremiacao = premiacao_existente.dtpremiacao
-            if isinstance(dtpremiacao, datetime):
-                dtpremiacao = dtpremiacao.date()
+            if hasattr(dtpremiacao, 'date'):
+                dtpremiacao = dtpremiacao.astimezone(timezone.get_current_timezone()).date()
+
 
             if desafio.tipo == 'diario' and dtpremiacao == hoje:
                 continue
