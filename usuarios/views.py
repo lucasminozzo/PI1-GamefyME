@@ -25,7 +25,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 
 from django.template.loader import render_to_string
 
-def cadastro(request):
+def cadastro(request): ## RF 01 - Cadastro de usuário
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')
 
@@ -60,7 +60,7 @@ def cadastro(request):
 
         if Usuario.objects.filter(emailusuario=email).exists():
             contexto.update({
-                'erro': 'Já existe um usuário com esse e-mail cadastrado.',
+                'erro': 'Já existe um usuário com esse e-mail cadastrado.', ## RF 01 - RN 1 - Todo usuário deve ter um cadastro único identificado por e-mail.
                 'erro_email': True,
             })
             return render(request, 'cadastro.html', contexto)
@@ -95,7 +95,8 @@ def cadastro(request):
     email = request.GET.get('emailusuario', '')
     return render(request, 'cadastro.html', {'emailusuario': email})
 
-def login(request):
+def login(request): ## RF 02 - Login de usuário
+    
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')
     
@@ -118,7 +119,7 @@ def login(request):
             return render(request, 'login.html', {'erro': 'Usuário não encontrado.', 'email': email})
     return render(request, 'login.html')
 
-def esqueceu(request):
+def esqueceu(request): ## RF 02 - Esqueci minha senha 
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')
     
@@ -144,7 +145,7 @@ def esqueceu(request):
             return render(request, 'esqueceu.html', {'erro': 'Usuário não encontrado.', 'email': email}) ## Mensagem de erro caso o usuário não exista
     return render(request, 'esqueceu.html')
 
-def logout(request):
+def logout(request): 
     request.session.flush()
     return redirect('usuarios:login')
 
@@ -156,6 +157,7 @@ def main(request):
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
     desafios_service.verificar_desafios(usuario)
+    conquistas_service.verificar_conquistas(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
@@ -173,9 +175,6 @@ def main(request):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
 
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-    
     return render(request, 'main.html', {
         'usuario': usuario,
         'streak_data': usuario.streak_data,
@@ -187,13 +186,10 @@ def main(request):
         'html_todas_notificacoes': html_todas,
         'today': date.today(),
         'avatares_disponiveis': arquivos,
-        'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
     })
 
     
-def nova_senha(request, uidb64, token):
+def nova_senha(request, uidb64, token): ## RF 02 - Nova senha
     if login_service.is_usuario_logado(request):
         return redirect('usuarios:main')
     
@@ -251,7 +247,7 @@ def nova_senha(request, uidb64, token):
     return redirect('usuarios:login')
 
 @require_POST
-def marcar_notificacao_lida(request, notificacao_id):
+def marcar_notificacao_lida(request, notificacao_id):  ## RF 06 - Manter notificações
     if not login_service.is_usuario_logado(request):
         return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
 
@@ -268,7 +264,7 @@ def marcar_notificacao_lida(request, notificacao_id):
         return JsonResponse({'success': False, 'error': 'Notificação não encontrada'}, status=404)
 
 @require_POST
-def marcar_todas_lidas(request):
+def marcar_todas_lidas(request): ## RF 06 - Manter notificações
     if not login_service.is_usuario_logado(request):
         return JsonResponse({'success': False, 'error': 'Usuário não autenticado'}, status=401)
 
@@ -292,7 +288,7 @@ def ajax_todas_notificacoes(request):
     return JsonResponse({'success': True, 'html': html})
  
 @require_POST
-def atualizar_config_usuario(request):
+def atualizar_config_usuario(request): ##  RF 01 - Manter usuário
     usuario = login_service.get_usuario_logado(request)
     form = ConfigUsuarioForm(request.POST, instance=usuario)
 
@@ -361,9 +357,6 @@ def listar_usuarios(request):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
     
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-    
     usuarios = Usuario.objects.exclude(idusuario=usuario.idusuario).order_by('nmusuario')
     return render(request, 'listar_usuarios.html', {
         'usuario': usuario,
@@ -371,13 +364,10 @@ def listar_usuarios(request):
         'notificacoes': notificacoes,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'html_todas_notificacoes': html_todas,
-        'conquistas': conquistas_proximas,
-        'desafios': desafios_ativos,
-        'concluidos': concluidos,
     })
 
 @require_POST
-def alterar_tipo_usuario(request, idusuario):
+def alterar_tipo_usuario(request, idusuario): ## RF 01 - Manter usuário - ADM Define tipo de usuário
     usuario_logado = login_service.get_usuario_logado(request)
 
     if usuario_logado.tipousuario != 'administrador' or usuario_logado.idusuario == idusuario:
@@ -390,7 +380,7 @@ def alterar_tipo_usuario(request, idusuario):
     return redirect('usuarios:listar_usuarios')
 
 @require_POST
-def alternar_situacao_usuario(request, idusuario):
+def alternar_situacao_usuario(request, idusuario): ## RF 01 - Manter usuário - ADM ativa ou desativa usuário
     usuario_logado = login_service.get_usuario_logado(request)
 
     if usuario_logado.tipousuario != 'administrador' or usuario_logado.idusuario == idusuario:
@@ -405,7 +395,8 @@ def alternar_situacao_usuario(request, idusuario):
     messages.success(request, f"Usuário {alvo.nmusuario} foi {status}.")
     return redirect('usuarios:listar_usuarios')
 
-def deletar_usuario(request):
+def deletar_usuario(request): ## RF 01 - Manter usuário - Usuário desativando usuário
+                              ## RN 02 - O próprio usuário irá requisitar ao sistema para que ele assuma o estado de “inativo”.
     if not login_service.is_usuario_logado(request):
         return redirect('usuarios:login')
 

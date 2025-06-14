@@ -1447,3 +1447,28 @@ input-minutos-wrapper input[type="number"].invalido {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
+
+.status-label {
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.status-label.cancelada {
+  background-color: #ffdddd;
+  color: #b30000;
+  border: 1px solid #b30000;
+}
+
+.status-label.ativa {
+  background-color: #ddeeff;
+  color: #0055cc;
+  border: 1px solid #0055cc;
+}
+
+.status-label.realizada {
+  background-color: #ddffdd;
+  color: #008800;
+  border: 1px solid #008800;
+}

@@ -6,6 +6,8 @@ from services import login_service
 from django.views.decorators.clickjacking import xframe_options_exempt
 from datetime import datetime, time
 
+## RF 07 - Gerenciar histórico e relatórios
+
 @xframe_options_exempt
 def gerar_relatorio_atividades(request):
     if not login_service.is_usuario_logado(request):

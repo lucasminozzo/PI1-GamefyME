@@ -2,7 +2,10 @@ from django.utils import timezone
 from atividades.models import AtividadeConcluidas
 from datetime import timedelta
 
-def calcular_experiencia(peso: str, tempo_estimado: int) -> int:
+def calcular_experiencia(peso: str, tempo_estimado: int) -> int: ##     RN 05 - RF 03 - A experiência que o usuário receberá após cada atividade 
+                                                                 ## não poderá ultrapassar de 500 e tem um mínimo de 50.
+                                                                 ## Caso o cálculo feito ultrapasse esse valor máximo, o sistema retornará o limite de 500.
+
     exp_base = 50
     multiplicadores_peso = {
         'muito_facil': 1.0,
@@ -30,9 +33,9 @@ def get_streak_data(usuario):
     Exibe a semana atual de segunda a domingo.
     Marca:
     - fogo-ativo: dias com atividade e streak ainda válido
-    - fogo-congelado: primeira falha (até hoje), se houver atividade anterior
+    - fogo-congelado: primeira falha (após começar)
     - fogo-inativo: dias sem atividade fora do streak
-    - dias futuros: ignorados como quebra
+    - dias futuros: ignorados
     """
     hoje = timezone.localdate()
     segunda = hoje - timedelta(days=hoje.weekday())
@@ -40,19 +43,12 @@ def get_streak_data(usuario):
     streak_data = []
 
     dias_seguidos = 0
-    esperando_quebra = True
     congelado_mostrado = False
-
-    # verifica se há alguma atividade concluída na semana até hoje
-    tem_atividade_na_semana = AtividadeConcluidas.objects.filter(
-        idusuario=usuario.idusuario,
-        dtconclusao__date__range=(segunda, hoje)
-    ).exists()
+    encontrou_primeira_atividade = False
 
     for i in range(7):
         dia = segunda + timedelta(days=i)
 
-        # Dias futuros são ignorados para quebra
         if dia > hoje:
             streak_data.append({
                 'dia_semana': dias_semana[i],
@@ -68,12 +64,8 @@ def get_streak_data(usuario):
         ).exists()
 
         if concluiu:
-            if esperando_quebra:
-                dias_seguidos += 1
-            else:
-                dias_seguidos = 1
-                esperando_quebra = True
-
+            encontrou_primeira_atividade = True
+            dias_seguidos += 1
             streak_data.append({
                 'dia_semana': dias_semana[i],
                 'data': dia,
@@ -81,17 +73,8 @@ def get_streak_data(usuario):
                 'quebrou': False
             })
         else:
-            if esperando_quebra and not congelado_mostrado and tem_atividade_na_semana:
+            if encontrou_primeira_atividade and not congelado_mostrado:
                 congelado_mostrado = True
-                esperando_quebra = False
-                streak_data.append({
-                    'dia_semana': dias_semana[i],
-                    'data': dia,
-                    'concluiu': False,
-                    'quebrou': True
-                })
-            elif esperando_quebra and tem_atividade_na_semana:
-                esperando_quebra = False
                 streak_data.append({
                     'dia_semana': dias_semana[i],
                     'data': dia,
@@ -108,3 +91,22 @@ def get_streak_data(usuario):
 
     usuario.streak_atual = dias_seguidos
     return streak_data
+
+def calcular_streak_criacao_atividades(usuario):
+    hoje = timezone.localdate()
+    streak = 0
+    dia = hoje
+
+    while True:
+        tem_atividade = AtividadeConcluidas.objects.filter(
+            idusuario=usuario.idusuario,
+            dtconclusao__date=dia
+        ).exists()
+
+        if tem_atividade:
+            streak += 1
+            dia -= timedelta(days=1)
+        else:
+            break
+
+    return streak

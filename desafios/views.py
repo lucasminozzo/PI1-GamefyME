@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from desafios.forms import DesafioForm
 
-
+## RF 04 - Manter desafios
 def listar_desafios(request):
     usuario = login_service.get_usuario_logado(request)
     hoje = timezone.localdate()
@@ -44,11 +44,9 @@ def listar_desafios(request):
         elif d.tipo == 'unico':
             concluidos.append(d.iddesafio)
 
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    _, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
-
     form = DesafioForm() if usuario.tipousuario == 'administrador' else None
     desafios_service.verificar_desafios(usuario)
+    conquistas_service.verificar_conquistas(usuario)
     return render(request,'desafios/listar.html',
         {
             'usuario': usuario,
@@ -58,7 +56,6 @@ def listar_desafios(request):
             'desafios': desafios,
             'concluidos': concluidos,
             'form': form,
-            'conquistas': conquistas_proximas,
         },
     )
 

@@ -6,23 +6,27 @@ from atividades.models import SessaoPomodoro
 from services import notificacao_service
 from datetime import datetime, timedelta
 
+from django.utils import timezone
+from datetime import datetime, timedelta
+from desafios.models import Desafio, UsuarioDesafio
+from atividades.models import Atividade, AtividadeConcluidas, SessaoPomodoro
+from services import notificacao_service
+
+
 def verificar_desafios(usuario):
     agora = timezone.now()
     hoje = timezone.localdate()
 
     desafios = [d for d in Desafio.objects.all() if d.is_ativo()]
-    
+
     for desafio in desafios:
-        # já premiado
         premiacao_existente = UsuarioDesafio.objects.filter(
             idusuario=usuario,
             iddesafio=desafio
         ).order_by('-dtpremiacao').first()
 
         if premiacao_existente:
-            dtpremiacao = premiacao_existente.dtpremiacao
-            if isinstance(dtpremiacao, datetime):
-                dtpremiacao = dtpremiacao.date()
+            dtpremiacao = premiacao_existente.dtpremiacao.date() if hasattr(premiacao_existente.dtpremiacao, 'date') else premiacao_existente.dtpremiacao
 
             if desafio.tipo == 'diario' and dtpremiacao == hoje:
                 continue
@@ -30,28 +34,29 @@ def verificar_desafios(usuario):
                 continue
             elif desafio.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
                 continue
+            elif desafio.tipo == 'unico':
+                continue
 
-
-        tipo = desafio.tipo
-        valido = False
-
-        # intervalo de verificação
-        if tipo == 'diario':
+        # Define o intervalo do desafio conforme tipo
+        if desafio.tipo == 'diario':
             inicio = hoje
-        elif tipo == 'semanal':
-            inicio = hoje - timedelta(days=hoje.weekday())
-        else:
+            fim = hoje
+        elif desafio.tipo == 'semanal':
+            inicio = hoje - timedelta(days=hoje.weekday())  # Segunda
+            fim = inicio + timedelta(days=6)  # Domingo
+        elif desafio.tipo == 'mensal':
             inicio = hoje.replace(day=1)
+            proximo_mes = (inicio.replace(day=28) + timedelta(days=4)).replace(day=1)
+            fim = proximo_mes - timedelta(days=1)
+        else:
+            # Para 'unico' ou outros tipos
+            inicio = desafio.dtinicio.date()
+            fim = desafio.dtfim.date()
 
-        # normaliza datas
-        inicio_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.min.time()))
-        fim_dt = timezone.make_aware(datetime.combine(inicio, timezone.datetime.max.time()))
+        inicio_dt = timezone.make_aware(datetime.combine(inicio, datetime.min.time()))
+        fim_dt = timezone.make_aware(datetime.combine(fim, datetime.max.time()))
 
-        valido = desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt)
-
-        # Aqui você pode aplicar regras específicas por `desafio.iddesafio` se desejar mais precisão
-
-        if valido:
+        if desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             UsuarioDesafio.objects.create(
                 idusuario=usuario,
                 iddesafio=desafio,
@@ -112,12 +117,15 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'todas_muito_faceis':
-            return not Atividade.objects.filter(
+            atividades_no_periodo = Atividade.objects.filter(
                 idusuario=usuario,
                 dtatividade__range=(inicio_dt, fim_dt),
-                peso='muito_facil',
                 situacao='ativa'
-            ).exists()
+            )
+            if not atividades_no_periodo.exists():
+                return False
+            return not atividades_no_periodo.filter(peso='muito_facil').exists()
+
 
         case 'streak_pomodoro_dias':
             dias_validos = 0
@@ -235,4 +243,5 @@ def listar_desafios_ativos_nao_concluidos(usuario):
 
     desafios_ativos = [d for d in Desafio.objects.all() if d.is_ativo()]
     
+
     return desafios_ativos, concluidos_ids
