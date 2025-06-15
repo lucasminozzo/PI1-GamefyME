@@ -81,15 +81,13 @@ def _atingiu_criterio(usuario, conquista):
 
     elif nome == "RITUAL SEMANAL":
         streak = calcular_streak_criacao_atividades(usuario)
-        return streak >= 7
-
+        return (streak or 0) >= 7
 
     elif nome == "CONSISTÊNCIA INABALÁVEL":
         get_streak_data(usuario)
         return usuario.streak_atual >= 15
 
     return False
-
 
 def _premiar_usuario(usuario, conquista):
     usuario.expusuario += conquista.expconquista
