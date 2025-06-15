@@ -91,22 +91,3 @@ def get_streak_data(usuario):
 
     usuario.streak_atual = dias_seguidos
     return streak_data
-
-def calcular_streak_criacao_atividades(usuario):
-    hoje = timezone.localdate()
-    streak = 0
-    dia = hoje
-
-    while True:
-        tem_atividade = AtividadeConcluidas.objects.filter(
-            idusuario=usuario.idusuario,
-            dtconclusao__date=dia
-        ).exists()
-
-        if tem_atividade:
-            streak += 1
-            dia -= timedelta(days=1)
-        else:
-            break
-
-    return streak

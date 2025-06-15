@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'gamefyme.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gamefymedb',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'ifpr',
         'HOST': 'localhost',
