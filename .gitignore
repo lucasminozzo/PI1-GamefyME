@@ -1,6 +1,0 @@
-.venv
-.env
-env
-venv
-*.sqlite3
-/staticfiles

@@ -157,6 +157,7 @@ def main(request):
     pasta_avatars = os.path.join(settings.BASE_DIR, 'static', 'img', 'avatares')
     arquivos = sorted(f for f in os.listdir(pasta_avatars) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')))
     desafios_service.verificar_desafios(usuario)
+    conquistas_service.verificar_conquistas(usuario)
 
     atividades_recorrentes = Atividade.objects.filter(
         idusuario=usuario,
