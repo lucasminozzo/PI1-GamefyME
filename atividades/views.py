@@ -142,9 +142,6 @@ def realizar_atividade(request, idatividade):
     todas_notificacoes = notificacao_service.listar_todas(usuario)
     html_todas = render_to_string('_notificacoes_lista.html', {'notificacoes': todas_notificacoes}, request=request)
     desafios_service.verificar_desafios(usuario)
-    
-    conquistas_proximas = conquistas_service.listar_conquistas_proximas(usuario)
-    desafios_ativos, concluidos = desafios_service.listar_desafios_ativos_nao_concluidos(usuario)
 
     return render(request, 'atividades/realizar_atividade.html', {
         'atividade': atividade,
