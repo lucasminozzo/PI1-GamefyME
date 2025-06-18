@@ -167,8 +167,7 @@ def main(request):
     atividades_unicas = Atividade.objects.filter(
         idusuario=usuario,
         situacao=Atividade.Situacao.ATIVA,
-        recorrencia=Atividade.Recorrencia.UNICA,
-        dtatividaderealizada__isnull=True
+        recorrencia=Atividade.Recorrencia.UNICA
     )
     notificacoes = notificacao_service.listar_nao_lidas(usuario)
     notificacoes_nao_lidas = notificacao_service.contar_nao_lidas(usuario)
