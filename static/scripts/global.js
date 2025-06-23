@@ -11,7 +11,7 @@ function toggleUserMenu() {
   menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-window.addEventListener('click', function (event) {
+window.addEventListener('click', function (event) { // 
   const modais = document.querySelectorAll('.modal');
   const dropdowns = document.querySelectorAll('.user-dropdown, .notifications-dropdown');
 
@@ -175,9 +175,7 @@ function marcarComoLida(notificacaoId) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        const notificacao = document.querySelector(
-          `.notification-item[data-id="${notificacaoId}"]`
-        );
+        const notificacao = document.querySelector(`.notification-item[data-id="${notificacaoId}"]`);
         if (notificacao) {
           notificacao.remove();
         
@@ -188,7 +186,15 @@ function marcarComoLida(notificacaoId) {
           }
         }
         
-        atualizarContadorNotificacoes();
+        
+        fetch("/usuarios/ajax/notificacoes/")
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("allNotificationsBody").innerHTML = data.html;
+            }
+          });
+          atualizarContadorNotificacoes();
       }
     })
     .finally(() => {

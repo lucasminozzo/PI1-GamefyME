@@ -1,6 +1,6 @@
 {% load static %}
 {% for notificacao in notificacoes %}
-<div class="notification-item {% if not notificacao.flstatus %}unread{% endif %}">
+<div class="notification-item">
   <div class="notification-icon">
     {% if notificacao.fltipo == 'sucesso' %}
     <img src="{% static 'img/gift-box.png' %}" style="width: 20px;" />
