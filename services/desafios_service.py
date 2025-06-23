@@ -199,20 +199,30 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
                 inicio__range=(inicio_mes_anterior, inicio_mes)
             ).count()
 
-            return atual > anterior
+            return anterior > 0 and atual > anterior
 
         case 'percentual_concluido':
-            total = Atividade.objects.filter(
-                idusuario=usuario,
-                dtatividade__range=(inicio_dt, fim_dt)
+            total_desafios_mensais = Desafio.objects.filter(
+                tipo='mensal',
+                dtinicio__lte=fim_dt,
+                dtfim__gte=inicio_dt
             ).count()
-            concluidas = AtividadeConcluidas.objects.filter(
-                idusuario=usuario,
-                dtconclusao__range=(inicio_dt, fim_dt)
-            ).count()
-            if total == 0:
+
+            if total_desafios_mensais == 0:
                 return False
-            return (concluidas / total * 100) >= p
+
+            desafios_concluidos_pelo_usuario = UsuarioDesafio.objects.filter(
+                idusuario=usuario,
+                iddesafio__tipo='mensal',
+                dtpremiacao__range=(inicio_dt, fim_dt)
+            ).count()
+
+            if total_desafios_mensais == 0:
+                return False
+
+            percentual_realizado = (desafios_concluidos_pelo_usuario / total_desafios_mensais) * 100
+            return percentual_realizado >= p
+
         case 'desafios_concluidos':
             concluidos = UsuarioDesafio.objects.filter(
                 idusuario=usuario,

@@ -1472,3 +1472,53 @@ input-minutos-wrapper input[type="number"].invalido {
   color: #008800;
   border: 1px solid #008800;
 }
+
+.profile-section {
+  display: flex;
+  flex-wrap: wrap; /* Essencial para que os itens passem para baixo se não houver espaço */
+  gap: 20px;
+  align-items: flex-start;
+  padding: 15px;
+}
+
+/* Permite que a seção de informações cresça, mas define um limite mínimo */
+.profile-info {
+  flex-grow: 1;
+  min-width: 280px; /* Evita que a seção fique muito espremida antes de quebrar a linha */
+}
+
+/* Faz com que os ícones de fogo do streak quebrem a linha em telas menores */
+.weekdays-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.progress-bar {
+  width: 100%;
+}
+
+
+@media (max-width: 768px) {
+  .profile-section {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .profile-info {
+      text-align: center;
+  }
+
+  .weekdays-div {
+      justify-content: center;
+  }
+
+  .btn-perfil {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 350px;
+      gap: 10px;
+  }
+}
