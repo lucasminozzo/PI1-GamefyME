@@ -17,27 +17,30 @@ def verificar_desafios(usuario):
     agora = timezone.now()
     hoje = timezone.localdate()
 
-    desafios = [d for d in Desafio.objects.all() if d.is_ativo()]
+    # Busca todos os desafios. Uma melhoria seria filtrar apenas os ativos.
+    desafios = [d for d in Desafio.objects.all()]
 
     for desafio in desafios:
+        # --- INÍCIO DA MUDANÇA NA LÓGICA ---
+
+        # 1. Verifica se o usuário JÁ FOI RECOMPENSADO por este desafio alguma vez.
+        #    Usar .exists() é mais eficiente do que .first() se você só precisa saber se algo existe.
         premiacao_existente = UsuarioDesafio.objects.filter(
             idusuario=usuario,
             iddesafio=desafio
-        ).order_by('-dtpremiacao').first()
+        ).exists()
 
+        # 2. Se uma premiação já existe, o desafio já foi completado e recompensado.
+        #    Então, pulamos para o próximo desafio da lista.
         if premiacao_existente:
-            dtpremiacao = premiacao_existente.dtpremiacao.date() if hasattr(premiacao_existente.dtpremiacao, 'date') else premiacao_existente.dtpremiacao
+            continue
 
-            if desafio.tipo == 'diario' and dtpremiacao == hoje:
-                continue
-            elif desafio.tipo == 'semanal' and dtpremiacao.isocalendar()[1] == hoje.isocalendar()[1] and dtpremiacao.year == hoje.year:
-                continue
-            elif desafio.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
-                continue
-            elif desafio.tipo == 'unico':
-                continue
+        # --- FIM DA MUDANÇA NA LÓGICA ---
 
-        # Define o intervalo do desafio conforme tipo
+        # 3. Se o código chegou até aqui, significa que o usuário NUNCA completou este desafio.
+        #    Agora, vamos verificar se ele cumpriu os requisitos para ser recompensado PELA PRIMEIRA VEZ.
+
+        # Define o intervalo de tempo para análise (a lógica para isso permanece a mesma)
         if desafio.tipo == 'diario':
             inicio = hoje
             fim = hoje
@@ -48,15 +51,16 @@ def verificar_desafios(usuario):
             inicio = hoje.replace(day=1)
             proximo_mes = (inicio.replace(day=28) + timedelta(days=4)).replace(day=1)
             fim = proximo_mes - timedelta(days=1)
-        else:
-            # Para 'unico' ou outros tipos
+        else: # Para 'unico' ou outros tipos
             inicio = desafio.dtinicio.date()
             fim = desafio.dtfim.date()
 
         inicio_dt = timezone.make_aware(datetime.combine(inicio, datetime.min.time()))
         fim_dt = timezone.make_aware(datetime.combine(fim, datetime.max.time()))
 
+        # Verifica se as condições foram atendidas dentro do período
         if desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
+            # Se foram, entrega a premiação
             UsuarioDesafio.objects.create(
                 idusuario=usuario,
                 iddesafio=desafio,
@@ -64,6 +68,7 @@ def verificar_desafios(usuario):
                 dtpremiacao=agora
             )
 
+            # Lógica para adicionar XP e subir de nível
             nova_exp = usuario.expusuario + desafio.expdesafio
             while nova_exp >= 1000:
                 usuario.nivelusuario += 1
@@ -71,6 +76,7 @@ def verificar_desafios(usuario):
             usuario.expusuario = nova_exp
             usuario.save()
 
+            # Cria a notificação para o usuário
             notificacao_service.criar_notificacao(
                 usuario,
                 f'Você concluiu o desafio "{desafio.nmdesafio}" e ganhou {desafio.expdesafio} XP!',
@@ -117,14 +123,21 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'todas_muito_faceis':
-            atividades_no_periodo = Atividade.objects.filter(
-                idusuario=usuario,
-                dtatividade__range=(inicio_dt, fim_dt),
-                situacao='ativa'
-            )
-            if not atividades_no_periodo.exists():
+            hoje = timezone.localdate()
+            innerjoin = AtividadeConcluidas.objects.filter(
+                idusuario = usuario,
+                dtconclusao__range = (inicio_dt, fim_dt),
+            ).values('idatividade').distinct()
+            atividades_no_dia = Atividade.objects.filter(
+                idusuario = usuario,
+                dtatividade__range = (inicio_dt, fim_dt),
+                peso = 'muito_facil',
+                idatividade__in = innerjoin
+            ).count() >= p
+            if not atividades_no_dia:
                 return False
-            return not atividades_no_periodo.filter(peso='muito_facil').exists()
+            return atividades_no_dia
+            
 
 
         case 'streak_pomodoro_dias':
@@ -132,8 +145,8 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             for i in range(7):
                 dia = inicio_dt + timedelta(days=i)
                 qtd = SessaoPomodoro.objects.filter(
-                    idusuario=usuario,
-                    inicio__date=dia.date()
+                    idusuario = usuario,
+                    inicio__date = dia.date()
                 ).count()
                 if qtd >= 3:
                     dias_validos += 1
@@ -144,7 +157,7 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             for i in range(7):
                 dia = inicio_dt + timedelta(days=i)
                 atividades = AtividadeConcluidas.objects.filter(
-                    idusuario=usuario,
+                    idusuario = usuario,
                     dtconclusao__date=dia.date(),
                     idatividade__recorrencia='recorrente'
                 ).exists()
@@ -217,7 +230,7 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
                 dtpremiacao__range=(inicio_dt, fim_dt)
             ).count()
 
-            if total_desafios_mensais == 0:
+            if total_desafios_mensais == 0: 
                 return False
 
             percentual_realizado = (desafios_concluidos_pelo_usuario / total_desafios_mensais) * 100
