@@ -28,11 +28,47 @@ function abrirModalCadastroDesafio() {
     if (event.target === cadastro) fecharModalCadastroDesafio();
     if (event.target === editar) fecharModalEditarDesafio();
   };
+
   function filtrarDesafios() {
     const filtro = document.getElementById('filtro-status').value;
-    const cards = document.querySelectorAll('.desafio-item');
-    cards.forEach(card => {
-      const status = card.dataset.status;
-      card.style.display = (filtro === 'todos' || filtro === status) ? '' : 'none';
+    const todosOsCards = document.querySelectorAll('.desafio-item');
+    let algumCardVisivelNoTotal = false;
+
+    todosOsCards.forEach(card => {
+        const status = card.getAttribute('data-status');
+
+        if (filtro === 'todos' || filtro === status) {
+            card.style.display = 'block';
+            algumCardVisivelNoTotal = true;
+        } else {
+            card.style.display = 'none';
+        }
     });
-  }
+
+    const todosOsGrupos = document.querySelectorAll('.desafio-grupo');
+    todosOsGrupos.forEach(grupo => {
+        const cardsVisiveisNoGrupo = grupo.querySelectorAll('.desafio-item[style*="display: block"]');
+
+        if (cardsVisiveisNoGrupo.length > 0) {
+            grupo.style.display = 'block';
+        } else {
+            grupo.style.display = 'none';
+        }
+    });
+
+    const mensagemVazio = document.getElementById('nenhum-desafio-encontrado');
+    if (algumCardVisivelNoTotal) {
+        mensagemVazio.style.display = 'none';
+    } else {
+        mensagemVazio.style.display = 'block';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const filtroSelect = document.getElementById('filtro-status');
+    if (filtroSelect) {
+        filtroSelect.value = 'todos';
+    }
+    
+    filtrarDesafios();
+});
