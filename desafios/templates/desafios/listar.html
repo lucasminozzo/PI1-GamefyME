@@ -44,54 +44,46 @@
         {% endif %}
     </div>
     
-    {% if desafios %}
-        <div class="usuarios-lista">
+      {% if desafios %}
+      <div class="usuarios-lista">
           {% regroup desafios by tipo as desafios_por_tipo %}
-
           {% for grupo in desafios_por_tipo %}
-              <h3 style="margin-top: 30px; color: var(--azul-padrao); text-transform: capitalize;">
-                  {{ grupo.grouper }}
-              </h3>
-              {% for desafio in grupo.list %}
-                  <div class="usuario-card desafio-item" data-status="{% if desafio.iddesafio in concluidos %}concluidos{% else %}nao-concluidos{% endif %}">
-                      <div class="usuario-card-topo">
-                        {% if usuario.tipousuario == 'administrador' %}
-                          <button class="btn-editar-desafio" style="border-radius: 5px; padding: 6px 14px; font-size: 25px;"
-                            onclick="abrirModalEditarDesafio(
-                              {{ desafio.iddesafio }},
-                              '{{ desafio.nmdesafio|escapejs }}',
-                              '{{ desafio.dsdesafio|escapejs }}',
-                              '{{ desafio.tipo }}',
-                              '{{ desafio.dtinicio_html }}',
-                              '{{ desafio.dtfim_html }}',
-                              {{ desafio.expdesafio }},
-                              '{{ desafio.tipo_logica }}',
-                              {{ desafio.parametro|default:0 }}
-                            )">
-                              Editar
-                          </button>
-                        {% endif %}
-                        <h3>{{ desafio.nmdesafio }}</h3>
-                        {% if desafio.iddesafio in concluidos %}
-                            <span style="color: var(--verde-xp); font-weight: bold;">✅ Concluído</span>
-                        {% else %}
-                            <span style="color: var(--cinza-sub); font-style: italic;">Em andamento</span>
-                        {% endif %}
+              <div class="desafio-grupo">
+                  <h3 style="margin-top: 30px; color: var(--azul-padrao); text-transform: capitalize;">
+                      {{ grupo.grouper }}
+                  </h3>
+                  {% for desafio in grupo.list %}
+                      <div class="usuario-card desafio-item" data-status="{% if desafio.iddesafio in concluidos %}concluidos{% else %}nao-concluidos{% endif %}">
+                          <div class="usuario-card-topo">
+                              {% if usuario.tipousuario == 'administrador' %}
+                                  <button class="btn-editar-desafio" ...>Editar</button>
+                              {% endif %}
+                              <h3>{{ desafio.nmdesafio }}</h3>
+                              {% if desafio.iddesafio in concluidos %}
+                                  <span style="color: var(--verde-xp); font-weight: bold;">✅ Concluído</span>
+                              {% else %}
+                                  <span style="color: var(--cinza-sub); font-style: italic;">Em andamento</span>
+                              {% endif %}
+                          </div>
+                          <p><strong>Tipo:</strong> {{ desafio.get_tipo_display }}</p>
+                          <p><strong>Período:</strong> {{ desafio.dtinicio|date:"d/m/Y" }} até {{ desafio.dtfim|date:"d/m/Y" }}</p>
+                          <p><strong>Descrição:</strong> {{ desafio.dsdesafio }}</p>
+                          <p><strong>Recompensa:</strong> +{{ desafio.expdesafio }} XP</p>
                       </div>
-                      <p><strong>Tipo:</strong> {{ desafio.get_tipo_display }}</p>
-                      <p><strong>Período:</strong> {{ desafio.dtinicio|date:"d/m/Y" }} até {{ desafio.dtfim|date:"d/m/Y" }}</p>
-                      <p><strong>Descrição:</strong> {{ desafio.dsdesafio }}</p>
-                      <p><strong>Recompensa:</strong> +{{ desafio.expdesafio }} XP</p>
-                  </div>
-              {% endfor %}
+                  {% endfor %}
+              </div>
           {% endfor %}
-        </div>
-    {% else %}
-        <p style="text-align: center; color: var(--cinza-sub);">Nenhum desafio ativo no momento.</p>
-    {% endif %}
+      </div>
+
+      <div id="nenhum-desafio-encontrado" class="usuarios-vazio" style="display: none; text-align: center; margin-top: 20px;">
+          Nenhum desafio encontrado para o filtro selecionado.
+      </div>
+  {% else %}
+      <p style="text-align: center; color: var(--cinza-sub);">Nenhum desafio ativo no momento.</p>
+  {% endif %}
 
     <div class="usuarios-voltar">
-        <a href="{% url 'usuarios:main' %}" class="btn-perfil voltar-menu-btn with-loading">Voltar</a>
+      <a href="{% url 'usuarios:main' %}" class="btn-perfil voltar-menu-btn with-loading">Voltar</a>
     </div>
 </div>
 
