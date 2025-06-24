@@ -1,4 +1,4 @@
-const CONFIG = {
+const CONFIG = { // Configurações do Temporizador Pomodoro
   WORK_TIME: 25*60, // 25 * 60 para 25 minutos
   BREAK_TIME: 5*60, // 5 * 60 para 5 minutos
   SOUND_URL:

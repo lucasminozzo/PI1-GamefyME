@@ -25,6 +25,10 @@ def verificar_desafios(usuario):
 
         # 1. Verifica se o usuário JÁ FOI RECOMPENSADO por este desafio alguma vez.
         #    Usar .exists() é mais eficiente do que .first() se você só precisa saber se algo existe.
+        # --- INÍCIO DA MUDANÇA NA LÓGICA ---
+
+        # 1. Verifica se o usuário JÁ FOI RECOMPENSADO por este desafio alguma vez.
+        #    Usar .exists() é mais eficiente do que .first() se você só precisa saber se algo existe.
         premiacao_existente = UsuarioDesafio.objects.filter(
             idusuario=usuario,
             iddesafio=desafio
@@ -123,24 +127,23 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'todas_muito_faceis':
-            hoje = timezone.localdate()
-            atividades_no_periodo = AtividadeConcluidas.objects.filter(
+            atividades_no_periodo = Atividade.objects.filter(
                 idusuario=usuario,
-                dtconclusao__range=(inicio_dt, fim_dt),
-                
-            ).count() >= p
-            if not atividades_no_periodo:
+                dtatividade__range=(inicio_dt, fim_dt),
+                situacao='ativa'
+            )
+            if not atividades_no_periodo.exists():
                 return False
-            if atividades_no_periodo.situacao != atividades_no_periodo.situacao == 'cancelada':
-                return True
+            return not atividades_no_periodo.filter(peso='muito_facil').exists()
+
 
         case 'streak_pomodoro_dias':
             dias_validos = 0
             for i in range(7):
                 dia = inicio_dt + timedelta(days=i)
                 qtd = SessaoPomodoro.objects.filter(
-                    idusuario=usuario,
-                    inicio__date=dia.date()
+                    idusuario = usuario,
+                    inicio__date = dia.date()
                 ).count()
                 if qtd >= 3:
                     dias_validos += 1
@@ -151,7 +154,7 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             for i in range(7):
                 dia = inicio_dt + timedelta(days=i)
                 atividades = AtividadeConcluidas.objects.filter(
-                    idusuario=usuario,
+                    idusuario = usuario,
                     dtconclusao__date=dia.date(),
                     idatividade__recorrencia='recorrente'
                 ).exists()
