@@ -25,10 +25,6 @@ def verificar_desafios(usuario):
 
         # 1. Verifica se o usuário JÁ FOI RECOMPENSADO por este desafio alguma vez.
         #    Usar .exists() é mais eficiente do que .first() se você só precisa saber se algo existe.
-        # --- INÍCIO DA MUDANÇA NA LÓGICA ---
-
-        # 1. Verifica se o usuário JÁ FOI RECOMPENSADO por este desafio alguma vez.
-        #    Usar .exists() é mais eficiente do que .first() se você só precisa saber se algo existe.
         premiacao_existente = UsuarioDesafio.objects.filter(
             idusuario=usuario,
             iddesafio=desafio
@@ -127,14 +123,21 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count() >= p
 
         case 'todas_muito_faceis':
-            atividades_no_periodo = Atividade.objects.filter(
-                idusuario=usuario,
-                dtatividade__range=(inicio_dt, fim_dt),
-                situacao='ativa'
-            )
-            if not atividades_no_periodo.exists():
+            hoje = timezone.localdate()
+            innerjoin = AtividadeConcluidas.objects.filter(
+                idusuario = usuario,
+                dtconclusao__range = (inicio_dt, fim_dt),
+            ).values('idatividade').distinct()
+            atividades_no_dia = Atividade.objects.filter(
+                idusuario = usuario,
+                dtatividade__range = (inicio_dt, fim_dt),
+                peso = 'muito_facil',
+                idatividade__in = innerjoin
+            ).count() >= p
+            if not atividades_no_dia:
                 return False
-            return not atividades_no_periodo.filter(peso='muito_facil').exists()
+            return atividades_no_dia
+            
 
 
         case 'streak_pomodoro_dias':
@@ -240,4 +243,28 @@ def desafio_foi_concluido(usuario, desafio, inicio_dt, fim_dt):
             ).count()
             return concluidos >= p
 
+
     return False
+
+
+def listar_desafios_ativos_nao_concluidos(usuario):
+    hoje = timezone.localdate()
+    concluidos_ids = []
+
+    for ud in UsuarioDesafio.objects.filter(idusuario=usuario, flsituacao=True):
+        dtpremiacao = ud.dtpremiacao.date() if hasattr(ud.dtpremiacao, 'date') else ud.dtpremiacao
+        d = ud.iddesafio
+
+        if d.tipo == 'diario' and dtpremiacao == hoje:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'semanal' and dtpremiacao.isocalendar()[1] == hoje.isocalendar()[1] and dtpremiacao.year == hoje.year:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'mensal' and dtpremiacao.month == hoje.month and dtpremiacao.year == hoje.year:
+            concluidos_ids.append(d.iddesafio)
+        elif d.tipo == 'unico':
+            concluidos_ids.append(d.iddesafio)
+
+    desafios_ativos = [d for d in Desafio.objects.all() if d.is_ativo()]
+    
+
+    return desafios_ativos, concluidos_ids
