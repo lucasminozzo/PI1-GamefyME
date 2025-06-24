@@ -31,6 +31,7 @@
                 {{ a.get_situacao_display }}
               </span>
             </div>
+            <p><strong>Descrição:</strong> {{ a.dsatividade|default:"Sem descrição." }}</p>
             <p><strong>Recorrência:</strong> {{ a.get_recorrencia_display }}</p>
             <p><strong>XP:</strong> {{ a.expatividade }}</p>
             <p><strong>Data de criação:</strong> {{ a.dtatividade|date:"d/m/Y H:i" }}</p>
